@@ -1,26 +1,27 @@
 app.service('MapService', function($q) {
   var MarkersList = {}
-    this.init = function() {
+  MarkersList.markers = []
+    MarkersList.init = function() {
       console.log('init')
         var options = {
             center: new google.maps.LatLng(40.7127837, -74.00594130000002),
             zoom: 13
         }
-        this.map = new google.maps.Map(
+        map = new google.maps.Map(
             document.getElementById("map"),
             options
         );
-        this.places = new google.maps.places.PlacesService(this.map);
-        this.bounds = new google.maps.LatLngBounds();
+        places = new google.maps.places.PlacesService(map);
+        bounds = new google.maps.LatLngBounds();
     }
 
     console.log('here')
-    this.search = function(str) {
+    MarkersList.search = function(str) {
         var d = $q.defer();
-        this.places.textSearch({query: str}, function(results, status) {
+        places.textSearch({query: str}, function(results, status) {
             if (status == 'OK') {
                 MarkersList.markers = results;
-                console.log('markersList', MarkersList.markers)
+                // console.log('markersList', MarkersList.markers)
                 d.resolve(MarkersList.markers);
             }
             else d.reject(status);
@@ -28,9 +29,9 @@ app.service('MapService', function($q) {
         return d.promise;
     }
 
-    this.addMarker = function(places) {
-        this.marker = new google.maps.Marker({
-            map: this.map, // this puts the marker on the map
+    MarkersList.addMarker = function(places) {
+        var marker = new google.maps.Marker({
+            map: map, // this puts the marker on the map
             title: places.name,
             rating: places.rating,
             priceLevel: places.price_level,
@@ -39,28 +40,43 @@ app.service('MapService', function($q) {
             animation: google.maps.Animation.DROP
         });
 
+        console.log('position', marker.position)
+        // var marker = marker
+
+        MarkersList.info = function() {
+          var infoWindow = new google.maps.InfoWindow();
+
+          console.log('marker', marker)
+          google.maps.event.addListener(marker, 'click', function(){
+            infoWindow.setContent(marker.title);
+              infoWindow.open(map, marker);
+              console.log('title', marker.title)
+           });
+        }
+
       for (var i = 0; i < places.length; i++) {
       // To add the marker to the map, call setMap();
         if(places[i]) places[i].setMap(null); // removes marker from map
-            MarkersList.markers.push(this.marker)
-            var bounds = new google.maps.LatLngBounds();
+            MarkersList.markers.push(marker)
+            bounds = new google.maps.LatLngBounds();
           }
-          console.log('markersList', MarkersList.markers)
-            this.bounds.extend(this.marker.position);
+          console.log('list', MarkersList.markers)
+          // console.log('markersList', MarkersList.markers)
+            bounds.extend(marker.position);
           //center the map to a specific spot (city)
-         this.map.fitBounds(this.bounds);
+         map.fitBounds(bounds);
         //  this.map.setZoom(15)
+        return marker;
     }
-    console.log('happy', MarkersList.markers)
-
-    return MarkersList.markers;
+    return MarkersList;
 });
 
-app.controller('HomeCtrl', function($scope, MapService) {
+app.controller('HomeCtrl', function($scope, MapService, $routeParams) {
 console.log('home')
     // $scope.places = {};
-    $scope.markers = MapService.MarkersList;
-    console.log('markers in homectrl', $scope.markers)
+    // var infoWindow = new google.maps.InfoWindow();
+
+    $scope.markers = MapService.addMarker;
 
     $scope.search = function() {
       console.log('search')
@@ -69,24 +85,23 @@ console.log('home')
           .then(
             function(markers) { // success
               for (var i = 0; i < markers.length; i++) {
-                console.log('markers', markers)
                 $scope.places = markers
-                console.log('$scope.place', $scope.places)
                   MapService.addMarker(markers[i]);
                 //   $scope.places = {
                 //   $scope.places.name = markers[i].name;
                 //   $scope.places.address = markers[i].formatted_address
                 //   $scope.places.rating = markers[i].rating
                 //   $scope.places.priceLevel = markers[i].price_level
-                //   $scope.places.lat = res[i].geometry.location.lat();
-                //   $scope.places.lng = res[i].geometry.location.lng();
+                  //  $scope.places.lat = markers[i].geometry.location.lat();
+                  //  $scope.places.lng = markers[i].geometry.location.lng();
                 // }
+                MapService.info(markers[i])
 
-                console.log('places in loop', $scope.places)
+                // google.maps.event.addListener($scope.places[i], 'click', function(){
+                //   MapService.infoWindow.setContent('<h2>' + $scope.places[i].name + '</h2>');
+                //   infoWindow.open($scope.places[i].map, $scope.places[i]);
+                // });
                 }
-              // var infoWindow = new google.maps.InfoWindow({
-              //   content: $scope.place.name
-              //   });
              },
               function(status) { // error
                   $scope.apiError = true;
@@ -97,9 +112,18 @@ console.log('home')
             console.log('name')
           }
 
-          // google.maps.event.addListener(this.marker, 'click', function(){
-          //     infoWindow.open(this.map, this.marker);
-          //  });
+        $scope.openInfo = function(e, selectedMarker){
+          // console.log('inside openInfoWindow', MapService.infoWindow(selectedMarker))
+          e.preventDefault();
+          google.maps.event.trigger(selectedMarker, 'click');
+            MapService.infoWindow(selectedMarker)
+              infoWindow.open(MapService.infoWindow.get('map'), marker);
+          $routeParams.id = selectedMarker.place_id
+          console.log('routeParams', $routeParams.id)
+          // $scope.markerId = $scope.markers.indexOf(selectedMarker);
+          //  console.log('id after', $scope.markerId)
+        }
+
     }
 
     // $scope.send = function() {
@@ -108,90 +132,6 @@ console.log('home')
 
     MapService.init();
 });
-
-
-// app.controller("HomeCtrl", ["$scope", "Map", "$http",  "$routeParams", "$location", "$route", function($scope, Map, $http, $routeParams, $location, $route) {
-  // $http.get('https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+in+Denver&key=AIzaSyAcUV0JPpHkLuGff4rpcIcfPHAFPk74gaM')
-  // .then(function(response) {
-  //   $scope.gathers = response.data;
-  //   console.log('results', $scope.gathers)
-  // }, function(response) {
-  //   console.log('error')
-  // });
-  // console.log('home')
-  //  function initAutocomplete() {
-  //   console.log('autocomplete')
-  //   var mapOptions = {
-  //     center: {lat: -33.8688, lng: 151.2195},
-  //     zoom: 13,
-  //     mapTypeId: google.maps.MapTypeId.ROADMAP
-  //    };
-  //
-  //     $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
-  //
-  //   // Create the search box and link it to the UI element.
-  //   // $scope.input = document.getElementById('pac-input');
-  //   searchBox = new google.maps.places.SearchBox(input);
-  //   console.log('input', input)
-  //     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-  //
-  //   // Bias the SearchBox results towards current map's viewport.
-  //   map.addListener('bounds_changed', function() {
-  //     searchBox.setBounds(map.getBounds());
-  //   });
-  //
-  //   $scope.markers = [];
-  //   console.log('markers', markers)
-  //   // [START region_getplaces]
-  //   // Listen for the event fired when the user selects a prediction and retrieve
-  //   // more details for that place.
-  //   searchBox.addListener('places_changed', function() {
-  //     $scope.places = searchBox.getPlaces();
-  //     console.log('places', places)
-  //     if (places.length == 0) {
-  //       return;
-  //     }
-  //
-  //     // Clear out the old markers.
-  //     markers.forEach(function(marker) {
-  //       marker.setMap(null);
-  //     });
-  //     markers = [];
-  //
-  //     // For each place, get the icon, name and location.
-  //     var bounds = new google.maps.LatLngBounds();
-  //     places.forEach(function(place) {
-  //       var icon = {
-  //         url: place.icon,
-  //         size: new google.maps.Size(71, 71),
-  //         origin: new google.maps.Point(0, 0),
-  //         anchor: new google.maps.Point(17, 34),
-  //         scaledSize: new google.maps.Size(25, 25)
-  //       };
-  //
-  //       // Create a marker for each place.
-  //       $scope.markers.push(new google.maps.Marker({
-  //         map: map,
-  //         icon: icon,
-  //         title: place.name,
-  //         position: place.geometry.location
-  //       }));
-  //
-  //       // console.log(places)
-  //       if (place.geometry.viewport) {
-  //         // Only geocodes have viewport.
-  //         bounds.union(place.geometry.viewport);
-  //       } else {
-  //         bounds.extend(place.geometry.location);
-  //       }
-  //     });
-  //     map.fitBounds(bounds);
-  //   });
-  //   // [END region_getplaces]
-  // }
-
-
-// }])
 
 app.controller("NewCtrl", ["$scope", "$routeParams", "$http", "$route", "$location", function($scope, $routeParams, $http, $route, $location) {
   console.log('from newCtrl')
@@ -215,6 +155,23 @@ app.controller("NewCtrl", ["$scope", "$routeParams", "$http", "$route", "$locati
   //     $route.reload()
   //     }
   //   }
+console.log('id', $routeParams.id)
+  $scope.getDetails = function() {
+    var request = {
+        placeId: marker.id
+      };
+
+      service = new google.maps.places.PlacesService(map);
+      service.getDetails(request, callback);
+
+      function callback(place, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          createMarker(place);
+        }
+        console.log('request', request)
+        console.log('place', place)
+      }
+    }
   }])
 
   app.controller("ShowCtrl", ["$scope", "$routeParams", "$http", "$route", "$location", function($scope, $routeParams, $http, $route, $location) {

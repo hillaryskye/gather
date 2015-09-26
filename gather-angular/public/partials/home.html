@@ -24,16 +24,13 @@
 
     <div id="map"></div>
 
-  <div ng-repeat="place in places track by $index">
-    <h4 ng-click="name()">{{place.name}}</h4>
-    <h4>{{place.lat}}</h4>
-    <h4>{{place.lng}}</h4>
+  <div ng-repeat="place in places track by $index | orderBy : 'name'">
+     <button href="#" ng-click="openInfo($event, place)">{{place.name}}</button>
+     <a href="/#/gathers/new">{{place.name}}</a>
     <h4>{{place.formatted_address}}</h4>
-    <h4>{{place.rating}}</h4>
-    <h4>{{place.price_level}}</h4>
-    <!-- Like comments -->
-    <div ng-repeat="photos in places.photos">
-      <h4></h4>
+    <h4>Rating: {{place.rating}}</h4>
+    <h4>Price Level: {{place.price_level}}</h4>
+    <h4 ng-click="">{{place.id}}</h4>
     </div>
 
   </div>
