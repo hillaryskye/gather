@@ -111,21 +111,20 @@ console.log('home')
           $scope.name = function() {
             console.log('name')
           }
-
-        $scope.openInfo = function(e, selectedMarker){
-          // console.log('inside openInfoWindow', MapService.infoWindow(selectedMarker))
-          e.preventDefault();
-          google.maps.event.trigger(selectedMarker, 'click');
-            MapService.openInfo(selectedMarker)
-              infoWindow.open(MapService.infoWindow.get('map'), marker);
-          $routeParams.id = selectedMarker.place_id
-          console.log('routeParams', $routeParams.id)
-          // $scope.markerId = $scope.markers.indexOf(selectedMarker);
-          //  console.log('id after', $scope.markerId)
-        }
-
     }
 
+    $scope.openInfo = function(e, selectedMarker){
+      // console.log('inside openInfoWindow', MapService.infoWindow(selectedMarker))
+      e.preventDefault();
+      google.maps.event.trigger(selectedMarker, 'click');
+        // MapService.openInfo()
+         MapService.openInfo.infoWindow.open(MapService.addMarker.map, selectedMarker);
+
+        $routeParams.id = selectedMarker.place_id
+      console.log('routeParams', $routeParams.id)
+      // $scope.markerId = $scope.markers.indexOf(selectedMarker);
+      //  console.log('id after', $scope.markerId)
+    }
     // $scope.send = function() {
     //     alert($scope.place.name + ' : ' + $scope.place.lat + ', ' + $scope.place.lng);
     // }
