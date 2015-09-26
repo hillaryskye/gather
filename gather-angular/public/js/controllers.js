@@ -43,7 +43,7 @@ app.service('MapService', function($q) {
         console.log('position', marker.position)
         // var marker = marker
 
-        MarkersList.info = function() {
+        MarkersList.openInfo = function() {
           var infoWindow = new google.maps.InfoWindow();
 
           console.log('marker', marker)
@@ -95,7 +95,7 @@ console.log('home')
                   //  $scope.places.lat = markers[i].geometry.location.lat();
                   //  $scope.places.lng = markers[i].geometry.location.lng();
                 // }
-                MapService.info(markers[i])
+                MapService.openInfo(markers[i])
 
                 // google.maps.event.addListener($scope.places[i], 'click', function(){
                 //   MapService.infoWindow.setContent('<h2>' + $scope.places[i].name + '</h2>');
@@ -116,7 +116,7 @@ console.log('home')
           // console.log('inside openInfoWindow', MapService.infoWindow(selectedMarker))
           e.preventDefault();
           google.maps.event.trigger(selectedMarker, 'click');
-            MapService.infoWindow(selectedMarker)
+            MapService.openInfo(selectedMarker)
               infoWindow.open(MapService.infoWindow.get('map'), marker);
           $routeParams.id = selectedMarker.place_id
           console.log('routeParams', $routeParams.id)
