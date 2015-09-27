@@ -1,0 +1,40 @@
+<h1>Gather</h1>
+<div class="container" ng-controller="HomeCtrl">
+
+  <h3 class="clearfix">
+        <img class="left" src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/AngularJS_logo.svg/695px-AngularJS_logo.svg.png"/>
+        <img class="right" src="http://upload.wikimedia.org/wikipedia/commons/9/9a/Google_maps_logo.png"/>
+    </h3>
+    <div class="alert alert-danger text-center" role="alert" ng-show="apiError">
+        <b>API Error : </b>
+        <span>{{ apiStatus }}</span>
+    </div>
+
+    <form name="searchForm" novalidate
+     ng-submit="placeSearch(place)">
+         <div class="input-group">
+             <input name="place" type="text" class="form-control"
+             ng-model="place.query" required autofocus />
+             <span class="input-group-btn">
+                 <button class="btn btn-primary"
+                 ng-disabled="searchForm.$invalid">Search</button>
+             </span>
+             <button class="btn btn-danger" ng-click="removeMarkers()">Clear Map</button>
+         </div>
+
+     </form>
+
+    <div id="map"></div>
+
+  <div ng-repeat="place in places track by $index | orderBy : 'name'">
+     <button href="#" ng-click="openInfo($event, place)">{{place.name}}</button>
+     <a href="/#/gathers/{{place.id}}">{{place.name}}</a>
+    <h4>{{place.formatted_address}}</h4>
+    <h4>Rating: {{place.rating}}</h4>
+    <h4>Price Level: {{place.price_level}}</h4>
+    <h4 ng-click="">{{place.id}}</h4>
+    </div>
+
+  </div>
+
+</div>

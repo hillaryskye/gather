@@ -32,7 +32,6 @@ app.controller('HomeCtrl', function($scope, $routeParams) {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
           for (var i = 0; i < results.length; i++) {
             createMarker(results[i]);
-            console.log('results.length', results.length)
             }
           }
         }
@@ -40,6 +39,7 @@ app.controller('HomeCtrl', function($scope, $routeParams) {
   var createMarker = function (place) {
     $scope.map = map
     $scope.map.markers = []
+    console.log('map, $scope.Map')
 
     var marker = new google.maps.Marker({
           map: map,
@@ -57,11 +57,11 @@ app.controller('HomeCtrl', function($scope, $routeParams) {
       reference: place.reference
     };
     var detail = new google.maps.places.PlacesService($scope.map);
+    console.log('detail', detail)
 
     detail.getDetails(request, function(result, status) {
       console.log('result', result)
       if (status == google.maps.places.PlacesServiceStatus.OK) {
-
         $scope.map.markers.push({
           name: result.name,
           latitude: result.geometry.location.lat(),
@@ -77,7 +77,6 @@ app.controller('HomeCtrl', function($scope, $routeParams) {
           userRatings: result.user_ratings_total,
           animation: google.maps.Animation.DROP
         });
-
         // console.log('position', position)
         console.log('markers', $scope.map.markers)
         $scope.$apply();
@@ -86,11 +85,8 @@ app.controller('HomeCtrl', function($scope, $routeParams) {
         // console.log('location', marker.geometry.location)
       }
        map.fitBounds(bounds);
-
     });
-
   }
-
 }
 $scope.openInfoWindow = function(e, selectedMarker){
      var infoWindow = new google.maps.InfoWindow();
