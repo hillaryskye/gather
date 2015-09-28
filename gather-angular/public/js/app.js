@@ -1,1 +1,1 @@
-var app = angular.module("GatherApp", ['ngRoute', 'ngAnimate', 'angularMoment']);
+var app = angular.module("GatherApp", ['ngRoute', 'ngAnimate', 'firebase', 'angularMoment']);

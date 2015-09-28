@@ -1,5 +1,27 @@
-<h1>Gather</h1>
-<div class="container" ng-controller="HomeCtrl">
+ <section class="marker2">
+ <div class="" ng-repeat="gather in gathers track by $index | orderBy : 'title'">
+  <div class="row">
+    <div class="one">
+        <h1 class="left">Gather</h1>
+        <h3 class="gather">{{gather.title}}</h3>
+        <br>
+        <h4 class="date">{{gather.startDate | amDateFormat:'MMM Do YYYY'}} - {{gather.endDate | amDateFormat:'MMM Do YYYY'}}</h4>
+        <h4 class="margin-l2">Code: {{gather.password}}</h4>
+    </div>
+    <div class="two">
+        <h5>{{gather.city}}, {{gather.state}}</h5>
+        <h5>Hospitality: {{gather.name}}</h5>
+        <h5>Country: {{gather.country}}</h5>
+    </div>
+  </div>
+  </div>
+</section>
+<section class="initial">
+
+<div class="container2">
+  <button class="button" ng-click="logout()">Logout</button>
+  <a class="button" href="/#/gather">Back to Gather</a>
+  <a class="button right" href="/#/gather/places/new">Back to All Places</a>
 
   <h3 class="clearfix">
         <img class="left" src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/AngularJS_logo.svg/695px-AngularJS_logo.svg.png"/>
@@ -15,7 +37,7 @@
       <form name="searchForm">
             <div class="margin-auto title">
                <label class="label">Place text(ex.cafe)</label>
-               <input class="input2" type="text" class="form-control" ng-model="place.query">
+               <input class="input3" type="text" class="form-control" ng-model="place.query">
                </input>
            </div>
    <!--          <div class="form-group">
@@ -37,17 +59,18 @@
    </section>
 
    <section class="title">
-   <div class="marker left" ng-repeat="place in map.markers track by $index | orderBy : 'name'">
-      <a href="#" class="red" ng-click="openInfoWindow($event, place)">{{place.name}}</a>
-      <a href="/#/gathers/{{place.id}}">{{place.name}}</a>
-     <h4>Address: {{place.address}}</h4>
-     <h4>Phone: {{place.phone}}</h4>
-     <h4>Website: <a href="{{place.website}}">{{place.website}}</a></h4>
-     <h4>Rating: {{place.rating}}</h4>
-     <h4>User Ratings: {{place.userRatings}}</h4>
-     <h4>Price Level: {{place.priceLevel}}</h4>
-     <h4 ng-click="">{{place.id}}</h4>
+   <div class="marker left" ng-repeat="marker in map.markers track by $index | orderBy : 'name'">
+      <!-- <a href="#" class="red" ng-click="openInfoWindow($event, place)">{{place.name}}</a> -->
+      <a href="/#/gather/places/new" ng-click="addPlace(marker)">{{marker.name}}</a>
+     <h4>Address: {{marker.address}}</h4>
+     <h4>Phone: {{marker.phone}}</h4>
+     <h4>Website: <a href="{{place.website}}">{{marker.website}}</a></h4>
+     <h4>Rating: {{marker.rating}}</h4>
+     <h4>User Ratings: {{marker.userRatings}}</h4>
+     <h4>Price Level: {{marker.priceLevel}}</h4>
+     <h4 ng-click="">{{marker.id}}</h4>
      </div>
    </section>
 
   </div>
+</section>

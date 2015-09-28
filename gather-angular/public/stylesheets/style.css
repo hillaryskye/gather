@@ -11,6 +11,11 @@ section {
 .container {
   width: 95%;
 }
+.container2 {
+  display: block;
+  width: 95%;
+  margin-top: 97px;
+}
 .section {
   min-height: 200px;
 }
@@ -38,6 +43,17 @@ section:after {
  .title {
   display: inline-block;
 }
+.initial {
+  position: relative;
+  display: flex;
+  margin-top: 110px;
+}
+.date {
+  margin-top: 4px;
+  font-size: 1.6em;
+  margin-left: 10px;
+  color: red;
+}
 .form {
   margin: 0 auto;
   width: 50%;
@@ -60,19 +76,20 @@ section:after {
 .margin-l {
   margin-left: 20px;
 }
+.margin-l2 {
+  margin-left: 10px;
+}
 a {
-  font-size: 1.2em;
+  font-size: 1.0em;
 }
 a:hover, button:hover {
   border: 1px solid #aaa;
   color: #e86c19;
 }
 .back {
-  margin-right: 30px;
-  margin-top: -50px;
+  margin-top: -10px;
 }
 li {
-  float: left;
   list-style-type: none;
 /*   margin: 20px;
  */
@@ -80,9 +97,12 @@ li {
 p {
   margin-left: 10px;
 }
-p, label, input {
+p, label, input, h5 {
   font-family: 'Raleway', sans-serif;
   font-size: 1.3em;
+}
+h5 {
+  color: darkslategrey;
 }
 /* input, label .block {
   display: block;
@@ -95,22 +115,46 @@ p, label, input {
    margin: 0 auto;
    width: 77%;
  }
-.input, label {
+ .margin-auto2 {
+     margin: 0 auto;
+     width: 100%;
+     margin-top: -80px;
+ }
+.input {
   float: left;
   margin: 10px;
   display: block;
 }
 .input2, .radio {
   width: 45%;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 5px;
+}
+.input3 {
+  width: 90%;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 5px;
+}
+.input4 {
+  width: 100%;
 }
 .radio2 {
   width: 25%;
 }
 .label {
+/*   float: left;
+ */
+  width: 25%;
+  margin: 20px;
   padding-bottom: 10px;
 }
 .label2 {
-  width: 22%;
+  width: 45%;
+  margin: 15px;
+  padding: 5px;
+  margin-left: 150px;
 }
 .button {
   border: 1px solid white;
@@ -122,8 +166,10 @@ p, label, input {
   color: white;
 }
 h1 {
+  margin-right: 20px;
   margin-left: 10px;
   font-size: 40px;
+  margin-top: 9px;
 }
 h2 {
   margin-left: 10px;
@@ -136,7 +182,9 @@ h2 {
   margin-top: 40px;
 }
 .edit {
-  width: 75%;
+  margin: 0 auto;
+  display: block;
+  width: 100%;
 }
 table {
   width: 98%;
@@ -186,13 +234,13 @@ textarea {
  */  margin-top: 9px;
   font-size: 1.3em;
 }
- /* .clearfix:after {
+ .clearfix {
     content: ".";
-    visibility: hidden;
-    display: block;
+/*     visibility: hidden;
+ */    display: block;
     height: 0;
     clear: both;
- } */
+ }
  .bottom {
    display: inline-block;
  }
@@ -225,6 +273,10 @@ textarea {
      border-radius: 5px;
      border: 1px solid silver;
 }
+.map2 {
+  margin-top: -130px;
+  margin-bottom: 20px;
+}
 h3 img {
   max-height: 50px;
 }
@@ -246,3 +298,120 @@ h3 img {
   border: 2px solid blue;
   border-radius: 10px;
 }
+.marker2 {
+  position: absolute;
+  top: 20px;
+  margin-left: 192px;
+  background: #f7efad;
+  width: 71%;
+  padding: 10px;
+  border: 2px solid blue;
+  border-radius: 10px;
+}
+.gather {
+  font-size: 1.8em;
+  color: blue;
+}
+.fadein {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s;
+  -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s;
+  -o-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s;
+}
+.fadeout {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s;
+  -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s;
+  -o-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s;
+}
+
+.fadein.ng-hide-remove,
+.fadeout.ng-hide-add.ng-hide-add-active {
+  opacity: 0;
+  display: block !important;
+}
+
+.fadeout.ng-hide-add,
+.fadein.ng-hide-remove.ng-hide-remove-active {
+  opacity: 1;
+  display: block !important;
+}
+.one {
+  width: 61%;
+  padding: 5px;
+  float: left;
+  margin: 5px;
+}
+.one:after .two:after {
+content: "";
+display: table;
+clear: both;
+}
+.two {
+  width: 30%;
+  padding: 5px;
+  float: left;
+  margin: 5px
+}
+.one-half {
+/*   border: 2px solid purple;
+text-align: center;
+*/
+width: 45%;
+padding: 5px;
+/*   display: inline-block;
+*/
+float: left;
+margin: 5px; }
+
+.one-half:after {
+content: "";
+display: table;
+clear: both; }
+
+/* Phones ----------- */
+@media only screen and (max-width: 767px) {
+p {
+  font-size: 18px; } }
+
+/* Tablets ----------- */
+@media only screen and (min-width: 768px) {
+/* CSS Styles */
+p {
+  font-size: 16px; } }
+
+/* -------- COLUMN LAYOUTS -------*/
+/* -- Column Sizes -- */
+.one-fourth {
+width: 21.25%; }
+
+.one-third {
+width: 29.333%; }
+
+/* .one-half     { width:45.5%; }
+*/
+.two-third {
+width: 61.666%; }
+
+.three-fourth {
+width: 69.75%; }
+
+.one-column {
+width: 94%; }
+
+.full-column {
+width: 100%; }
+
+/* -- Column Margin & Float-- */
+.one_half, .one_third, .two_third,
+.three_fourth, .one_fourth, .one_column,
+.full_column {
+margin-left: 3%;
+margin-top: 1%;
+float: left; }
+
+/* -- Column Row (aka Clearfix) -- */
+.row:after {
+content: "";
+display: table;
+clear: both; }

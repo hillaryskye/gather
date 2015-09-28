@@ -1,20 +1,44 @@
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider
     .when('/', {
-      templateUrl: 'partials/home.html',
-      controller: 'HomeCtrl'
+      templateUrl: 'partials/landing.html',
+      controller: 'AuthCtrl'
     })
-    .when('/gathers/new', {
+    .when('/gather', {
+      templateUrl: 'partials/gather.html',
+      controller: 'GatherCtrl'
+    })
+    .when('/gather/places', {
+      templateUrl: 'partials/home.html',
+      controller: 'HomeCtrl',
+      resolve: "{user: resolveUser}"
+    })
+    .when('/gather/places/new', {
       templateUrl: 'partials/new.html',
       controller: 'NewCtrl'
     })
-    .when('/gathers/:id/edit', {
+    .when('/gather/places/:id/edit', {
       templateUrl: 'partials/edit.html',
       controller: 'EditCtrl'
     })
-    .when('/gathers/:id', {
+    .when('/gather/places/:id', {
       templateUrl: 'partials/show.html',
       controller: 'ShowCtrl'
     })
     .otherwise({ redirectTo: '/' });
+
+    app.run(function($rootScope, $location) {
+      $rootScope.$on('$routeChangeError', function(event, next, previous, error) {
+        if (error === "AUTH_REQUIRED") {
+          $location.path('/')
+        }
+      })
+    })
+
+    function resolveUser($firebaseAuth) {
+      var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gather")
+      var authObj = $firebaseAuth(authRef)
+
+      return authObj.$requireAuth()
+    }
 }]);

@@ -1,0 +1,66 @@
+<h1>Gather</h1>
+<div class="container">
+  <button class="button" ng-click="logout()">Logout</button>
+  <a class="button right" href="/#/gather/places">Back to Places</a>
+  <a class="button right" href="/#/gather/places/new">Back to All Places</a>
+
+  <h3 class="clearfix">
+        <img class="left" src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/AngularJS_logo.svg/695px-AngularJS_logo.svg.png"/>
+        <img class="right" src="http://upload.wikimedia.org/wikipedia/commons/9/9a/Google_maps_logo.png"/>
+    </h3>
+    <div class="alert alert-danger text-center" role="alert" ng-show="apiError">
+        <b>API Error : </b>
+        <span>{{ apiStatus }}</span>
+    </div>
+
+    <section class="form">
+      <div class="container title">
+      <form name="searchForm">
+            <div class="margin-auto2 title">
+                <h2>Gather Details</h2>
+                <div>
+                   <label class="label">Gather Name</label>
+                   <input class="input3 input4" type="text" ng-model="gather.title" required>
+                </div>
+
+                <div>
+                   <label class="label">Gather Start Date</label>
+                   <input class="input3 input4" type="text" ng-model="gather.startDate" required>
+                </div>
+
+                <div>
+                   <label class="label">Gather End Date</label>
+                   <input class="input3 input4" type="text" ng-model="gather.endDate" required>
+                </div>
+
+                <div>
+                   <label class="label">Gather City</label>
+                   <input class="input3 input4" type="text" ng-model="gather.city" required>
+                </div>
+
+                <div>
+                   <label class="label">Gather State</label>
+                   <input class="input3 input4" type="text" ng-model="gather.state" required>
+                </div>
+
+                <div>
+                   <label class="label">Gather Country</label>
+                   <input class="input3 input4" type="text" ng-model="gather.country">
+                </div>
+
+                <div>
+                   <label class="label">Gather Name</label>
+                   <input class="input3 input4" type="text" ng-model="gather.name" required>
+                </div>
+
+                <div>
+                   <label class="label">Gather secret Password</label>
+                   <input class="input3 input4" type="password" ng-model="gather.password">
+                </div>
+           </div>
+          <div class="title">
+           <button class="button" href="/#/gather/places" ng-click="addGather(gather)" type="submit">Submit Gather</button>
+          </div>
+       </form>
+     </div>
+   </section>

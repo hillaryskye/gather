@@ -1,1 +1,41 @@
-<h2>From edit</h2>
+<h1>Gather</h1>
+<div class="container">
+  <button class="button" ng-click="logout()">Logout</button>
+  <a class="button" href="/#/gather">Back to Gather</a>
+  <a class="button right" href="/#/gather/places">Back to Places</a>
+  <a class="button right" href="/#/gather/places/new">Back to All Places</a>
+
+  <h3 class="clearfix">
+        <img class="left" src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/AngularJS_logo.svg/695px-AngularJS_logo.svg.png"/>
+        <img class="right" src="http://upload.wikimedia.org/wikipedia/commons/9/9a/Google_maps_logo.png"/>
+    </h3>
+    <div class="alert alert-danger text-center" role="alert" ng-show="apiError">
+        <b>API Error : </b>
+        <span>{{ apiStatus }}</span>
+    </div>
+
+    <section>
+      <div class="map map2" id="map"></div>
+    </section>
+
+
+    <section class="form">
+      <div class="container title">
+    </section>
+
+       <div class="container left" ng-repeat="place in places" ng-show="place.id===editId">
+        <h2 class="margin-l">{{place.name}} Edit</h2>
+        <div class="marker">
+
+         <a href="/#/gather/places/show">{{place.name}}</a>
+         <h4>Address: {{place.address}}</h4>
+         <h4>Phone: {{place.phone}}</h4>
+         <h4>Website: <a href="{{place.website}}">{{place.website}}</a></h4>
+         <h4>Rating: {{place.rating}}</h4>
+         <h4>User Ratings: {{place.userRatings}}</h4>
+         <h4>Price Level: {{place.priceLevel}}</h4>
+        <button class="button back right" href="/#/" ng-click="delPlace(place)" type="submit">Delete Place</button>
+        </div>
+        </div>
+
+     </div>

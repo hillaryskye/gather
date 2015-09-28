@@ -1,6 +1,35 @@
 <h2>From show</h2>
-<h4>{{place.name}}</h4>
-<h4>{{place.id}}</h4>
-<h4>{{place.formatted_address}}</h4>
-<h4>Rating: {{place.rating}}</h4>
-<h4>Price Level: {{place.price_level}}</h4>
+<h1>Gather</h1>
+<div class="container">
+  <button class="button" ng-click="logout()">Logout</button>
+  <a class="button" href="/#/gather">Back to Gather</a>
+
+  <h3 class="clearfix">
+        <img class="left" src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/AngularJS_logo.svg/695px-AngularJS_logo.svg.png"/>
+        <img class="right" src="http://upload.wikimedia.org/wikipedia/commons/9/9a/Google_maps_logo.png"/>
+    </h3>
+    <div class="alert alert-danger text-center" role="alert" ng-show="apiError">
+        <b>API Error : </b>
+        <span>{{ apiStatus }}</span>
+    </div>
+
+    <section>
+      <div class="map map2" id="map"></div>
+    </section>
+
+
+<section class="title">
+   <div class="container marker title">
+  <p>Name: {{place.name}}</p>
+  <p>Address: {{place.address}}</p>
+  <p>Phone: {{place.phone}}</p>
+  <p>Website: <a href="{{place.website}}">{{place.website}}</a></p>
+  <p>Rating: {{place.rating}}</p>
+  <p>User Ratings: {{place.userRatings}}</p>
+  <p>Price Level: {{place.priceLevel}}</p>
+  <div class="title left">
+      <a class="button back right" href="/#/gather/new">Back to Places</a>
+      <a class="button back right" href="/#/gather/{{place.id}}/edit"ng-click="editPlace(marker)">Edit Place</a>
+  </div>
+  </div>
+</section>
