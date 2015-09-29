@@ -9,9 +9,15 @@
         <h4 class="margin-l2">Code: {{gather.password}}</h4>
     </div>
     <div class="two">
-        <h5>{{gather.city}}, {{gather.state}}</h5>
+      <div class="one-half">
         <h5>Hospitality: {{gather.name}}</h5>
         <h5>Country: {{gather.country}}</h5>
+      </div>
+      <div class="one-half">
+        <h5>{{temperature}} &#8457; in {{gather.city}}, {{gather.state}}</h5>
+        <h5>{{summary}}</h5>
+<!--         <p>{{time | amDifference : null : 'days' }}  days from now</p>
+ -->      </div>
     </div>
   </div>
   </div>
@@ -27,29 +33,20 @@
         <img class="left" src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/AngularJS_logo.svg/695px-AngularJS_logo.svg.png"/>
         <img class="right" src="http://upload.wikimedia.org/wikipedia/commons/9/9a/Google_maps_logo.png"/>
     </h3>
-    <div class="alert alert-danger text-center" role="alert" ng-show="apiError">
-        <b>API Error : </b>
-        <span>{{ apiStatus }}</span>
-    </div>
 
     <section class="form">
       <div class="container title">
       <form name="searchForm">
             <div class="margin-auto title">
-               <label class="label">Place text(ex.cafe)</label>
+               <label class="label">Place text (ex. Golden restaurants)</label>
                <input class="input3" type="text" class="form-control" ng-model="place.query">
                </input>
            </div>
-   <!--          <div class="form-group">
-  <label class="control-label">radius(meters)</label>
-  <input type="text" class="form-control" ng-model="place.radius">
-  </input>
-         </div>
-   -->
+
           <div class="title">
            <button class="button" ng-click="placeSearch(place)" type="submit" class="btn btn-primary">submit</button>
-           <button class="button" ng-click="removeMarkers()">Clear Map</button>
-          </div>
+<!--            <button class="button" ng-click="removeMarkers()">Clear Map</button>
+ -->          </div>
        </form>
      </div>
    </section>
@@ -61,14 +58,13 @@
    <section class="title">
    <div class="marker left" ng-repeat="marker in map.markers track by $index | orderBy : 'name'">
       <!-- <a href="#" class="red" ng-click="openInfoWindow($event, place)">{{place.name}}</a> -->
-      <a href="/#/gather/places/new" ng-click="addPlace(marker)">{{marker.name}}</a>
-     <h4>Address: {{marker.address}}</h4>
-     <h4>Phone: {{marker.phone}}</h4>
-     <h4>Website: <a href="{{place.website}}">{{marker.website}}</a></h4>
-     <h4>Rating: {{marker.rating}}</h4>
-     <h4>User Ratings: {{marker.userRatings}}</h4>
-     <h4>Price Level: {{marker.priceLevel}}</h4>
-     <h4 ng-click="">{{marker.id}}</h4>
+      <p><a href="/#/gather/places/new" ng-click="addPlace(marker)">{{marker.name}}</a></p>
+     <p>Address: {{marker.address}}</p>
+     <p>Phone: {{marker.phone}}</p>
+     <p>Website: <a href="{{place.website}}">{{marker.website}}</a></p>
+     <p>Rating: {{marker.rating}}</p>
+     <p>User Ratings: {{marker.userRatings}}</p>
+     <p>Price Level: {{marker.priceLevel}}</p>
      </div>
    </section>
 

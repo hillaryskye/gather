@@ -21,7 +21,7 @@ app.config(['$routeProvider', function($routeProvider) {
       templateUrl: 'partials/edit.html',
       controller: 'EditCtrl'
     })
-    .when('/gather/places/:id', {
+    .when('/gather/places/:id/show', {
       templateUrl: 'partials/show.html',
       controller: 'ShowCtrl'
     })
@@ -36,7 +36,7 @@ app.config(['$routeProvider', function($routeProvider) {
     })
 
     function resolveUser($firebaseAuth) {
-      var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gather")
+      var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/users")
       var authObj = $firebaseAuth(authRef)
 
       return authObj.$requireAuth()

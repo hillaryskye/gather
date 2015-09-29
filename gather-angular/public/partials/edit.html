@@ -27,14 +27,14 @@
         <h2 class="margin-l">{{place.name}} Edit</h2>
         <div class="marker">
 
-         <a href="/#/gather/places/show">{{place.name}}</a>
+         <a href="/#/gather/places/{{place.id}}/show">{{place.name}}</a>
          <h4>Address: {{place.address}}</h4>
          <h4>Phone: {{place.phone}}</h4>
          <h4>Website: <a href="{{place.website}}">{{place.website}}</a></h4>
          <h4>Rating: {{place.rating}}</h4>
          <h4>User Ratings: {{place.userRatings}}</h4>
          <h4>Price Level: {{place.priceLevel}}</h4>
-        <button class="button back right" href="/#/" ng-click="delPlace(place)" type="submit">Delete Place</button>
+        <a class="button back right" href="/#/gather/places/new" ng-click="delPlace(place)" type="submit">Delete Place</a>
         </div>
         </div>
 
