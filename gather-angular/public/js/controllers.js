@@ -28,7 +28,6 @@ app.controller("AuthCtrl", function($scope, $rootScope, $location, $firebaseAuth
    }
     // console.log('user', $scope.users)
 
-
   $scope.login = function() {
     authObj.$authWithPassword($scope.user)
       .then(function() {
@@ -46,60 +45,62 @@ app.controller('HomeCtrl', function($scope, $rootScope, $routeParams, $firebaseA
   var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gather")
   var authObj = $firebaseAuth(authRef)
 
-   var gatherRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gathers")
-    $scope.gathers = $firebaseArray(gatherRef)
-    console.log('gathers', $scope.gathers)
-    console.log('search', $scope.search)
-
-    gatherRef.on("child_added", function(snapshot, prevChildKey) {
-      var temp = snapshot.val();
-      var city = temp.city.split(" ").join("").toLowerCase()
-      $scope.gathers.weatherCity = city
-      var weatherCity = $scope.gathers.weatherCity
-      console.log('city', weatherCity)
-
-
-      var weatherRef = new Firebase('https://publicdata-weather.firebaseio.com/' + weatherCity + '/currently');
-      weatherRef.child('temperature').on('value', function(snapshot) {
-      $scope.temperature = snapshot.val()
-      console.log('temp', $scope.temperature)
-
-      weatherRef.child('summary').on('value', function(snapshot) {
-      $scope.summary = snapshot.val()
-      console.log('summary', $scope.summary)
-
-      weatherRef.child('time').on('value', function(snapshot) {
-      $scope.time = snapshot.val()
-      console.log('icon', $scope.time)
-    })
-  })
-  });
-})
-
-$scope.$watch('search',function(newValue,oldValue){
+  $scope.$watch('search',function(newValue,oldValue){
     if (newValue && newValue!=oldValue){
       console.log('newValue', newValue.password)
       $routeParams.password = newValue.password
+      $routeParams.city = newValue.city
+      console.log('city in watch', $routeParams.city)
+      // $scope.gather.password = newValue.password
+      // console.log('gather.password', $scope.gather.password)
       console.log('routeParams.pw', $routeParams.password)
       $rootScope.password = newValue.password
+      $rootScope.city = newValue.city
+      $scope.gathers.weatherCity = newValue.city
       console.log('rootscope pw', $rootScope.password)
     }
-})
+  })
 
+   var gatherRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gathers")
+    $scope.gathers = $firebaseArray(gatherRef)
+  //  console.log('gathers', $scope.gathers)
+  //  console.log('search', $scope.search)
+  //
+   gatherRef.on("child_added", function(snapshot, prevChildKey) {
+      var temp = snapshot.val();
+     var city = temp.city.split(" ").join("").toLowerCase()
+     $scope.gathers.weatherCity = city
+     var weatherCity = $scope.gathers.weatherCity
+     console.log('city', weatherCity)
+  // console.log('$scope.gathers.city', $scope.gathers.weatherCity)
+  //   console.log('city outside of watch', $routeParams.city)
+  //   console.log('rootScope.city outside of watch', $rootScope.city)
+  //    var search = $routeParams.city
+  //    var city = search.city.split(" ").join("").toLowerCase()
+
+     var weatherRef = new Firebase('https://publicdata-weather.firebaseio.com/' + weatherCity + '/currently');
+     weatherRef.child('temperature').on('value', function(snapshot) {
+     $scope.temperature = snapshot.val()
+     console.log('temp', $scope.temperature)
+
+     weatherRef.child('summary').on('value', function(snapshot) {
+     $scope.summary = snapshot.val()
+     console.log('summary', $scope.summary)
+   })
+ });
+})
 
   initAutocomplete = function() {
     // try {google;} catch (e){location.reload();}
 
-    //  google.maps.event.addDomListener(window, 'load', initialize);
+      google.maps.event.addDomListener(window, 'load', initAutocomplete);
+
     var map = new google.maps.Map(document.getElementById('map'), {
       center: newYork,
       zoom: 15
     });
 
-    google.maps.event.trigger(map, 'resize')
-
     var service = new google.maps.places.PlacesService(map);
-    console.log('service', service)
 
     $scope.placeSearch = function (place) {
       var placeRef = new Firebase("https://gather-angular-firebase.firebaseio.com/places")
@@ -153,17 +154,15 @@ $scope.$watch('search',function(newValue,oldValue){
           //console.log('detail after', detailGetDetails)
           if (status2 == google.maps.places.PlacesServiceStatus.OK) {
 
-                      var marker = new google.maps.Marker({
-                            map: map,
-                            position: place.geometry.location
-                      });
+          var marker = new google.maps.Marker({
+                map: map,
+                position: place.geometry.location
+          });
 
-                      console.log('position', place.geometry.location)
-                      console.log('marker', marker)
-                      google.maps.event.addListener(marker, 'click', function() {
-                        infoWindow.setContent(place.name);
-                        infoWindow.open(map, this);
-                     });
+          google.maps.event.addListener(marker, 'click', function() {
+            infoWindow.setContent(place.name);
+            infoWindow.open(map, this);
+         });
 
         $scope.map.markers.push({
           name: result.name,
@@ -262,6 +261,7 @@ $scope.removeMarkers = function () {
   }
 
   initAutocomplete()
+
 });
 
 app.controller("NewCtrl", ["$scope", "$rootScope", "$firebaseArray", "$routeParams", "$http", "$route", "$location", "$timeout", "$window", "$firebaseAuth", function($scope, $rootScope, $firebaseArray, $routeParams, $http, $route, $location, $timeout, $window, $firebaseAuth) {

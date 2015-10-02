@@ -1,9 +1,10 @@
  <section>
+   <form ng-submit="selectedSearch(search)">
        <label for="search">Pick Your Gather Event</label>
           <select class="option" name="search" ng-model="search" ng-options="gather.password for gather in gathers">
               <option value="" ng-repeat="gather in gathers">Search Password</option>
-
           </select>
+   </form>
 </section>
 
    <!-- <select name="filter-password" ng-model="passwordFilter">
@@ -11,7 +12,7 @@
    </select> -->
 
  <section class="marker2">
- <div class="" ng-repeat="gather in gathers | filter: {password: search.password}">
+ <div class="" ng-if="search" ng-repeat="gather in gathers | filter: {password: search.password}">
   <div class="row">
     <div class="one">
         <h1 class="left">Gather</h1>
@@ -47,22 +48,21 @@
     </h3>
 
     <section class="form">
-      <div class="container title">
       <form name="searchForm">
-            <div class="margin-auto title">
-               <label class="label">Place text (ex. Golden restaurants)</label>
-                 <input class="input3" type="text" class="form-control" ng-model="place.query">
-
-                <label for="search">Enter Event Gather Code</label>
-                  <input type="search" name="code" ng-model="place.code" required>
-           </div>
-
+        <div class="margin-auto title">
+            <div>
+               <label class="label" for="query">Place text (ex. Golden restaurants)</label>
+                 <input class="input3" type="text" name="query" ng-model="place.query" required>
+            </div>
+            <div>
+                <label class="label" for="search">Enter Event Gather Code</label>
+                  <input class="input3" type="text" name="search" ng-model="place.code" required>
+            </div>
+          </div>
           <div class="title">
-           <button class="button" ng-click="placeSearch(place)" type="submit" class="btn btn-primary">submit</button>
-<!--            <button class="button" ng-click="removeMarkers()">Clear Map</button>
- -->          </div>
+             <button class="button" ng-click="placeSearch(place)" type="submit" class="btn btn-primary">submit</button>
+          </div>
        </form>
-     </div>
    </section>
 
    <section>
@@ -71,7 +71,7 @@
 
    <section class="title">
    <div class="marker left" ng-repeat="marker in map.markers track by $index | orderBy : 'name'">
-      <!-- <a href="#" class="red" ng-click="openInfoWindow($event, place)">{{place.name}}</a> -->
+      <a href="#" class="red" ng-click="openInfoWindow($event, place)">{{place.name}}</a>
       <p><a href="/#/gather/places/new" target="_self" ng-click="addPlace(marker)">{{marker.name}}</a></p>
      <p>Address: {{marker.address}}</p>
      <p>Phone: {{marker.phone}}</p>

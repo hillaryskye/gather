@@ -144,7 +144,10 @@ h5 {
   padding: 5px;
 }
 .input4 {
-  width: 100%;
+  width: 90%;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 5px;
 }
 .radio2 {
   width: 25%;
@@ -361,13 +364,13 @@ clear: both;
   margin: 5px
 }
 .three {
-  width: 60%;
+  width: 46%;
   padding: 5px;
   float: left;
   margin: 5px
 }
 .four {
-  width: 35%;
+  width: 49%;
   padding: 5px;
   float: left;
   margin: 5px
