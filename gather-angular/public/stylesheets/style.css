@@ -104,7 +104,11 @@ p, label, input, h5 {
 }
 h5 {
   color: darkslategrey;
-  line-height: .3em;
+  line-height: 1.0em;
+}
+.option {
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.3em;
 }
 /* input, label .block {
   display: block;
@@ -275,6 +279,7 @@ textarea {
      border-radius: 5px;
      border: 1px solid silver;
 }
+#map img { max-width: none; }
 .map2 {
   margin-top: -130px;
   margin-bottom: 20px;
@@ -302,7 +307,7 @@ h3 img {
 }
 .marker2 {
   position: absolute;
-  top: 20px;
+  top: 50px;
   margin-left: 192px;
   background: #f7efad;
   width: 71%;
@@ -351,6 +356,18 @@ clear: both;
 }
 .two {
   width: 49%;
+  padding: 5px;
+  float: left;
+  margin: 5px
+}
+.three {
+  width: 60%;
+  padding: 5px;
+  float: left;
+  margin: 5px
+}
+.four {
+  width: 35%;
   padding: 5px;
   float: left;
   margin: 5px

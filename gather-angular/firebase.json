@@ -1,0 +1,9 @@
+{
+  "firebase": "gather-angular-firebase",
+  "public": "public",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}

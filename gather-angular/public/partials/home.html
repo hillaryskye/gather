@@ -1,5 +1,17 @@
+ <section>
+       <label for="search">Pick Your Gather Event</label>
+          <select class="option" name="search" ng-model="search" ng-options="gather.password for gather in gathers">
+              <option value="" ng-repeat="gather in gathers">Search Password</option>
+
+          </select>
+</section>
+
+   <!-- <select name="filter-password" ng-model="passwordFilter">
+      ng-options="gather.title for gather in gathers"
+   </select> -->
+
  <section class="marker2">
- <div class="" ng-repeat="gather in gathers track by $index | orderBy : 'title'">
+ <div class="" ng-repeat="gather in gathers | filter: {password: search.password}">
   <div class="row">
     <div class="one">
         <h1 class="left">Gather</h1>
@@ -9,11 +21,11 @@
         <h4 class="margin-l2">Code: {{gather.password}}</h4>
     </div>
     <div class="two">
-      <div class="one-half">
+      <div class="three">
         <h5>Hospitality: {{gather.name}}</h5>
         <h5>Country: {{gather.country}}</h5>
       </div>
-      <div class="one-half">
+      <div class="four">
         <h5>{{temperature}} &#8457; in {{gather.city}}, {{gather.state}}</h5>
         <h5>{{summary}}</h5>
 <!--         <p>{{time | amDifference : null : 'days' }}  days from now</p>
@@ -27,7 +39,7 @@
 <div class="container2">
   <button class="button" ng-click="logout()">Logout</button>
   <a class="button" href="/#/gather">Back to Gather</a>
-  <a class="button right" href="/#/gather/places/new">Back to All Places</a>
+  <a class="button right" href="/#/gather/places/new" target="_self">Back to All Places</a>
 
   <h3 class="clearfix">
         <img class="left" src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/AngularJS_logo.svg/695px-AngularJS_logo.svg.png"/>
@@ -39,8 +51,10 @@
       <form name="searchForm">
             <div class="margin-auto title">
                <label class="label">Place text (ex. Golden restaurants)</label>
-               <input class="input3" type="text" class="form-control" ng-model="place.query">
-               </input>
+                 <input class="input3" type="text" class="form-control" ng-model="place.query">
+
+                <label for="search">Enter Event Gather Code</label>
+                  <input type="search" name="code" ng-model="place.code" required>
            </div>
 
           <div class="title">
@@ -58,7 +72,7 @@
    <section class="title">
    <div class="marker left" ng-repeat="marker in map.markers track by $index | orderBy : 'name'">
       <!-- <a href="#" class="red" ng-click="openInfoWindow($event, place)">{{place.name}}</a> -->
-      <p><a href="/#/gather/places/new" ng-click="addPlace(marker)">{{marker.name}}</a></p>
+      <p><a href="/#/gather/places/new" target="_self" ng-click="addPlace(marker)">{{marker.name}}</a></p>
      <p>Address: {{marker.address}}</p>
      <p>Phone: {{marker.phone}}</p>
      <p>Website: <a href="{{place.website}}">{{marker.website}}</a></p>

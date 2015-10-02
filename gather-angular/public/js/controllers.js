@@ -11,22 +11,22 @@ app.controller("AuthCtrl", function($scope, $rootScope, $location, $firebaseAuth
         $scope.login()
       })
 
-    $scope.newUser = {
-      name: $scope.users.name,
-      email: $scope.users.email,
-      password: $scope.users.password
-    }
-
-  $scope.users.$add($scope.newUser)
-    .then(function(data) {
-      console.log('success')
-    },
-      function (err) {
-        console.error('ERROR:', err);
-        return null;
-      })
-  }
-    console.log('user', $scope.users)
+  //   $scope.newUser = {
+  //     name: $scope.users.name,
+  //     email: $scope.users.email,
+  //     password: $scope.users.password
+  //   }
+  //
+  // $scope.users.$add($scope.newUser)
+  //   .then(function(data) {
+  //     console.log('success')
+  //   },
+  //     function (err) {
+  //       console.error('ERROR:', err);
+  //       return null;
+  //     })
+   }
+    // console.log('user', $scope.users)
 
 
   $scope.login = function() {
@@ -34,12 +34,11 @@ app.controller("AuthCtrl", function($scope, $rootScope, $location, $firebaseAuth
       .then(function() {
         $location.path('/gather')
       })
-  }
-})
+    }
+ })
 
-app.controller('HomeCtrl', function($scope, $routeParams, $firebaseArray, $firebaseAuth, $location) {
+app.controller('HomeCtrl', function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $location) {
   console.log('controller')
-  google.maps.event.trigger(map, 'resize')
 
   var newYork = new google.maps.LatLng(40.7127837, -74.00594130000002)
   var infoWindow = new google.maps.InfoWindow();
@@ -47,11 +46,10 @@ app.controller('HomeCtrl', function($scope, $routeParams, $firebaseArray, $fireb
   var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gather")
   var authObj = $firebaseAuth(authRef)
 
-  var placeRef = new Firebase("https://gather-angular-firebase.firebaseio.com/places")
-   $scope.places = $firebaseArray(placeRef)
-
-   var gatherRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gather")
+   var gatherRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gathers")
     $scope.gathers = $firebaseArray(gatherRef)
+    console.log('gathers', $scope.gathers)
+    console.log('search', $scope.search)
 
     gatherRef.on("child_added", function(snapshot, prevChildKey) {
       var temp = snapshot.val();
@@ -78,6 +76,17 @@ app.controller('HomeCtrl', function($scope, $routeParams, $firebaseArray, $fireb
   });
 })
 
+$scope.$watch('search',function(newValue,oldValue){
+    if (newValue && newValue!=oldValue){
+      console.log('newValue', newValue.password)
+      $routeParams.password = newValue.password
+      console.log('routeParams.pw', $routeParams.password)
+      $rootScope.password = newValue.password
+      console.log('rootscope pw', $rootScope.password)
+    }
+})
+
+
   initAutocomplete = function() {
     // try {google;} catch (e){location.reload();}
 
@@ -87,31 +96,36 @@ app.controller('HomeCtrl', function($scope, $routeParams, $firebaseArray, $fireb
       zoom: 15
     });
 
+    google.maps.event.trigger(map, 'resize')
+
     var service = new google.maps.places.PlacesService(map);
     console.log('service', service)
 
     $scope.placeSearch = function (place) {
+      var placeRef = new Firebase("https://gather-angular-firebase.firebaseio.com/places")
+       $scope.places = $firebaseArray(placeRef)
+
+      $scope.places.code = place.code
+      console.log('placeCode', $scope.places.code)
+
         var request = {
           location: newYork,
           radius: 50,
           query: place.query
         };
-        console.log('position', request.location)
-        console.log('radius', request.radius)
-        console.log('query', request.query)
 
         var service = new google.maps.places.PlacesService(map);
 
         var textSearch = service.textSearch(request, callback);
-        console.log('service', service)
-        console.log('service after', textSearch)
+        // console.log('service', service)
+        // console.log('service after', textSearch)
         return;
       };
 
       var callback = function (results, status) {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
-          console.log('results.length', results.length)
-          console.log('results', results)
+          // console.log('results.length', results.length)
+          // console.log('results', results)
           for (var i = 0; i < results.length; i++) {
             createMarker(results[i]);
             }
@@ -166,7 +180,6 @@ app.controller('HomeCtrl', function($scope, $routeParams, $firebaseArray, $fireb
           animation: google.maps.Animation.DROP
         });
         console.log('markers after', $scope.map.markers)
-        $scope.$apply();
 
         bounds.extend(result.geometry.location);
       }
@@ -202,13 +215,15 @@ app.controller('HomeCtrl', function($scope, $routeParams, $firebaseArray, $fireb
       $routeParams.userRatings = marker.userRatings
       $routeParams.id = marker.id
 
+
       console.log('$routeParams.name', $routeParams.name)
 
        $scope.newPlace = {
          name: marker.name,
          latitude: marker.latitude,
          longitude: marker.longitude,
-         phone: marker.phone,
+        //  phone: marker.phone,
+         code: $scope.place.code,
         //  website: marker.website,
         //  rating: marker.rating,
         //  priceLevel: marker.priceLevel,
@@ -228,6 +243,10 @@ app.controller('HomeCtrl', function($scope, $routeParams, $firebaseArray, $fireb
        if (marker.userRatings != undefined) {
          $scope.newPlace.userRatings = marker.userRatings
        }
+       if (marker.phone != undefined) {
+         $scope.newPlace.phone = marker.phone
+       }
+
 
       $scope.places.$add($scope.newPlace)
         .then(function(data) {
@@ -249,13 +268,20 @@ app.controller("NewCtrl", ["$scope", "$rootScope", "$firebaseArray", "$routePara
 
   console.log('in new controller')
   console.log('temp in new', $scope.temp)
+  // $scope.search = $routeParams.password
+  console.log('rootScope.pw in new', $rootScope.password)
+  $scope.search = $rootScope.password
+
+
+  console.log('search', $scope.search)
+  console.log('$routeParams.pw in new', $routeParams.password)
 
   var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/users")
   var authObj = $firebaseAuth(authRef)
 
   $scope.users = $firebaseArray(authRef)
 
-    var placeRef = new Firebase("https://gather-angular-firebase.firebaseio.com/places")
+  var placeRef = new Firebase("https://gather-angular-firebase.firebaseio.com/places")
     var Places = $scope.places = $firebaseArray(placeRef)
 
   initAutocomplete = function() {
@@ -407,9 +433,9 @@ app.controller("EditCtrl", ["$scope", "$routeParams", "$http", "$route", "$locat
    var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/users")
    var authObj = $firebaseAuth(authRef)
 
-   $scope.users = $firebaseArray(authRef)
+  //  $scope.users = $firebaseArray(authRef)
 
-   var placeRef = new Firebase("https://gather-angular-firebase.firebaseio.com/places")
+  var placeRef = new Firebase("https://gather-angular-firebase.firebaseio.com/places")
 
     $scope.places = $firebaseArray(placeRef)
     console.log('in edit')
@@ -496,13 +522,14 @@ app.controller("EditCtrl", ["$scope", "$routeParams", "$http", "$route", "$locat
 
   $scope.users = $firebaseArray(authRef)
 
-  var gatherRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gather")
-
-   $scope.gathers = $firebaseArray(gatherRef)
-
    console.log('in gather')
 
    $scope.addGather = function(gather) {
+     var gatherRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gathers")
+      $scope.gathers = $firebaseArray(gatherRef)
+
+     password = gather.password
+     console.log('password', password)
      console.log('addGather')
      $scope.newGather = {
        title: gather.title,
