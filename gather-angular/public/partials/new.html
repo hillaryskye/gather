@@ -1,21 +1,22 @@
 <h1>Gather</h1>
-<div class="container">
-  <button class="button" ng-click="logout()">Logout</button>
+<div class="container3">
+  <button class="button margin-l2 margin-r2" ng-click="logout()">Logout</button>
   <a class="button" href="/#/gather">Back to Gather</a>
-  <a class="button right" href="/#/gather/places">Back to Places</a>
+  <a class="button right margin-r2" href="/#/gather/places">Back to Places</a>
 
-  <h3 class="clearfix">
-        <img class="left" src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/AngularJS_logo.svg/695px-AngularJS_logo.svg.png"/>
-        <img class="right" src="http://upload.wikimedia.org/wikipedia/commons/9/9a/Google_maps_logo.png"/>
-    </h3>
+<!--   <h3 class="clearfix">
+      <img class="left" src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/AngularJS_logo.svg/695px-AngularJS_logo.svg.png"/>
+      <img class="right" src="http://upload.wikimedia.org/wikipedia/commons/9/9a/Google_maps_logo.png"/>
+  </h3> -->
 
     <section>
-      <div class="map map2" id="map"></div>
-    </section>
+<!--       <div class="map map2" id="map"></div>
+ -->    </section>
 
 <section class="title">
-   <div class="container marker title" ng-repeat="place in places | filter:search">
+   <div class="container marker border-opacity" ng-repeat="place in places | filter:search">
   <p>Name: <a href="/#/gather/places/{{place.id}}/show">{{place.name}}</a></p>
+  <img src="{{place.html_attributions.icon}}">
   <p>Address: {{place.address}}</p>
   <p>Phone: {{place.phone}}</p>
   <p>Website: <a href="{{place.website}}">{{place.website}}</a></p>
@@ -26,4 +27,6 @@
  -->
   <a class="button back right" href="/#/gather/places/{{place.id}}/edit"ng-click="editPlace(marker)">Edit Place</a>
   </div>
+
 </section>
+</div>

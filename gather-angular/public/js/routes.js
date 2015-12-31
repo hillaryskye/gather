@@ -13,7 +13,7 @@ app.config(['$routeProvider', function($routeProvider) {
       controller: 'HomeCtrl',
       resolve: "{user: resolveUser}"
     })
-    .when('/gather/places/new', {
+    .when('/gather/places/:password/new', {
       templateUrl: 'partials/new.html',
       controller: 'NewCtrl'
     })
