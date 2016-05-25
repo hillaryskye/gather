@@ -1,7 +1,7 @@
  <section>
    <form class="search" ng-submit="selectedSearch(search)">
        <label class="left" for="search">Pick Your Gather Event</label>
-          <select class="option" name="search" ng-model="search" ng-options="gather.password for gather in gathers">
+          <select class="option" name="search" ng-model="search" ng-change="changeCity(search)" ng-options="gather.city for gather in gathers track by gather.city">
               <option value="" ng-repeat="gather in gathers">Search Password</option>
           </select>
    </form>
@@ -12,7 +12,7 @@
    </select> -->
 
  <section class="marker2">
- <div class="" ng-if="search" ng-repeat="gather in gathers | filter: {password: search.password}">
+ <div class="" ng-if="search" ng-repeat="gather in gathers | filter: {city: search.city}">
     <div class="header">
         <h1 class="left">Gather</h1>
         <h3 class="gather">{{gather.title}}</h3>
@@ -25,8 +25,8 @@
         <h5>Country: {{gather.country}}</h5>
     </div>
     <div class="one-half">
-        <h5>{{temperature}} &#8457; in {{gather.city}}, {{gather.state}}</h5>
-        <h5>{{summary}}</h5>
+        <h5>{{data.temperature}} &#8457; in {{gather.city}}, {{gather.state}}</h5>
+        <h5>{{data.summary}}</h5>
 <!--         <p>{{time | amDifference : null : 'days' }}  days from now</p>
  -->
     </div>

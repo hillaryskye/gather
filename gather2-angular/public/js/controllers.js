@@ -39,7 +39,7 @@ app.controller('HomeCtrl', function($scope, $routeParams) {
   var createMarker = function (place) {
     $scope.map = map
     $scope.map.markers = []
-    console.log('map, $scope.Map')
+    console.log('$scope.map', $scope.map)
 
     var marker = new google.maps.Marker({
           map: map,
@@ -96,7 +96,7 @@ $scope.openInfoWindow = function(e, selectedMarker){
     //  infoWindow.setOptions();
     //  infoWindow.open(map, selectedMarker);
      $scope.markerId = $scope.map.markers.indexOf(selectedMarker);
-
+     console.log('markerId', $scope.markerId)
  }
 
 $scope.closeClick = function (marker) {

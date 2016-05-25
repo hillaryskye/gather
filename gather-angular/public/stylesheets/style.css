@@ -228,7 +228,7 @@ h5 {
 /*   background-color: #4747a3;
  */
   background: linear-gradient(to bottom, rgba(241,231,103,1) 0%, rgba(254,182,69,1) 100%);
-  padding: 10px;
+  padding: 8px;
   border-radius: 5px;
   font-size: .9em;
   color: blue;
@@ -360,6 +360,9 @@ textarea {
 .map2 {
   margin-top: -130px;
   margin-bottom: 20px;
+}
+.map div div div div div div div {
+  left: 800px;
 }
 h3 img {
   max-height: 50px;
