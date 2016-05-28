@@ -1,0 +1,37 @@
+app.controller("AuthCtrl", function($scope, $rootScope, $location, $firebaseAuth, $firebaseArray) {
+
+  var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/users")
+  var authObj = $firebaseAuth(authRef)
+
+  $scope.users = $firebaseArray(authRef)
+
+  $scope.register = function() {
+      authObj.$createUser($scope.user)
+        .then(function() {
+          $scope.login()
+        })
+
+      //   $scope.newUser = {
+      //     name: $scope.users.name,
+      //     email: $scope.users.email,
+      //     password: $scope.users.password
+      //   }
+      //
+      // $scope.users.$add($scope.newUser)
+      //   .then(function(data) {
+      //     console.log('success')
+      //   },
+      //     function (err) {
+      //       console.error('ERROR:', err);
+      //       return null;
+      //     })
+    }
+    // console.log('user', $scope.users)
+
+  $scope.login = function() {
+    authObj.$authWithPassword($scope.user)
+      .then(function() {
+        $location.path('/gather')
+      })
+  }
+})

@@ -36,143 +36,191 @@ app.controller("AuthCtrl", function($scope, $rootScope, $location, $firebaseAuth
   }
 })
 
-app.controller('HomeCtrl', function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $location) {
+app.controller('HomeCtrl', ['$scope', '$rootScope', '$routeParams', '$firebaseArray', '$firebaseAuth', '$location',
+function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $location) {
+
   console.log('controller')
 
   $scope.add = false;
   $scope.show = false;
 
-  $scope.data = {
-    temperature: null,
-    summary: null,
-    city: null
-  }
-
 // console.log('cityOutside', $routeParams.city)
 // console.log('rootscopeCity outsideWatch', $rootScope.city)
   var newYork = new google.maps.LatLng(40.7127837, -74.00594130000002)
-  var infoWindow = new google.maps.InfoWindow();
+  var infoWindow, service, map, placesList, marker, mapElement, latLng;
 
   var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gather")
   var authObj = $firebaseAuth(authRef)
 
-  $scope.$watch('search', function(newValue, oldValue) {
-    if (newValue && newValue != oldValue) {
-      // console.log('newValue', newValue.password)
-      $routeParams.password = newValue.password
-      $routeParams.city = newValue.city
-      $routeParams.temperature = newValue.temperature
-      console.log('city in watch', $routeParams.city)
-      console.log('newValue', newValue)
-        // $scope.gather.password = newValue.password
-        // console.log('gather.password', $scope.gather.password)
-      console.log('routeParams.city', $routeParams.city)
-      $rootScope.password = newValue.password
-      $rootScope.city = newValue.city
-      $scope.gathers.weatherCity = newValue.city
+  latLng = newYork;
+  title = 'New York';
 
-      // console.log('weathTemp 1st', $scope.data.temperature)
-      // console.log('rootscopeCity in Watch', $rootScope.city)
-      // console.log('TempData', $scope.data.temperature)
-      //
-      // console.log('rootscope pw', $rootScope.password)
-      // console.log('routeParamTemp 1st', $routeParams.temperature)
-      // console.log('rootscopeTemp 1st', $rootScope.temperature)
+  // $scope.initialize = function () {
+  //   mapOptions = {
+  //     Zoom: 11 ,				 // zoom value
+  //     Center: latLng,		 // center coordinates [specified in LatLng class]
+  //   };
+  //
+  //   $scope.initalize();
+  //
+  //   mapElement = document.getElementById('map');
+  //
+  //   map = new google.maps.Map(mapElement, mapOptions);
+  //
+  //   var marker = new google.maps.Marker({
+  //     position: latLng,
+  //     map: map,
+  //     title: title
+  //   });
+  // }
 
-      // $scope.weatherFn();
-      // $scope.findCityLocation();
-
-
-    }
-
-  })
+// For getting the city to use in the Firebase Weather APP
+  // $scope.$watch('search', function(newValue, oldValue) {
+  //   if (newValue && newValue != oldValue) {
+  //     // console.log('newValue', newValue.password)
+  //     $routeParams.password = newValue.password
+  //     $routeParams.city = newValue.city
+  //     $routeParams.temperature = newValue.temperature
+  //     console.log('city in watch', $routeParams.city)
+  //     console.log('newValue', newValue)
+  //       // $scope.gather.password = newValue.password
+  //       // console.log('gather.password', $scope.gather.password)
+  //     console.log('routeParams.city', $routeParams.city)
+  //     $rootScope.password = newValue.password
+  //     $rootScope.city = newValue.city
+  //     $scope.gathers.weatherCity = newValue.city
+  //
+  //     // console.log('weathTemp 1st', $scope.data.temperature)
+  //     // console.log('rootscopeCity in Watch', $rootScope.city)
+  //     // console.log('TempData', $scope.data.temperature)
+  //     //
+  //     // console.log('rootscope pw', $rootScope.password)
+  //     // console.log('routeParamTemp 1st', $routeParams.temperature)
+  //     // console.log('rootscopeTemp 1st', $rootScope.temperature)
+  //
+  //     // $scope.weatherFn();
+  //     // $scope.findCityLocation();
+  //   }
+  // })
 
   var gatherRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gathers")
   $scope.gathers = $firebaseArray(gatherRef)
-      // console.log('gathers', $scope.gathers)
-      // console.log('search', $scope.search)
 
-
-
-      $scope.weatherFn = function() {
-      gatherRef.on("child_added", function(snapshot, prevChildKey) {
-        var temp = snapshot.val();
-        var city = temp.city.split(" ").join("").toLowerCase()
-        $scope.data.city = city;
-        $scope.gathers.weatherCity = city
-        var weatherCity = $scope.gathers.weatherCity
-        console.log('city', weatherCity)
-
-
-
-        // if (city === $scope.gathers.city) {
-          debugger;
-          var weatherRef = new Firebase('https://publicdata-weather.firebaseio.com/' + weatherCity + '/currently');
-          weatherRef.child('temperature').on('value', function(snapshot) {
-
-              var temperature = snapshot.val()
-
-              $scope.data.temperature = temperature;
-              // console.log('gathersTemp', $scope.data.temperature)
-
-            weatherRef.child('summary').on('value', function(snapshot) {
-              $scope.data.summary = snapshot.val()
-              // console.log('summary', $scope.data.summary)
-            })
-          });
-        // }
-      })
-      return $scope.data;
-    }
-
-
-
-  initAutocomplete = function() {
-    // $scope.findCityLocation();
-    $scope.changeCity = function(search) {
+      $scope.changeCity = function($scope) {
       debugger;
-      var newCity = null;
-      $scope.cityList = {
-        city,
-        lat,
-        long
+      // console.log('search', search)
+
+      // $scope.search = search
+      console.log('$scope', $scope)
+
+      // $scope.newCity = {
+      //   lat: $scope.lat,
+      //   long: $scope.long,
+      //   latLng: $scope.latLng,
+      //   city: $scope.city,
+      //   mapElement: $scope.mapElement,
+      //   map: $scope.map,
+      //   mapOptions: $scope.mapOptions,
+      //   marker: $scope.marker
+      // }
+      // console.log($scope.newCity)
+      //
+      // $scope.gathers.$add($scope.newCity)
+      //   .then(function(data) {
+      //       console.log('success')
+      //     },
+      //     function(err) {
+      //       console.error('ERROR:', err);
+      //       return null;
+      //     })
+      //     return $scope.search;
       };
-      $scope.cityList.city = search.city;
-      console.log('cityList', $scope.cityList);
-      console.log('cityFind', search.city)
-      var geocoder =  new google.maps.Geocoder();
 
-      geocoder.geocode( { 'address': search.city + ', us'}, function(results, status) {
-          if (status == google.maps.GeocoderStatus.OK) {
-            var lat = results[0].geometry.location.lat()
-            var long = results[0].geometry.location.lng()
-            $scope.cityList.lat = lat;
-            $scope.cityList.long = long;
 
-            console.log("lat", lat)
-             console.log("long", long);
-          } else {
-            console.log("Something got wrong " + status);
-          }
+      //   var newCity = null;
+      //
+        // var geocoder =  new google.maps.Geocoder();
+        //
+        // // Get lat long for selected gather event
+        // geocoder.geocode( { 'address': search.city + ', us'}, function(results, status) {
+        //   debugger;
+        //
+        //     if (status == google.maps.GeocoderStatus.OK) {
+        //       var lat = results[0].geometry.location.lat()
+        //       var long = results[0].geometry.location.lng()
+        //       $scope.search.lat = lat;
+        //       search.lat = lat;
+        //
+        //       $scope.search.long = long;
+        //       search.long = long;
+        //
+        //       console.log("lat", lat)
+        //       console.log("long", long);
+        //       console.log('search.lat', search.lat)
+        //
+        //     } else {
+        //       console.log("Something got wrong " + status);
+        //     }
+        //
+        //     newCity = new google.maps.LatLng(lat, long)
+        //
+        //     common.rootScope.$broadcast('search', search);
+        //
+        //     $scope.weatherFn(search);
+        //   });
 
-          // newCity = new google.maps.LatLng(lat, long)
 
-        });
-        return $scope.cityList;
-    }
-    console.log('cityList.lat', $scope.cityList.lat)
-    console.log('cityList.long', $scope.cityList.long)
+    //   $scope.weatherFn = function(search) {
+    //   gatherRef.on("child_added", function(snapshot, prevChildKey) {
+    //     if (search.city === $scope.gathers.weatherCity) {
+    //
+    //         var temp = snapshot.val();
+    //         var city = temp.city.split(" ").join("").toLowerCase()
+    //         $scope.data.city = city;
+    //         $scope.gathers.weatherCity = city
+    //         var weatherCity = $scope.gathers.weatherCity
+    //         console.log('city', weatherCity)
+    //       // var searchCity = search.city.toLowerCase();
+    //       // console.log('searchCity', searchCity)
+    //
+    //
+    //       var weatherRef = new Firebase('https://publicdata-weather.firebaseio.com/' + weatherCity + '/currently');
+    //       weatherRef.child('temperature').on('value', function(snapshot) {
+    //
+    //           var temperature = snapshot.val()
+    //
+    //           search.temperature = temperature;
+    //           console.log('Temp', search.temperature)
+    //
+    //         weatherRef.child('summary').on('value', function(snapshot) {
+    //           search.summary = snapshot.val()
+    //           console.log('summary', search.summary)
+    //         })
+    //         return;
+    //       });
+    //       return;
+    //     }
+    //   })
+    //   // latLng = newCity;
+    //   // title = search.city;
+    //   //
+    //   // initialize();
+    //
+    //   $scope.initAutocomplete(search);
+    // }
 
-    newCity = new google.maps.LatLng($scope.cityList.lat, $scope.cityList.long)
-
-    var map = centerMap(newCity);
-
-    var service = new google.maps.places.PlacesService(map);
-
+    // initAutocomplete = function() {
+    // $scope.findCityLocation();
     $scope.placeSearch = function(place) {
-
+      debugger;
+      console.log('place Submitted')
+      console.log('$scope.search', $scope.search)
+      console.log('$scope.map', $scope.map)
+      console.log('map', map)
       var placeRef = new Firebase("https://gather-angular-firebase.firebaseio.com/places")
       $scope.places = $firebaseArray(placeRef)
+
+      var service = new google.maps.places.PlacesService(map);
 
       // if code is empty, it prevents placesearch from taking place
       if (!$scope.place.code) {
@@ -183,24 +231,22 @@ app.controller('HomeCtrl', function($scope, $rootScope, $routeParams, $firebaseA
       console.log('placeCode', $scope.places.code)
 
       var request = {
-        location: newYork,
+        location: $scope.search.city,
         radius: 50,
         query: place.query
       };
 
-      var service = new google.maps.places.PlacesService(map);
+      var infoWindow = new google.maps.InfoWindow();
+      // placesList = document.getElementById('places');
+      // service = new google.maps.places.PlacesService(map);
 
-      var textSearch = service.textSearch(request, callback);
+      service.textSearch(request, callback);
       $scope.add = false;
-      // console.log('service', service)
-      // console.log('service after', textSearch)
-      return;
+      // return;
     };
 
     var callback = function(results, status) {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
-          // console.log('results.length', results.length)
-          // console.log('results', results)
           $scope.map = map
           $scope.map.markers = []
           for (var i = 0; i < results.length; i++) {
@@ -208,32 +254,30 @@ app.controller('HomeCtrl', function($scope, $rootScope, $routeParams, $firebaseA
           }
         }
       }
-      // google.maps.event.trigger(map, 'resize')
-
-    //  var detail = new google.maps.places.PlacesService(map);
 
     var createMarker = function(place) {
       console.log('place', place);
+      var placeLoc = place.geometry.location;
+
+      var marker = new google.maps.Marker({
+        map: map,
+        position: place.geometry.location,
+        title: place.name
+      });
       // $scope.map = map
       // $scope.map.markers = []
 
       bounds = new google.maps.LatLngBounds();
+      console.log('bounds', bounds)
 
       var request = {
         reference: place.reference
       };
-      var detailGetDetails = service.getDetails(request, function(result, status2) {
-        console.log('result', result)
 
-        //console.log('detail', detail)
-        //console.log('detail after', detailGetDetails)
-        if (status2 == google.maps.places.PlacesServiceStatus.OK) {
+      service.getDetails(request, function(details, status) {
+        console.log('details', details)
 
-          var marker = new google.maps.Marker({
-            map: map,
-            position: place.geometry.location,
-            title: place.name
-          });
+        // if (status == google.maps.places.PlacesServiceStatus.OK) {
 
           //   google.maps.event.addListener(marker, 'click', function() {
           //     infoWindow.setContent(place.name);
@@ -262,16 +306,43 @@ app.controller('HomeCtrl', function($scope, $rootScope, $routeParams, $firebaseA
           console.log('$scope.map.markers', $scope.map.markers)
 
           console.log('geometry.lat', result.geometry.location.lat())
-          bounds.extend(result.geometry.location);
+          var extend = bounds.extend(result.geometry.location);
+          console.log('extend', extend)
 
           google.maps.event.addListener(marker, 'click', function() {
-            infoWindow.setContent(place.name);
+            debugger;
+
+            var content = details.name + '<br>' +
+                          details.formatted_address + '<br>' +
+                          'Phone: ' + details.formatted_phone_number + '<br>' +
+                          'Website: ' + details.website + '<br>' +
+                          'Rating: ' + details.rating + '<br>' +
+                          'Price Level: ' + details.price_level + '<br>' +
+                          'User Ratings: ' + details.user_ratings_total + '<br>' +
+                          details.photos[0].html_attributions[0];
+
+
+
+            infoWindow.setContent(content);
+
+            // <a href="/#/gather/places/{{marker.password}}/new" target="_self" ng-click="addPlace(marker)">{{marker.name}}</a>
+
+            // <div class="container marker border-opacity" ng-repeat="marker in map.markers track by $index | orderBy : 'name'">
+            //    <!-- <a href="#" class="red" ng-click="openInfoWindow($event, marker)">{{marker.name}}</a> -->
+            //    <p><a href="/#/gather/places/{{marker.password}}/new" target="_self" ng-click="addPlace(marker)">{{marker.name}}</a></p>
+            //   <p>Address: {{marker.address}}</p>
+            //   <p>Phone: {{marker.phone}}</p>
+            //   <p>Website: <a href="{{marker.website}}">{{marker.website}}</a></p>
+            //   <p>Rating: {{marker.rating}}</p>
+            //   <p>User Ratings: {{marker.userRatings}}</p>
+            //   <p>Price Level: {{marker.priceLevel}}</p>
+            //   </div>
             // infoWindow.open(map, this);
 
             infoWindow.open(map, marker);
             console.log('clicked', place.name)
           });
-        }
+        // }
         map.fitBounds(bounds);
         $scope.$apply();
         console.log('apply')
@@ -282,7 +353,9 @@ app.controller('HomeCtrl', function($scope, $rootScope, $routeParams, $firebaseA
       authObj.$unauth()
       $location.path('/')
     }
-  }
+
+    // initAutocomplete();
+  // }
 
   //   $scope.openInfoWindow = function(e, selectedMarker){
   //      var infoWindow = new google.maps.InfoWindow();
@@ -359,9 +432,9 @@ app.controller('HomeCtrl', function($scope, $rootScope, $routeParams, $firebaseA
     // Clear out the old markers.
   }
 
-  initAutocomplete()
+  // $scope.initAutocomplete();
 
-});
+}]);
 
 app.controller("NewCtrl", ["$scope", "$rootScope", "$firebaseArray", "$routeParams", "$http", "$route", "$location", "$timeout", "$window", "$firebaseAuth", function($scope, $rootScope, $firebaseArray, $routeParams, $http, $route, $location, $timeout, $window, $firebaseAuth) {
 
@@ -370,10 +443,6 @@ app.controller("NewCtrl", ["$scope", "$rootScope", "$firebaseArray", "$routePara
   console.log('temp in new', $scope.temp)
     // $scope.search = $routeParams.password
   console.log('rootScope.pw in new', $rootScope.password)
-  $scope.search = $rootScope.password
-
-
-  console.log('search', $scope.search)
   console.log('$routeParams.pw in new', $routeParams.password)
 
   var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/users")
@@ -624,6 +693,36 @@ app.controller("ShowCtrl", ["$scope", "$routeParams", "$http", "$route", "$locat
 }])
 
 app.controller("GatherCtrl", ["$scope", "$routeParams", "$http", "$route", "$location", "$firebaseArray", "$firebaseAuth", function($scope, $routeParams, $http, $route, $location, $firebaseArray, $firebaseAuth) {
+
+  // function initalize() {
+  //   var newYork = new google.maps.LatLng(40.7127837, -74.00594130000002)
+  //
+  //   map = new google.maps.Map(document.getElementById('map'), {
+  //     center: newYork,
+  //     zoom: 12
+  //   });
+  //   google.maps.event.addDomListener(window, "load", initialize);
+  // }
+
+//   initalize();
+//
+//   function initalize() {
+//     mapOptions = {
+//     Zoom: 11 ,				 // zoom value
+//     Center: newYork,		 // center coordinates [specified in LatLng class]
+//   };
+//
+//   mapElement = document.getElementById('map');
+//
+//   map = new google.maps.Map(mapElement, mapOptions);
+//
+//   var marker = new google.maps.Marker({
+//     position: newYork,
+//     map: map,
+//     title: search.name
+//   });
+// }
+
   var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/users")
   var authObj = $firebaseAuth(authRef)
 
@@ -638,6 +737,7 @@ app.controller("GatherCtrl", ["$scope", "$routeParams", "$http", "$route", "$loc
     password = gather.password
     console.log('password', password)
     console.log('addGather')
+
     $scope.newGather = {
       title: gather.title,
       startDate: gather.startDate,
@@ -660,16 +760,11 @@ app.controller("GatherCtrl", ["$scope", "$routeParams", "$http", "$route", "$loc
         })
   }
   console.log('gather', $scope.gathers)
+
   $scope.logout = function() {
     console.log('logout')
     authObj.$unauth()
     $location.path('/')
   }
+  // initalize();
 }]);
-
-function centerMap (location){
-  return new google.maps.Map(document.getElementById('map'), {
-    center: location,
-    zoom: 15
-  });
-}

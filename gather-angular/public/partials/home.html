@@ -1,12 +1,16 @@
+<!-- <div ng-if="!search.city" id="addressMap" class="map" city="'new york'" google-map></div> -->
+<div ng-if="search.city" id="addressMap" class="map" map="map" map="{{map}}" city="search.city" google-map></div>
+
  <section>
    <form class="search" ng-submit="selectedSearch(search)">
        <label class="left" for="search">Pick Your Gather Event</label>
-          <select class="option" name="search" ng-model="search" ng-change="changeCity(search)" ng-options="gather.city for gather in gathers track by gather.city">
+          <select class="option" name="search" ng-model="search" ng-change="changeCity(map)" ng-options="gather.city for gather in gathers track by gather.city">
               <option value="" ng-repeat="gather in gathers">Search Password</option>
           </select>
    </form>
 </section>
-
+<!-- <button class="refresh" ng-click="initializeMap()">Refresh Map</button> -->
+<!-- <google-map class="map" ng-click"initializeMap(search)" lat="search.lat" long="search.long"></google-map> -->
    <!-- <select name="filter-password" ng-model="passwordFilter">
       ng-options="gather.title for gather in gathers"
    </select> -->
@@ -25,8 +29,8 @@
         <h5>Country: {{gather.country}}</h5>
     </div>
     <div class="one-half">
-        <h5>{{data.temperature}} &#8457; in {{gather.city}}, {{gather.state}}</h5>
-        <h5>{{data.summary}}</h5>
+        <h5>{{search.temperature}} &#8457; in {{gather.city}}, {{gather.state}}</h5>
+        <h5>{{search.summary}}</h5>
 <!--         <p>{{time | amDifference : null : 'days' }}  days from now</p>
  -->
     </div>
@@ -37,8 +41,9 @@
 <section class="initial">
 
 <div class="container2">
-  <button class="button margin-l2" ng-click="logout()">Logout</button>
   <a class="button" ng-click="addForm()" type="submit">Search by city</a>
+  <button class="button margin-l2" ng-click="logout()">Logout</button>
+
   <a class="button" href="/#/gather">Back to Gather</a>
   <a class="button right margin-r2" href="/#/gather/places/new" target="_self">Back to All Places</a>
 
@@ -73,7 +78,7 @@
   <div class="container4">
    <section class="title">
    <div class="container marker border-opacity" ng-repeat="marker in map.markers track by $index | orderBy : 'name'">
-      <a href="#" class="red" ng-click="openInfoWindow($event, marker)">{{marker.name}}</a>
+      <!-- <a href="#" class="red" ng-click="openInfoWindow($event, marker)">{{marker.name}}</a> -->
       <p><a href="/#/gather/places/{{marker.password}}/new" target="_self" ng-click="addPlace(marker)">{{marker.name}}</a></p>
      <p>Address: {{marker.address}}</p>
      <p>Phone: {{marker.phone}}</p>

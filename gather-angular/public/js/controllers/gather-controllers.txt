@@ -1,0 +1,53 @@
+app.controller("GatherCtrl",
+  ["$scope", "$routeParams", "$http", "$route", "$location", "$firebaseArray", "$firebaseAuth",
+  function($scope, $routeParams, $http, $route, $location, $firebaseArray, $firebaseAuth) {
+
+  var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/users")
+  var authObj = $firebaseAuth(authRef)
+
+  $scope.users = $firebaseArray(authRef)
+
+  console.log('in gather')
+
+  $scope.addGather = function(gather) {
+    var gatherRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gathers")
+    $scope.gathers = $firebaseArray(gatherRef)
+
+    password = gather.password
+    console.log('password', password)
+    console.log('addGather')
+    $scope.newGather = {
+      title: gather.title,
+      startDate: gather.startDate,
+      endDate: gather.endDate,
+      city: gather.city,
+      state: gather.state,
+      country: gather.country,
+      name: gather.name,
+      password: gather.password
+    }
+    console.log($scope.newGather)
+
+    $scope.gathers.$add($scope.newGather)
+      .then(function(data) {
+          console.log('success')
+        },
+        function(err) {
+          console.error('ERROR:', err);
+          return null;
+        })
+  }
+  console.log('gather', $scope.gathers)
+  $scope.logout = function() {
+    console.log('logout')
+    authObj.$unauth()
+    $location.path('/')
+  }
+}]);
+
+function centerMap (location){
+  return new google.maps.Map(document.getElementById('map'), {
+    center: location,
+    zoom: 15
+  });
+}

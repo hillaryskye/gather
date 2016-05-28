@@ -14,14 +14,28 @@
   <!-- <link rel='stylesheet' href='https://cdn.firebase.com/libs/firechat/2.0.1/firechat.min.css' />
   <script src='https://cdn.firebase.com/libs/firechat/2.0.1/firechat.min.js'></script> -->
   <link rel="stylesheet" href="/stylesheets/style.css" />
+  <script>
+      function initalize() {
+        var newYork = new google.maps.LatLng(40.7127837, -74.00594130000002)
 
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: newYork,
+          zoom: 12
+        });
+        google.maps.event.addDomListener(window, "load", initialize);
+      }
+  </script>
   </head>
   <body>
   <div ng-view></div>
-    <div class="map" id="map"></div>
+    <!-- <div class="map" id="map" google-map></div> -->
+    <google-map id="map" class="map"></google-map>
+    <!-- <googleMap width="800" width="700"></googleMap> -->
   <script type="text/javascript" src="/js/app.js"></script>
   <script type="text/javascript" src="/js/routes.js"></script>
   <script type="text/javascript" src="/js/controllers.js"></script>
+  <script type="text/javascript" src="/js/directives.js"></script>
+  <script type="text/javascript" src="/js/services.js"></script>
 <!--   <script type="text/javascript" src="js/angular-ui-router.js"></script> -->
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2vdzULzb50xB3ipnrTgXcNOULSVNv4Nw&libraries=places,drawing"></script>
 </body>

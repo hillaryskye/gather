@@ -1,0 +1,88 @@
+app.controller("ShowCtrl", ["$scope", "$routeParams", "$http", "$route", "$location", "$firebaseArray", "$firebaseAuth", function($scope, $routeParams, $http, $route, $location, $firebaseArray, $firebaseAuth) {
+  console.log('home')
+  google.maps.event.trigger(map, 'resize')
+  var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/users")
+  var authObj = $firebaseAuth(authRef)
+
+  //  $scope.users = $firebaseArray(authRef)
+
+  var placeRef = new Firebase("https://gather-angular-firebase.firebaseio.com/places")
+
+  $scope.places = $firebaseArray(placeRef)
+  console.log('in edit')
+  $scope.editId = $routeParams.id
+  console.log('$routeParams.id', $routeParams)
+  console.log('name', $routeParams.name)
+
+  var place = $scope.place = $routeParams
+  console.log('place', place)
+
+  initAutocomplete = function() {
+    placeRef.orderByChild("id").equalTo($routeParams.id).on("child_added", function(snapshot) {
+      console.log('temp', snapshot.key());
+      var temp = snapshot.val();
+      console.log('temp', temp);
+
+      var mapOptions = {
+        zoom: 14,
+        center: new google.maps.LatLng(temp.latitude, temp.longitude),
+        mapTypeId: google.maps.MapTypeId.TERRAIN
+      }
+      $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+      $scope.markers = [];
+
+      var infoWindow = new google.maps.InfoWindow();
+
+      console.log('newTest', temp.name)
+      console.log('inside loop')
+      console.log('in createMarker')
+
+      var marker = new google.maps.Marker({
+        map: $scope.map,
+        position: new google.maps.LatLng(temp.latitude, temp.longitude),
+        title: temp.name
+      });
+      console.log('marker.position', marker.position)
+      marker.content = temp.name
+
+      google.maps.event.addListener(marker, 'click', function() {
+        infoWindow.setContent(marker.title);
+        infoWindow.open($scope.map, marker);
+      });
+
+      if (marker.id === $routeParams.id) {
+        var markers = $scope.markers.push(marker);
+        console.log('markers', markers)
+        bounds = new google.maps.LatLngBounds();
+      }
+      // bounds.extend(temp.geometry.location);
+      // }
+
+      $scope.openInfoWindow = function(e, selectedMarker) {
+        e.preventDefault();
+        google.maps.event.trigger(selectedMarker, 'click');
+      }
+
+      //  map.fitBounds(bounds);
+    });
+  }
+
+  initAutocomplete()
+
+  $scope.delPlace = function(place) {
+    console.log('delete')
+    $scope.places.$remove(place)
+  }
+
+  $scope.updatePlace = function(place) {
+    console.log('update')
+      //  $scope.posts.$save(post)
+
+  }
+  $scope.logout = function() {
+    console.log('logout')
+    authObj.$unauth()
+    $location.path('/')
+  }
+}])
