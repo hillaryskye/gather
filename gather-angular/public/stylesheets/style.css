@@ -151,7 +151,7 @@ li {
 /* p {
   margin-left: 10px;
 } */
-p{
+p {
    color: rgba(255, 255, 255, 1);
    margin: 0;
    line-height: 1.5;
@@ -359,9 +359,23 @@ textarea {
    width: 800px;
    top: 0;
    left: 0;
-   width: 60%;
-   position: absolute;;
+   /*width: 60%;*/
+   width: 300px;
+   height: 300px;
+
+   position: absolute;
    border: 1px solid silver;
+}
+google-map {
+  margin: 0 auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right:350px;
+  /*opacity: 0;*/
+  width: 300px;
+  height: 300px;
+  border: 3px solid blue;
 }
 #map img { max-width: none; }
 .map2 {
@@ -416,6 +430,27 @@ h3 img {
   right: 0;
       z-index: 3000;
 }
+
+.map-marker {
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background-color: grey;
+  position: absolute;
+  display: block;
+  cursor: pointer;
+  transition: all .1s;
+}
+
+.map-marker.active {
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+}
+
 .gather {
   font-size: 18px;
   color: #301484;
@@ -499,13 +534,13 @@ clear: both; }
 /* Phones ----------- */
 @media only screen and (max-width: 767px) {
 p {
-  font-size: 18px; } }
+  font-size: 1em; } }
 
 /* Tablets ----------- */
 @media only screen and (min-width: 768px) {
 /* CSS Styles */
 p {
-  font-size: 16px; } }
+  font-size: 1em; } }
 
 /* -------- COLUMN LAYOUTS -------*/
 /* -- Column Sizes -- */

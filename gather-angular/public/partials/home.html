@@ -1,10 +1,13 @@
-<!-- <div ng-if="!search.city" id="addressMap" class="map" city="'new york'" google-map></div> -->
-<div ng-if="search.city" id="addressMap" class="map" map="map" map="{{map}}" city="search.city" google-map></div>
-
+<!-- <div ng-if="search.city" id="addressMap" class="map" city="'new york'" google-map></div> -->
+<google-map id="addressMap" class="map" newMap="newMap" city="search.city"></google-map>
+<!-- <div ng-bind="newMap"></div> -->
+<!-- <div id="addressMap" class="map" city="search.city" google-map></div> -->
  <section>
    <form class="search" ng-submit="selectedSearch(search)">
        <label class="left" for="search">Pick Your Gather Event</label>
-          <select class="option" name="search" ng-model="search" ng-change="changeCity(map)" ng-options="gather.city for gather in gathers track by gather.city">
+          <select class="option" name="search" ng-model="search"
+              ng-change="changeCity(search)"
+              ng-options="gather.city for gather in gathers track by gather.city">
               <option value="" ng-repeat="gather in gathers">Search Password</option>
           </select>
    </form>
@@ -41,7 +44,7 @@
 <section class="initial">
 
 <div class="container2">
-  <a class="button" ng-click="addForm()" type="submit">Search by city</a>
+  <a class="button" ng-click="addForm()" type="submit" markers="markers" city="search.city" google-map>Search by city</a>
   <button class="button margin-l2" ng-click="logout()">Logout</button>
 
   <a class="button" href="/#/gather">Back to Gather</a>
@@ -77,15 +80,18 @@
  -->   </section>
   <div class="container4">
    <section class="title">
-   <div class="container marker border-opacity" ng-repeat="marker in map.markers track by $index | orderBy : 'name'">
+   <div class="container marker border-opacity"
+       ng-repeat="marker in markersList track by $index | orderBy : 'name'"
+       ng-mouseenter="marker.isActive=true"
+       ng-mouseleave="marker.isActive=false">
       <!-- <a href="#" class="red" ng-click="openInfoWindow($event, marker)">{{marker.name}}</a> -->
       <p><a href="/#/gather/places/{{marker.password}}/new" target="_self" ng-click="addPlace(marker)">{{marker.name}}</a></p>
      <p>Address: {{marker.address}}</p>
-     <p>Phone: {{marker.phone}}</p>
+     <!-- <p>Phone: {{marker.phone}}</p>
      <p>Website: <a href="{{marker.website}}">{{marker.website}}</a></p>
      <p>Rating: {{marker.rating}}</p>
      <p>User Ratings: {{marker.userRatings}}</p>
-     <p>Price Level: {{marker.priceLevel}}</p>
+     <p>Price Level: {{marker.priceLevel}}</p> -->
      </div>
    </section>
 
