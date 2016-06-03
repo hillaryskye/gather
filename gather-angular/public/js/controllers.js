@@ -36,131 +36,27 @@ app.controller("AuthCtrl", function($scope, $rootScope, $location, $firebaseAuth
   }
 })
 
-app.controller('HomeCtrl', ['$scope', '$rootScope', '$routeParams', '$firebaseArray', '$firebaseAuth', '$location', 'GoogleMapService',
-function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $location, GoogleMapService) {
+app.controller('HomeCtrl', ['$scope', '$rootScope', '$routeParams', '$firebaseArray', '$firebaseAuth', '$location', 'GoogleMapService', '$timeout',
+function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $location, GoogleMapService, $timeout) {
 
   console.log('controller')
-
-// if (!window.map) {
-//   google.maps.event.addDomListener(window, 'load', initializeMap);
-// }
-
 
   $scope.add = false;
   $scope.show = false;
 
-// console.log('cityOutside', $routeParams.city)
-// console.log('rootscopeCity outsideWatch', $rootScope.city)
   var newYork = new google.maps.LatLng(40.7127837, -74.00594130000002)
   var infoWindow, service, placesList, marker, mapElement, latLng;
 
   var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gather")
   var authObj = $firebaseAuth(authRef)
 
-  // latLng = newYork;
-  // title = 'New York';
-
-  // $scope.initialize = function () {
-  //   mapOptions = {
-  //     Zoom: 11 ,				 // zoom value
-  //     Center: latLng,		 // center coordinates [specified in LatLng class]
-  //   };
-  //
-  //   $scope.initalize();
-  //
-  //   mapElement = document.getElementById('map');
-  //
-  //   map = new google.maps.Map(mapElement, mapOptions);
-  //
-  //   var marker = new google.maps.Marker({
-  //     position: latLng,
-  //     map: map,
-  //     title: title
-  //   });
-  // }
-
-// For getting the city to use in the Firebase Weather APP
-  // $scope.$watch('search', function(newValue, oldValue) {
-  //   if (newValue && newValue != oldValue) {
-  //     // console.log('newValue', newValue.password)
-  //     $routeParams.password = newValue.password
-  //     $routeParams.city = newValue.city
-  //     $routeParams.temperature = newValue.temperature
-  //     console.log('city in watch', $routeParams.city)
-  //     console.log('newValue', newValue)
-  //       // $scope.gather.password = newValue.password
-  //       // console.log('gather.password', $scope.gather.password)
-  //     console.log('routeParams.city', $routeParams.city)
-  //     $rootScope.password = newValue.password
-  //     $rootScope.city = newValue.city
-  //     $scope.gathers.weatherCity = newValue.city
-  //
-  //     // console.log('weathTemp 1st', $scope.data.temperature)
-  //     // console.log('rootscopeCity in Watch', $rootScope.city)
-  //     // console.log('TempData', $scope.data.temperature)
-  //     //
-  //     // console.log('rootscope pw', $rootScope.password)
-  //     // console.log('routeParamTemp 1st', $routeParams.temperature)
-  //     // console.log('rootscopeTemp 1st', $rootScope.temperature)
-  //
-  //     // $scope.weatherFn();
-  //     // $scope.findCityLocation();
-  //   }
-  // })
-
   var gatherRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gathers")
   $scope.gathers = $firebaseArray(gatherRef)
 
-  // var initializeMap = function () {
-  //   debugger;
-  //   console.log('googleMap')
-  //
-  //   latLng = new google.maps.LatLng(40.7127837, -74.00594130000002);
-  //
-  //   // if (!$scope.city) {
-  //   //   $scope.city = 'new york'
-  //   // }
-  //     var mapOptions = {
-  //         zoom: 11,
-  //         center: latLng,
-  //         mapTypeId: google.maps.MapTypeId.ROADMAP
-  //     };
-  //
-  //   mapElement = document.getElementById('addressMap');
-  //
-  //   window.map = new google.maps.Map(mapElement, mapOptions);
-  //
-  //   // $scope.map = map;
-  //
-  //   // initializeMap();
-  //   };
-
     $scope.changeCity = function(search) {
-      console.log('changeCity')
-      debugger;
 
-      console.log('search.city', search.city)
       $scope.city = search.city
       console.log('city in controller', $scope.city)
-
-      // var newMap = $scope.newMap
-      $rootScope.$on('newMap', function (event, newMap) {
-        // if (newMap) {
-          debugger;
-          console.log('newMap from Controller', newMap);
-          $scope.newMap = newMap;
-          console.log('$scope.map in Controller', $scope.newMap)
-        // }
-    });
-
-    $rootScope.$on('map', function (event, map) {
-      // if (newMap) {
-        debugger;
-        console.log('newMap from Controller', map);
-        $scope.map = map;
-        console.log('$scope.map in Controller', $scope.map)
-      // }
-  });
 
     //
     // console.log('newMap Controller', newMap)
@@ -187,7 +83,6 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
       //     })
       //     return $scope.search;
       };
-
 
       //   var newCity = null;
       //
@@ -220,7 +115,6 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
         //     $scope.weatherFn(search);
         //   });
 
-
     //   $scope.weatherFn = function(search) {
     //   gatherRef.on("child_added", function(snapshot, prevChildKey) {
     //     if (search.city === $scope.gathers.weatherCity) {
@@ -233,7 +127,6 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
     //         console.log('city', weatherCity)
     //       // var searchCity = search.city.toLowerCase();
     //       // console.log('searchCity', searchCity)
-    //
     //
     //       var weatherRef = new Firebase('https://publicdata-weather.firebaseio.com/' + weatherCity + '/currently');
     //       weatherRef.child('temperature').on('value', function(snapshot) {
@@ -254,17 +147,11 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
     //   })
     //   // latLng = newCity;
     //   // title = search.city;
-    //   //
-    //   // initialize();
     //
     //   $scope.initAutocomplete(search);
     // }
 
-    // initAutocomplete = function() {
-    // $scope.findCityLocation();
-
     $scope.placeSearch = function(place) {
-      debugger;
       var placeRef = new Firebase("https://gather-angular-firebase.firebaseio.com/places")
       $scope.places = $firebaseArray(placeRef)
       var markersArr;
@@ -291,18 +178,12 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
         query: place.query
       };
 
-
-      // placesList = document.getElementById('places');
-      // service = new google.maps.places.PlacesService(map);
-
       service.textSearch(request, callback);
       $scope.add = false;
-      // return;
     };
 
     var callback = function(results, status) {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
-debugger;
           // $scope.markers = []
           for (var i = 0; i < results.length; i++) {
             var photo;
@@ -320,31 +201,31 @@ debugger;
               markers: []
             }
 
-            var markersListOptions = {
-              name: results.name,
-              latitude: results.geometry.location.lat(),
-              longitude: results.geometry.location.lng(),
-              phone: results.formatted_phone_number,
-              website: results.website,
-              photo: photo,
-              // photos: detailsPhotos,
-              rating: results.rating,
-              priceLevel: results.price_level,
-              address: results.formatted_address,
-              id: results.id,
-              // photos: result.photos[0],
-              animation: google.maps.Animation.DROP,
-              password: $scope.place.code
-            };
+            // var markersListOptions = {
+            //   name: results.name,
+            //   latitude: results.geometry.location.lat(),
+            //   longitude: results.geometry.location.lng(),
+            //   phone: results.formatted_phone_number,
+            //   website: results.website,
+            //   photo: photo,
+            //   // photos: detailsPhotos,
+            //   rating: results.rating,
+            //   priceLevel: results.price_level,
+            //   address: results.formatted_address,
+            //   id: results.id,
+            //   // photos: result.photos[0],
+            //   animation: google.maps.Animation.DROP,
+            //   password: $scope.place.code
+            // };
 
-            markersList.markers.push(markersListOptions);
+            // markersList.markers.push(markersListOptions);
 
-            console.log('markersList.markers', markersList.markers)
-        var extend = bounds.extend(results.geometry.location);
-        console.log('extend', extend)
+            // console.log('markersList.markers', markersList.markers)
+        // var extend = bounds.extend(results.geometry.location);
+        // console.log('extend', extend)
         }
         return results;
-      }
+      };
 
       $scope.markers = [];
       var infoWindow = new google.maps.InfoWindow();
@@ -354,7 +235,6 @@ debugger;
       var mapData = $scope.mapData;
       var newMap = mapData.map;
 
-debugger;
       var marker = new google.maps.Marker({
         map: newMap,
         position: results.geometry.location,
@@ -382,24 +262,28 @@ debugger;
           // }
           // else detailsPhotos = [];
         // }
-          $scope.markers.push({
-            name: details.name,
-            latitude: details.geometry.location.lat(),
-            longitude: details.geometry.location.lng(),
-            phone: details.formatted_phone_number,
-            website: details.website,
-            // photo: photo,
-            // photos: detailsPhotos,
-            rating: details.rating,
-            priceLevel: details.price_level,
-            address: details.formatted_address,
-            id: details.id,
-            // photos: result.photos[0],
-            animation: google.maps.Animation.DROP,
-            password: $scope.place.code
-          });
+        var markersOptions = {
+          name: details.name,
+          latitude: details.geometry.location.lat(),
+          longitude: details.geometry.location.lng(),
+          phone: details.formatted_phone_number,
+          website: details.website,
+          // photo: photo,
+          // photos: detailsPhotos,
+          rating: details.rating,
+          priceLevel: details.price_level,
+          address: details.formatted_address,
+          id: details.id,
+          // photos: result.photos[0],
+          animation: google.maps.Animation.DROP,
+          password: $scope.place.code
+        }
 
+          $timeout($scope.markers.push(markersOptions), 500);
+
+          // Send markersArr data to Directive to display the markers
           if ($scope.markers.length > 19) {
+            debugger;
             console.log('$scope.markers', $scope.markers)
 
             markersArr = $scope.markers;
@@ -437,19 +321,14 @@ debugger;
         // var zoom = newMap.getZoom();
         // console.log('zoom', zoom)
         //
-        // var listener = google.maps.event.addListener(newMap, "idle", function() {
-        //   if (zoom < 12) newMap.setZoom(12);
-        //   google.maps.event.removeListener(listener);
-        // });
         // var markersListFn = function(markersList) {
-          $scope.$apply();
+          // $scope.$apply();
         // }
       });
     }
 
     $scope.$on('newMarkers', function (event, newMarkers) {
       if (newMarkers) {
-        debugger;
         console.log('controllerMap', newMarkers);
         $scope.newMarkers = newMarkers;
         console.log('$scope.map in Controller', $scope.newMarkers)
@@ -461,9 +340,6 @@ debugger;
       authObj.$unauth()
       $location.path('/')
     }
-
-    // initAutocomplete();
-  // }
 
   //   $scope.openInfoWindow = function(e, selectedMarker){
   //      var infoWindow = new google.maps.InfoWindow();

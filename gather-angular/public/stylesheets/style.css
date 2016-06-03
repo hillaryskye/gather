@@ -377,6 +377,12 @@ google-map {
   height: 300px;
   border: 3px solid blue;
 }
+
+.gm-style-iw {
+  background: rgb(255,255,153);
+  background: rgba(255,255,0,.4);
+  padding: .1em;
+}
 #map img { max-width: none; }
 .map2 {
   margin-top: -130px;
