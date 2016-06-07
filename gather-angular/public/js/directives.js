@@ -20,7 +20,7 @@ app.directive('googleMap', function () {
       //     return;
       // }
       // console.log('newCenter from getMarker', newCenter)
-      var currWindow =false;
+      var currWindow = false;
       var infoWindow = new google.maps.InfoWindow();
 
       if (!$scope.mapData) {
@@ -42,7 +42,20 @@ app.directive('googleMap', function () {
 
       } else if (!$scope.city) {
         // var title = 'New York';
-        contentString = '<h5> New York </h5>';
+        // contentString = '<h5> New York </h5>';
+
+        contentString = '<div id="iw-container">' +
+                          '<div class="iw-title">New York</div>' +
+                          '<div class="iw-content">' +
+                            '<div class="iw-subTitle">History</div>' +
+                            '<img src="/images/newYork.jpeg" alt="New York" height="115" width="83">' +
+                            '<p>The history of New York begins around 10,000 BC, when the first Native Americans arrived. By 1100 AD, New York\'s main native cultures, the Iroquoian and Algonquian, had developed. European discovery of New York was led by the French in 1524 and the first land claim came in 1609 by the Dutch. As part of New Netherland, the colony was important in the fur trade and eventually became an agricultural resource thanks to the patroon system. In 1626 the Dutch bought the island of Manhattan from Native Americans.[1] In 1664, England renamed the colony New York, after the Duke of York (later James II & VII.) New York City gained prominence in the 18th century as a major trading port in the Thirteen Colonies.</p>' +
+                            // '<div class="iw-subTitle">Contacts</div>' +
+                            // '<p>VISTA ALEGRE ATLANTIS, SA<br>3830-292 Ílhavo - Portugal<br>'+
+                            '<p><a href="https://www.newyorkpass.com/En/" target="_blank">The New York Pass</a></p>' +
+                          '</div>' +
+                          '<div class="iw-bottom-gradient"></div>' +
+                        '</div>';
       } else {
         // var title = $scope.city;
         contentString = $scope.city;
@@ -60,6 +73,7 @@ app.directive('googleMap', function () {
         position: $scope.mapData.center,
         animation: google.maps.Animation.DROP,
         title: $scope.mapData.contentString,
+        maxWidth: 350,
         label: labels[labelIndex++ % labels.length]
       }
 
@@ -80,6 +94,60 @@ app.directive('googleMap', function () {
 
           currWindow = infoWindow;
       })
+
+      // *
+      // START INFOWINDOW CUSTOMIZE.
+      // The google.maps.event.addListener() event expects
+      // the creation of the infowindow HTML structure 'domready'
+      // and before the opening of the infowindow, defined styles are applied.
+      // *
+      google.maps.event.addListener(infoWindow, 'domready', function() {
+
+        // Reference to the DIV that wraps the bottom of infowindow
+        var iwOuter = $('.gm-style-iw');
+
+        /* Since this div is in a position prior to .gm-div style-iw.
+         * We use jQuery and create a iwBackground variable,
+         * and took advantage of the existing reference .gm-style-iw for the previous div with .prev().
+        */
+        var iwBackground = iwOuter.prev();
+
+        // Removes background shadow DIV
+        iwBackground.children(':nth-child(2)').css({'display' : 'none'});
+
+        // Removes white background DIV
+        iwBackground.children(':nth-child(4)').css({'display' : 'none'});
+
+        // Moves the infowindow 115px to the right.
+        // iwOuter.parent().parent().css({left: '115px'});
+
+        iwOuter.parent().parent().css({left: '113px'});
+
+        // Moves the shadow of the arrow 76px to the left margin.
+        iwBackground.children(':nth-child(1)').attr('style', function(i,s){ return s + 'left: 76px !important;'});
+
+        // Moves the arrow 76px to the left margin.
+        iwBackground.children(':nth-child(3)').attr('style', function(i,s){ return s + 'left: 76px !important;'});
+
+        // Changes the desired tail shadow color.
+        iwBackground.children(':nth-child(3)').find('div').children().css({'box-shadow': 'rgba(240, 230, 140, 0.6) 0px 1px 6px', 'z-index' : '1'});
+
+        // Reference to the div that groups the close button elements.
+        var iwCloseBtn = iwOuter.next();
+
+        // Apply the desired effect to the close button
+        iwCloseBtn.css({opacity: '1', right: '43px', top: '8px', border: '7px solid #ffff99', 'border-radius': '13px', 'box-shadow': '2px 3px 5px #35236D'});
+
+        // If the content of infowindow not exceed the set maximum height, then the gradient is removed.
+        if($('.iw-content').height() < 140){
+          $('.iw-bottom-gradient').css({display: 'none'});
+        }
+
+        // The API automatically applies 0.7 opacity to the button after the mouseout event. This function reverses this event to the desired value.
+        iwCloseBtn.mouseout(function(){
+          $(this).css({opacity: '1'});
+        });
+      });
     }
 
     getMarker();
@@ -162,7 +230,6 @@ app.directive('googleMap', function () {
           if (marker[i].priceLevel) {
             debugger;
             $scope.dataSource = {
-              "data": {
                 "chart": {
                     "caption": "Pricing",
                     "captionFontSize": "15",
@@ -181,7 +248,7 @@ app.directive('googleMap', function () {
                     "showLabel": "1",
                     "showValue": "1"
                   }]
-                }
+
               }
               marker[i].dataSource = $scope.dataSource.data;
           }
@@ -201,7 +268,7 @@ app.directive('googleMap', function () {
             if (typeof marker[i].phone !== 'undefined') contentString += 'Phone: ' + marker[i].phone + '<br>'
             if (typeof marker[i].website !== 'undefined') contentString += 'Website: <a target="_blank" href="' + marker[i].website + '">' + marker[i].name + '</a><br>';
             if (typeof marker[i].rating !== 'undefined') contentString += 'Rating: ' + marker[i].rating + '<br>';
-            if (typeof marker[i].priceLevel !== 'undefined') contentString += '<div class="container"><div fusioncharts id="mychartcontainer" chartid="mychart" width="100" height="20" type="bar2d" dataSource="' + $scope.dataSource.data + '"></div></div><br>';
+            if (typeof marker[i].priceLevel !== 'undefined') contentString += '<div class="container"><div fusioncharts id="mychartcontainer" chartid="mychart" width="100" height="20" type="bar2d" dataSource="' + $scope.dataSource + '"></div></div><br>';
             if (typeof marker[i].rating !== 'undefined') contentString += 'User Ratings: ' + ratingStars + '<br>';
 
           $scope.mapData.contentString = contentString;

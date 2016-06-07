@@ -3,7 +3,7 @@
 <!-- <div id="addressMap" class="map" city="search.city" google-map></div> -->
  <section>
    <form class="search" ng-submit="selectedSearch(search)">
-       <label class="left" for="search">Pick Your Gather Event</label>
+       <label class="left margin-t" for="search">Pick Your Gather Event</label>
           <select class="option" name="search" ng-model="search"
               ng-change="changeCity(search)"
               ng-options="gather.city for gather in gathers track by gather.city">
