@@ -43,7 +43,7 @@
 <section class="initial">
 
 <div class="container2">
-  <a class="button" ng-click="addForm()" type="submit" markers="markers" city="search.city" google-map>Search by city</a>
+  <a class="button" ng-click="addForm()" type="submit" city="search.city" google-map>Search by city</a>
   <button class="button margin-l2" ng-click="logout()">Logout</button>
 
   <a class="button" href="/#/gather">Back to Gather</a>
@@ -58,6 +58,7 @@
     <section class="form">
       <form class="comment-form fadein fadeout" ng-show="add === true" ng-hide="add === false" name="searchForm">
         <div class="margin-l2 title">
+            <button id="more">More results</button>
             <div>
                <label class="label" for="query">Place text (ex. Golden restaurants)</label>
                  <input class="input3" type="text" name="query" ng-model="place.query" required>

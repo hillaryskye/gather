@@ -1,9 +1,6 @@
-app.factory('GoogleMapService', function () {
-  debugger;
+app.service('GoogleMapService', function ($q) {
   console.log('Im first from service')
   var MapData = {}
-
-
 
   var latLng = new google.maps.LatLng(40.7127837, -74.00594130000002);
 
@@ -15,7 +12,60 @@ app.factory('GoogleMapService', function () {
       mapTypeId: google.maps.MapTypeId.ROADMAP
   };
 
-  var map = new google.maps.Map(mapElement, mapOptions);
+  this.map = new google.maps.Map(mapElement, mapOptions);
+  this.service = new google.maps.places.PlacesService(this.map);
+  this.infoWindow = new google.maps.InfoWindow();
+  this.mapElement = mapElement;
+  this.center = latLng;
+
+  this.search = function (place) {
+    var service = new google.maps.places.PlacesService(this.map);
+
+    var deferred = $q.defer();
+
+    var request = {
+      location: this.map.center,
+      radius: 50,
+      query: place.query
+    };
+
+    this.service.textSearch(request, function(results, status, pagination) {
+          if (status == 'OK') {
+              var res = results;
+              deferred.resolve(res);
+
+              if (pagination.hasNextPage) {
+                debugger;
+                var moreButton = document.getElementById('more');
+
+                moreButton.disabled = false;
+
+                moreButton.addEventListener('click', function() {
+                  morebutton.disabled = true;
+                  pagination.nextPage();
+                })
+              }
+          }
+          else deferred.reject(status);
+      });
+      return deferred.promise;
+    };
+
+    this.addMarker = function(res) {
+      if (this.marker)
+      this.marker.setMap(null);
+
+      this.marker = new google.maps.Marker({
+        map: this.map,
+        position: res.geometry.location,
+        title: res.name,
+        animation: google.maps.Animation.DROP,
+      });
+
+      this.map.setCenter(res.geometry.location);
+      this.infoWindow = new google.maps.InfoWindow();
+
+    }
 
   // var getCenter = function () {
   //   debugger;
@@ -49,15 +99,18 @@ app.factory('GoogleMapService', function () {
 
   // console.log('MyMap Service', MapData)
 
-  return MapData = {
-    map: map,
-    center: latLng,
-    zoom: 12,
-    animation: google.maps.Animation.DROP,
-    // center: getCenter(),
-    lat: 40.7127837,
-    long: -74.00594130000002,
-    latLng: latLng,
-    // title: getCity()
-  };
+  // return MapData = {
+  //   map: map,
+  //   center: latLng,
+  //   zoom: 12,
+  //   animation: google.maps.Animation.DROP,
+  //   // center: getCenter(),
+  //   lat: 40.7127837,
+  //   long: -74.00594130000002,
+  //   latLng: latLng,
+  //   // service: service,
+  //   search: function search(res),
+  //   addMarker: function addMarker(res)
+  //   // title: getCity()
+  // };
 })

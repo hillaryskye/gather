@@ -19,24 +19,23 @@ app.directive('googleMap', function () {
       // if (marker) {
       //     return;
       // }
-      debugger;
-
       // console.log('newCenter from getMarker', newCenter)
+      var currWindow =false;
+      var infoWindow = new google.maps.InfoWindow();
 
       if (!$scope.mapData) {
         $scope.mapData = GoogleMapService;
         var mapData = $scope.mapData;
         var newMap = mapData.map;
+        // var infoWindow = mapData.infoWindow;
       }
-
-      console.log('$scope.mapData.lat', $scope.mapData.lat)
-      console.log('$scope.mapData.newCenter', $scope.mapData.newCenter)
 
       // if (newCenter) {
       //   mapData.center = newCenter;
       // }
 
-      var infoWindow = new google.maps.InfoWindow();
+      // infoWindow = new google.maps.InfoWindow();
+
 
       if ($scope.mapData.contentString) {
         var contentString = $scope.mapData.contentString;
@@ -48,12 +47,20 @@ app.directive('googleMap', function () {
         // var title = $scope.city;
         contentString = $scope.city;
       }
+      // if (!newMarker) {
+      //   label = '';
+      //
+      // } else {
+        var labels = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var labelIndex = 0;
+      // }
 
       var markerOptions = {
         map: $scope.mapData.map,
         position: $scope.mapData.center,
-        animation: $scope.mapData.animation,
-        title: $scope.mapData.contentString
+        animation: google.maps.Animation.DROP,
+        title: $scope.mapData.contentString,
+        label: labels[labelIndex++ % labels.length]
       }
 
       var marker = new google.maps.Marker(markerOptions);
@@ -62,14 +69,16 @@ app.directive('googleMap', function () {
       marker.setMap($scope.mapData.map);
 
       google.maps.event.addListener(marker, 'click', function($scope) {
-        debugger;
+        // infoWindow.close();
 
           infoWindow.setContent(contentString);
           infoWindow.open(marker.map, marker);
 
-        if (infoWindow && $scope.markers) {
-          infoWindow.close();
-        }
+          if( currWindow ) {
+             currWindow.close();
+          }
+
+          currWindow = infoWindow;
       })
     }
 
@@ -100,9 +109,7 @@ app.directive('googleMap', function () {
         geocoder.geocode({ 'address': $scope.city + ', us'},
 
         function (results, status) {
-          console.log('inside')
             if (status == google.maps.GeocoderStatus.OK) {
-              console.log('status', status)
               var lat = results[0].geometry.location.lat()
               var long = results[0].geometry.location.lng()
 
@@ -116,8 +123,6 @@ app.directive('googleMap', function () {
               $scope.mapData.newCenter = center;
               $scope.mapData.center = center;
               $scope.mapData.lat = lat;
-              console.log('lat', $scope.mapData.lat)
-
               $scope.mapData.map.setCenter(center);
 
               getMarker();
@@ -131,23 +136,22 @@ app.directive('googleMap', function () {
     var newMarker = [];
 
     var addMarkers = function () {
-      // var infoWindow = new google.maps.InfoWindow();
       $scope.counter = 0;
       $scope.newMarkers = [];
+      $scope.myDataSource = {};
 
         for (var i=0; i < $scope.markers.length; i++) {
+          debugger;
           marker = $scope.markers
           var markerLat = $scope.markers[i].latitude;
           var markerLong = $scope.markers[i].longitude;
           var center = new google.maps.LatLng(markerLat, markerLong);
           var name = $scope.markers[i].name;
-          console.log('name', name)
+          console.log('name' + [i], name)
 
           // Reassign center variable with selected city
           $scope.mapData.center = center;
           $scope.mapData.lat = markerLat;
-
-          console.log('center from markersArr', $scope.mapData.lat)
 
           if (!$scope.mapData) {
             $scope.mapData = GoogleMapService;
@@ -155,15 +159,54 @@ app.directive('googleMap', function () {
 
           $scope.mapData.map.setCenter(center);
 
+          if (marker[i].priceLevel) {
+            debugger;
+            $scope.dataSource = {
+              "data": {
+                "chart": {
+                    "caption": "Pricing",
+                    "captionFontSize": "15",
+                    "bgColor": "#00f987",
+                    "showAxisLines": "1",
+                    "xAxisName": "Price Level",
+                    "toolTipColor": "#ffffff",
+                    "axisLineAlpha": "85",
+                    "xAxisLineColor": "#000",
+                    "showHoverEffect": "1",
+                    "animation": "1"
+                },
+                "data": [{
+                    "label": "Price Level",
+                    "value": marker[i].priceLevel.toString(),
+                    "showLabel": "1",
+                    "showValue": "1"
+                  }]
+                }
+              }
+              marker[i].dataSource = $scope.dataSource.data;
+          }
+
+          if (marker[i].rating) {
+            debugger;
+            var ratingStars = [];
+            for (var j=1; j < marker[i].rating; j++) {
+
+              ratingStars += '<i class="fa fa-star-o" aria-hidden="true"></i>'
+              // star.push(marker[i].rating);
+            }
+          }
+
           var contentString = '<h4>' + marker[i].name + '</h4><br>' +
-                        marker[i].address + '<br>' +
-                        'Phone: ' + marker[i].phone + '<br>' +
-                        'Website: <a href="' + marker[i].website + '"><br>' +
-                        'Rating: ' + marker[i].rating + '<br>' +
-                        'Price Level: ' + marker[i].priceLevel + '<br>' +
-                        'User Ratings: ' + marker[i].rating + '<br>';
+            marker[i].address + '<br>';
+            if (typeof marker[i].phone !== 'undefined') contentString += 'Phone: ' + marker[i].phone + '<br>'
+            if (typeof marker[i].website !== 'undefined') contentString += 'Website: <a target="_blank" href="' + marker[i].website + '">' + marker[i].name + '</a><br>';
+            if (typeof marker[i].rating !== 'undefined') contentString += 'Rating: ' + marker[i].rating + '<br>';
+            if (typeof marker[i].priceLevel !== 'undefined') contentString += '<div class="container"><div fusioncharts id="mychartcontainer" chartid="mychart" width="100" height="20" type="bar2d" dataSource="' + $scope.dataSource.data + '"></div></div><br>';
+            if (typeof marker[i].rating !== 'undefined') contentString += 'User Ratings: ' + ratingStars + '<br>';
 
           $scope.mapData.contentString = contentString;
+          // var compiled = $compile(contentString)($scope);
+          // $scope.mapData.contentString = compiled[0];
 
           getMarker();
           // function drop() {
@@ -237,7 +280,6 @@ app.directive('googleMap', function () {
           // });
 
           $scope.newMarkers.push($scope.marker);
-          console.log('$scope.newMarkers', $scope.newMarkers)
 
           // To add the marker to the map, call setMap();
           // $scope.marker.setMap($scope.mapData.map);

@@ -36,8 +36,8 @@ app.controller("AuthCtrl", function($scope, $rootScope, $location, $firebaseAuth
   }
 })
 
-app.controller('HomeCtrl', ['$scope', '$rootScope', '$routeParams', '$firebaseArray', '$firebaseAuth', '$location', 'GoogleMapService', '$timeout',
-function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $location, GoogleMapService, $timeout) {
+app.controller('HomeCtrl', ['$scope', '$rootScope', '$routeParams', '$firebaseArray', '$firebaseAuth', '$location', 'GoogleMapService', '$timeout', '$q',
+function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $location, GoogleMapService, $timeout, $q) {
 
   console.log('controller')
 
@@ -163,7 +163,7 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
 
       console.log('$scope.map controller', newMap)
 
-      var service = new google.maps.places.PlacesService(newMap);
+      // var service = new google.maps.places.PlacesService(newMap);
 
       // if code is empty, it prevents placesearch from taking place
       if (!$scope.place.code) {
@@ -172,159 +172,158 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
 
       $scope.places.code = place.code
 
-      var request = {
-        location: mapData.latLng,
-        radius: 50,
-        query: place.query
-      };
+      // var request = {
+      //   location: mapData.latLng,
+      //   radius: 50,
+      //   query: place.query
+      // };
 
-      service.textSearch(request, callback);
-      $scope.add = false;
-    };
+    //   var deferred = $q.defer();
+    //
+    //
+    //   service.textSearch(request, function(results, status) {
+    //         if (status == 'OK') {
+    //             var res = results[0];
+    //             deferred.resolve(res);
+    //         }
+    //         else deferred.reject(status);
+    //     });
+    //     return deferred.promise;
+    //
+    //   $scope.add = false;
+    // };
 
-    var callback = function(results, status) {
-        if (status == google.maps.places.PlacesServiceStatus.OK) {
-          // $scope.markers = []
-          for (var i = 0; i < results.length; i++) {
-            var photo;
-            var photoOptions = { 'maxWidth': 100, 'maxHeight': 100 };
-            createMarker(results[i]);
-            // console.log('place' + [i], place[i]);
-            console.log('results ' + [i], results[i])
-            if (results[i].photos) {
-              photo = results[i].photos[0].getUrl({ 'maxWidth': 100, 'maxHeight': 100 })
+      // deferred.resolve(
+
+      GoogleMapService.search(place)
+      .then(
+        function(res) { // success
+          // debugger;
+          // Closes form for entering in textSearch
+          $scope.add = false;
+
+              for (var i = 0; i < res.length; i++) {
+                createMarker(res[i])
+
+              console.log('res.name' + [i], res[i].name)
             }
-            else photo = '';
-          }
-
-            var markersList = {
-              markers: []
-            }
-
-            // var markersListOptions = {
-            //   name: results.name,
-            //   latitude: results.geometry.location.lat(),
-            //   longitude: results.geometry.location.lng(),
-            //   phone: results.formatted_phone_number,
-            //   website: results.website,
-            //   photo: photo,
-            //   // photos: detailsPhotos,
-            //   rating: results.rating,
-            //   priceLevel: results.price_level,
-            //   address: results.formatted_address,
-            //   id: results.id,
-            //   // photos: result.photos[0],
-            //   animation: google.maps.Animation.DROP,
-            //   password: $scope.place.code
-            // };
-
-            // markersList.markers.push(markersListOptions);
-
-            // console.log('markersList.markers', markersList.markers)
-        // var extend = bounds.extend(results.geometry.location);
-        // console.log('extend', extend)
-        }
-        return results;
-      };
+          // var extend = bounds.extend(results.geometry.location);
+          // console.log('extend', extend)
+        $scope.mapData.results = results;
+        // return results;
+      }
+    );
+  }
 
       $scope.markers = [];
-      var infoWindow = new google.maps.InfoWindow();
+      // var infoWindow = new google.maps.InfoWindow();
 
-    var createMarker = function(results) {
-      $scope.mapData = GoogleMapService;
-      var mapData = $scope.mapData;
-      var newMap = mapData.map;
+    var createMarker = function(res) {
+debugger;
+        var newMap = $scope.mapData.map;
+        results = $scope.mapData.results;
 
-      var marker = new google.maps.Marker({
-        map: newMap,
-        position: results.geometry.location,
-        title: results.name,
-        animation: google.maps.Animation.DROP,
-      });
+        GoogleMapService.addMarker(res);
+        var photo = '';
+        var photoOptions = { 'maxWidth': 100, 'maxHeight': 100 };
+
+        if (res.photos) {
+          photo = res.photos[0].getUrl(photoOptions);
+        }
+        else photo = '';
+
+        // $scope.markers.name = res.name;
+        // $scope.markers.lat = res.geometry.location.lat();
+        // $scope.markers.lng = res.geometry.location.lng();
+        // $scope.markers.photo = photo;
+        res.photo = photo;
 
       var request = {
-        placeId: results.place_id
+        placeId: res.place_id,
+        photo: res.photo
       };
 
       service = new google.maps.places.PlacesService(newMap);
 
-      service.getDetails(request, function(details, status) {
-        // $scope.markers = [];
+      // $timeout(function() {
+        service.getDetails(request, function(details, status) {
+          // $scope.markers = [];
+          debugger;
+          var onePhoto;
+          var photos = [];
+          var photoOptions = { 'maxWidth': 100, 'maxHeight': 100 };
 
-        // for (var i = 0; i < details.length; i++) {
-          // var detailsPhotos;
-          // var photoOptions = { 'maxWidth': 100, 'maxHeight': 100 };
-          //
-          // if (details.photos) {
-          //   detailsPhotos = details.photos.getUrl({ 'maxWidth': 100, 'maxHeight': 100 })
-          //   console.log('details', details)
-          //   console.log('detailsPhotos', detailsPhotos)
-          // }
-          // else detailsPhotos = [];
-        // }
-        var markersOptions = {
-          name: details.name,
-          latitude: details.geometry.location.lat(),
-          longitude: details.geometry.location.lng(),
-          phone: details.formatted_phone_number,
-          website: details.website,
-          // photo: photo,
-          // photos: detailsPhotos,
-          rating: details.rating,
-          priceLevel: details.price_level,
-          address: details.formatted_address,
-          id: details.id,
-          // photos: result.photos[0],
-          animation: google.maps.Animation.DROP,
-          password: $scope.place.code
-        }
+          if (details.photos) {
+            for (var i = 0; i < details.photos.length; i++) {
 
-          $timeout($scope.markers.push(markersOptions), 500);
-
-          // Send markersArr data to Directive to display the markers
-          if ($scope.markers.length > 19) {
-            debugger;
-            console.log('$scope.markers', $scope.markers)
-
-            markersArr = $scope.markers;
-            $scope.$broadcast('markersArr', markersArr);
+              onePhoto = details.photos[i].getUrl(photoOptions)
+              photos.push(onePhoto);
+            }
           }
+          var markersOptions = {
+            name: details.name,
+            latitude: details.geometry.location.lat(),
+            longitude: details.geometry.location.lng(),
+            phone: details.formatted_phone_number,
+            website: details.website,
+            photo: request.photo,
+            photos: photos,
+            rating: details.rating,
+            priceLevel: details.price_level,
+            address: details.formatted_address,
+            id: details.id,
+            animation: google.maps.Animation.DROP,
+            password: $scope.place.code
+          }
+          debugger;
+              $scope.markers.push(markersOptions)
+              console.log('$scope.markers', $scope.markers)
 
-          $scope.markersList = $scope.markers;
+            // Send markersArr data to Directive to display the markers
+            if ($scope.markers.length > 19) {
+              debugger;
+              console.log('$scope.markers', $scope.markers)
 
-          // google.maps.event.addListener(marker, 'click', function() {
-          //   debugger;
-          //   // var content = details.name + '<br>' +
-          //   //               details.formatted_address + '<br>' +
-          //   //               'Phone: ' + details.formatted_phone_number + '<br>' +
-          //   //               'Website: ' + details.website + '<br>' +
-          //   //               'Rating: ' + details.rating + '<br>' +
-          //   //               'Price Level: ' + details.price_level + '<br>' +
-          //   //               'User Ratings: ' + details.user_ratings_total + '<br>';
+              markersArr = $scope.markers;
+              $scope.$broadcast('markersArr', markersArr);
+            }
+
+            $scope.markersList = $scope.markers;
+
+            // google.maps.event.addListener(marker, 'click', function() {
+            //   debugger;
+            //   // var content = details.name + '<br>' +
+            //   //               details.formatted_address + '<br>' +
+            //   //               'Phone: ' + details.formatted_phone_number + '<br>' +
+            //   //               'Website: ' + details.website + '<br>' +
+            //   //               'Rating: ' + details.rating + '<br>' +
+            //   //               'Price Level: ' + details.price_level + '<br>' +
+            //   //               'User Ratings: ' + details.user_ratings_total + '<br>';
+            //
+            //   infoWindow.setContent(details.name + '<br>' +
+            //                 details.formatted_address + '<br>' +
+            //                 'Phone: ' + details.formatted_phone_number + '<br>' +
+            //                 'Website: ' + details.website + '<br>' +
+            //                 'Rating: ' + details.rating + '<br>' +
+            //                 'Price Level: ' + details.price_level + '<br>' +
+            //                 'User Ratings: ' + details.user_ratings_total + '<br>');
+            //
+            //   infoWindow.open(newMap, marker);
+            //   console.log('clicked', place.name)
+            // });
+
+          // bounds = new google.maps.LatLngBounds();
           //
-          //   infoWindow.setContent(details.name + '<br>' +
-          //                 details.formatted_address + '<br>' +
-          //                 'Phone: ' + details.formatted_phone_number + '<br>' +
-          //                 'Website: ' + details.website + '<br>' +
-          //                 'Rating: ' + details.rating + '<br>' +
-          //                 'Price Level: ' + details.price_level + '<br>' +
-          //                 'User Ratings: ' + details.user_ratings_total + '<br>');
+          // newMap.fitBounds(bounds);
+
+          // var zoom = newMap.getZoom();
+          // console.log('zoom', zoom)
           //
-          //   infoWindow.open(newMap, marker);
-          //   console.log('clicked', place.name)
-          // });
-
-        // bounds = new google.maps.LatLngBounds();
-        //
-        // newMap.fitBounds(bounds);
-
-        // var zoom = newMap.getZoom();
-        // console.log('zoom', zoom)
-        //
-        // var markersListFn = function(markersList) {
-          // $scope.$apply();
-        // }
-      });
+          // var markersListFn = function(markersList) {
+            $scope.$apply();
+          // }
+        });
+      // }, 3000);
     }
 
     $scope.$on('newMarkers', function (event, newMarkers) {

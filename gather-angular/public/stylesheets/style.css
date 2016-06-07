@@ -66,7 +66,7 @@ section:after {
    margin-bottom: 20px;
    margin-left: 20px;
    margin-right: 20px;
-   border: 1px solid black;
+   border: 1px solid #000;
    padding: 20px;
 }
 .border-opacity {
@@ -132,12 +132,18 @@ margin-left: 10px;
 .margin-r2 {
   margin-right: 10px;
 }
-a {
+p a {
   font-size: 1.0em;
   color: #f3f709;
 }
+p a:active {
+  color: #e86c19;
+}
+a {
+  color: #00f;
+}
 a:hover, button:hover {
-  border: 1px solid #aaa;
+  /*border: 1px solid #aaa;*/
   color: #e86c19;
 }
 .back {
@@ -161,7 +167,7 @@ p, label, input, h5 {
   font-size: 1em;
 }
 h5 {
-  color: darkslategrey;
+  color: #2f4f4f;
   line-height: 1.5em;
   margin: 0;
   font-size: .9em;
@@ -226,7 +232,7 @@ h5 {
   margin-left: 150px;
 }
 .button {
-  border: 1px solid white;
+  border: 1px solid #fff;
   text-decoration: none;
 /*   background-color: #4747a3;
  */
@@ -237,7 +243,7 @@ h5 {
   margin-left: 5px;
   border-radius: 5px;
   font-size: .9em;
-  color: blue;
+  color: #oof;
   font-weight: 600;
 }
 
@@ -263,6 +269,12 @@ h2 {
   margin-left: 10px;
   font-size: 30px;
 }
+h4 {
+  margin: 0;
+}
+/*i {
+  background: #ffb00f;
+}*/
 .title2 {
     margin-top: -1px;
 }
@@ -278,7 +290,7 @@ table {
   width: 98%;
   margin-top: 75px;
   margin-left: 230px;
-  border: 1px solid black;
+  border: 1px solid #000;
   margin: 0 auto;
 }
 .name {
@@ -350,7 +362,7 @@ textarea {
    float: right;
  }
  .red {
-   color: red;
+   color: #ff0000;
  }
 
  .map {
@@ -364,18 +376,18 @@ textarea {
    height: 300px;
 
    position: absolute;
-   border: 1px solid silver;
+   border: 1px solid #c0c0c0;
 }
 google-map {
   margin: 0 auto;
   position: absolute;
   top: 0;
   left: 0;
-  right:350px;
+  /*right:350px;*/
   /*opacity: 0;*/
-  width: 300px;
-  height: 300px;
-  border: 3px solid blue;
+  width: 60%;
+  height: 700px;
+  /*border: 3px solid #00f;*/
 }
 
 .gm-style-iw {
@@ -383,6 +395,12 @@ google-map {
   background: rgba(255,255,0,.4);
   padding: .1em;
 }
+
+.gm-style-iw a {
+  color: #00f;
+  text-decoration: none;
+}
+
 #map img { max-width: none; }
 .map2 {
   margin-top: -130px;
@@ -399,7 +417,7 @@ h3 img {
     text-decoration: none;
 }
 .infoWindowContent {
-    color: blue;
+    color: #00f;
     font-size:  14px !important;
     border-top: 1px solid #ccc;
     padding-top: 10px;
@@ -408,12 +426,12 @@ h3 img {
 /*   background: #f7efad;
  */  padding: 10px;
 /*   min-height: 292px;
- */  border: 2px solid blue;
+ */  border: 2px solid #00f;
   margin-bottom: 5px;
   margin-top: 5px;
 }
 .marker:active, .gm-style-iw:active {
-  background: green;
+  background: #0f0;
 }
 .marker2 {
   position: fixed;
@@ -432,7 +450,7 @@ h3 img {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f1e767', endColorstr='#feb645', GradientType=1 );
   width: 40%;
   padding: 10px;
-  border: 2px solid blue;
+  border: 2px solid #00f;
   right: 0;
       z-index: 3000;
 }
@@ -443,7 +461,7 @@ h3 img {
   margin-top: -5px;
   margin-left: -5px;
   border-radius: 50%;
-  background-color: grey;
+  background-color: #d3d3d3;
   position: absolute;
   display: block;
   cursor: pointer;
