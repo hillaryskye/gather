@@ -58,6 +58,9 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
       $scope.city = search.city
       console.log('city in controller', $scope.city)
 
+      $scope.hover = function () {
+        this.add('visible');
+      }
     //
     // console.log('newMap Controller', newMap)
 
@@ -211,8 +214,10 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
           // console.log('extend', extend)
         $scope.mapData.results = results;
         // return results;
-      }
-    );
+      },
+      function(status) { // error
+          alert('There was no results for your query' + status + '.');
+      })
   }
 
       $scope.markers = [];

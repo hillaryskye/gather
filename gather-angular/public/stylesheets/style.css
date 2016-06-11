@@ -388,6 +388,32 @@ google-map {
   width: 60%;
 }
 
+.circle {
+  position: absolute;
+  cursor: pointer;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  /*opacity: 0;*/
+  z-index: 1;
+}
+
+.circle.active, .circle:hover {
+  width: 15px;
+  height: 15px;
+  margin-top: -4px;
+  margin-left: -4px;
+  opacity: 1;
+}
+
+.visibile {
+  opacity: 1;
+}
+
+span {
+  /*padding-left: 50px;*/
+}
+
 .gm-style-iw {
   background: rgb(255,255,153);
   background: rgba(255,255,0,.4);
@@ -479,6 +505,24 @@ h3 img {
   padding-top: 15px;
   margin: 0;
   text-shadow: 3px 4px 5px rgba(255,255,255,.8);
+}
+.progress-bar {
+  background: magenta;
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 500;
+  height: 16px;
+  padding-left: 5px;
+  padding-top: 2px;
+  font-size: 10px;
+}
+.progress-container {
+  background: #e1e1e1;
+  height: 15px;
+  border-radius: 10px;
+  margin-top: 5p;
+  margin-top: 5px;
+  width: 100%;
 }
 .fadein {
   -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s;

@@ -59,6 +59,7 @@
       <form class="comment-form fadein fadeout" ng-show="add === true" ng-hide="add === false" name="searchForm">
         <div class="margin-l2 title">
             <button id="more">More results</button>
+            
             <div>
                <label class="label" for="query">Place text (ex. Golden restaurants)</label>
                  <input class="input3" type="text" name="query" ng-model="place.query" required>
@@ -81,11 +82,17 @@
   <div class="container4">
    <section class="title">
    <div class="container marker border-opacity"
-       ng-repeat="marker in markersList track by $index | orderBy : 'name'"
+       ng-repeat="marker in markers track by $index | orderBy : 'name'"
        ng-mouseenter="marker.isActive=true"
        ng-mouseleave="marker.isActive=false">
       <!-- <a href="#" class="red" ng-click="openInfoWindow($event, marker)">{{marker.name}}</a> -->
-      <p><a href="/#/gather/places/{{marker.password}}/new" target="_self" ng-click="addPlace(marker)">{{marker.name}}</a></p>
+      <p>
+        <a href="/#/gather/places/{{marker.password}}/new" target="_self"
+            ng-click="addPlace(marker)">{{marker.name}}
+          <span style="background: {{marker.color}}; position: inherit;" ng-mouseenter="overlay.toggle()"></span>
+          <span>{{marker.color}}</span>
+      </a>
+    </p>
      <p>Address: {{marker.address}}</p>
      <!-- <p>Phone: {{marker.phone}}</p>
      <p>Website: <a href="{{marker.website}}">{{marker.website}}</a></p>

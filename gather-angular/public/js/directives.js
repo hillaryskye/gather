@@ -6,9 +6,12 @@ app.directive('googleMap', function () {
     scope: {
       city: "="
     },
-    controller: ['$scope', '$element', '$attrs', '$rootScope', '$compile', 'GoogleMapService', function ($scope, $element, $attrs, $rootScope, $compile, GoogleMapService) {
+    controller: ['$scope', '$element', '$attrs', '$rootScope', '$compile', 'GoogleMapService', 'mapMarkerConstructor', function ($scope, $element, $attrs, $rootScope, $compile, GoogleMapService, mapMarkerConstructor) {
 
     $scope.markers = [];
+    $scope.overlays = [];
+    $scope.overlay = '';
+    var overlay;
     $scope.counter = 0;
     // var title = '';
 
@@ -16,19 +19,25 @@ app.directive('googleMap', function () {
     // google.maps.visualRefresh = true;
 
       var getMarker = function () {
+        debugger;
       // if (marker) {
       //     return;
       // }
-      // console.log('newCenter from getMarker', newCenter)
-      var currWindow = false;
+
+      // var index = 0;
       var infoWindow = new google.maps.InfoWindow();
+      // var bounds = new google.maps.LatLngBounds();
 
       if (!$scope.mapData) {
         $scope.mapData = GoogleMapService;
         var mapData = $scope.mapData;
         var newMap = mapData.map;
+        bounds = mapData.bounds;
+        console.log('bounds in getMarker', bounds)
         // var infoWindow = mapData.infoWindow;
       }
+
+      bounds = $scope.mapData.bounds;
 
       // if (newCenter) {
       //   mapData.center = newCenter;
@@ -41,6 +50,7 @@ app.directive('googleMap', function () {
         var contentString = $scope.mapData.contentString;
 
       } else if (!$scope.city) {
+
         // var title = 'New York';
         // contentString = '<h5> New York </h5>';
 
@@ -59,11 +69,17 @@ app.directive('googleMap', function () {
       } else {
         // var title = $scope.city;
         contentString = $scope.city;
+
       }
       // if (!newMarker) {
       //   label = '';
       //
       // } else {
+
+      // var circle = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 20 20" style="enable-background:new 0 0 20 20;" xml:space="preserve"> <style type="text/css"> .st0{opacity:0.87;fill:#0200E7;} </style> <circle class="st0" cx="5.5" cy="5.5" r="1.4"/> </svg>'
+      // var A = circle;
+      //
+      // var label = circle;
         var labels = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         var labelIndex = 0;
       // }
@@ -71,29 +87,88 @@ app.directive('googleMap', function () {
       var markerOptions = {
         map: $scope.mapData.map,
         position: $scope.mapData.center,
+        bounds: $scope.mapData.bounds,
         animation: google.maps.Animation.DROP,
         title: $scope.mapData.contentString,
+        zoom: 12,
         maxWidth: 350,
-        label: labels[labelIndex++ % labels.length]
+        maxZoom: 13,
+        label: labels[labelIndex++ % labels.length],
       }
 
       var marker = new google.maps.Marker(markerOptions);
-      $scope.marker = marker;
+      $scope.mapData.colors = mapMarkerConstructor.colors;
 
+      var colors = $scope.mapData.colors;
+      var index = $scope.overlayIndex;
+      console.log('index in overlay', $scope.overlayIndex)
+      if (!$scope.overlayIndex) {
+        marker.index = 0;
+        marker.id = '123';
+      }
+      else {
+        marker.index = $scope.mapData.index;
+      }
+
+        overlay = new mapMarkerConstructor.GoogleOverlayView(
+          $scope.mapData.bounds, $scope.mapData.map, {
+            marker_id: $scope.mapData.id,
+            color: colors[marker.index],
+            bounds: $scope.mapData.bounds
+            // hover: marker.hover,
+            // labelClass: marker.labelClass
+            // labelAnchor: 15,
+            // labelLeft: '-4px',
+            // labelTop: '32px'
+          }
+
+        );
+        // $scope.overlay = GoogleOverlayView;
+        console.log('bounds customMarker', $scope.mapData.bounds.H)
+        $scope.overlays.push(overlay);
+        // GoogleOverlayView.setMap($scope.mapData.map);
+
+      $scope.marker = marker;
       marker.setMap($scope.mapData.map);
 
-      google.maps.event.addListener(marker, 'click', function($scope) {
+      zoom_level = marker.map.getZoom();
+     console.log('zoom Directive', zoom_level)
+
+      // bounds.extend(marker.position);
+
+   var listener = google.maps.event.addListenerOnce(marker.map, "zoom_changed", function() {
+     debugger;
+    //  marker.map.panTo(marker.getPosition());
+      bounds = $scope.mapData.bounds;
+      zoom_level = marker.map.getZoom();
+      console.log('zoom Directive 2', zoom_level)
+    //  overlay.zoomDelete();
+    //  overlay.draw();
+    // google.maps.event.removeListener(listener);
+     // map.setCenter(newCenter);
+   });
+
+   google.maps.event.addListener(marker, 'click', function($scope) {
         // infoWindow.close();
 
           infoWindow.setContent(contentString);
           infoWindow.open(marker.map, marker);
-
-          if( currWindow ) {
-             currWindow.close();
-          }
-
-          currWindow = infoWindow;
       })
+
+      google.maps.event.addListener(marker, 'mouseout', function() {
+        if (marker) {
+          infoWindow.close();
+        }
+      });
+
+      google.maps.event.addListener(marker, "mouseover", function (e) {
+        debugger;
+        if (overlay) {
+          console.log('mouseover'); overlay.toggle();
+        }
+      });
+
+      // marker.map.fitBounds(bounds);
 
       // *
       // START INFOWINDOW CUSTOMIZE.
@@ -182,6 +257,9 @@ app.directive('googleMap', function () {
               var long = results[0].geometry.location.lng()
 
               var center = new google.maps.LatLng(lat, long)
+              var bounds = new google.maps.LatLngBounds(
+                new google.maps.LatLng(lat, long)
+              );
 
               if (!$scope.mapData) {
                 $scope.mapData = GoogleMapService;
@@ -191,8 +269,12 @@ app.directive('googleMap', function () {
               $scope.mapData.newCenter = center;
               $scope.mapData.center = center;
               $scope.mapData.lat = lat;
+              $scope.mapData.bounds = bounds;
+              console.log('bounds in city', bounds.H)
+              console.log('lat in city', $scope.mapData.lat)
               $scope.mapData.map.setCenter(center);
 
+              overlay.zoomDelete();
               getMarker();
 
             } else {
@@ -206,20 +288,45 @@ app.directive('googleMap', function () {
     var addMarkers = function () {
       $scope.counter = 0;
       $scope.newMarkers = [];
+      // $scope.overlays = [];
       $scope.myDataSource = {};
+      $scope.markers.index = 0;
+      $scope.mapData.index = 0;
+      $scope.mapData.overlay = {};
+      $scope.newMarkers.overlays = [];
+      $scope.marker.overlay = {};
+      $scope.markers.overlays = [];
+      $scope.markers.overlay = {};
 
         for (var i=0; i < $scope.markers.length; i++) {
           debugger;
-          marker = $scope.markers
+          marker = $scope.markers;
+
           var markerLat = $scope.markers[i].latitude;
           var markerLong = $scope.markers[i].longitude;
           var center = new google.maps.LatLng(markerLat, markerLong);
           var name = $scope.markers[i].name;
+          var id = $scope.markers[i].id;
           console.log('name' + [i], name)
+          $scope.markers[i].index = i;
+          $scope.overlayIndex = i;
+
 
           // Reassign center variable with selected city
           $scope.mapData.center = center;
           $scope.mapData.lat = markerLat;
+          $scope.mapData.id = id;
+          console.log('lat in loop', $scope.mapData.lat)
+          $scope.mapData.index = i;
+          console.log('index in loop', i)
+          $scope.mapData.overlay = $scope.overlay;
+          $scope.markers[i].color = $scope.mapData.overlay.args.color;
+          $scope.markers[i].overlay = $scope.mapData.overlay;
+          // $scope.newMarker.overlay = $scope.overlays[i];
+          $scope.marker.overlay = $scope.overlays[i];
+
+          $scope.newMarkers.push($scope.marker);
+          $scope.newMarkers.overlays.push($scope.overlays[i]);
 
           if (!$scope.mapData) {
             $scope.mapData = GoogleMapService;
@@ -228,7 +335,6 @@ app.directive('googleMap', function () {
           $scope.mapData.map.setCenter(center);
 
           if (marker[i].priceLevel) {
-            debugger;
             $scope.dataSource = {
                 "chart": {
                     "caption": "Pricing",
@@ -244,7 +350,7 @@ app.directive('googleMap', function () {
                 },
                 "data": [{
                     "label": "Price Level",
-                    "value": marker[i].priceLevel.toString(),
+                    "value": marker[i].priceLevel,
                     "showLabel": "1",
                     "showValue": "1"
                   }]
@@ -254,7 +360,6 @@ app.directive('googleMap', function () {
           }
 
           if (marker[i].rating) {
-            debugger;
             var ratingStars = [];
             for (var j=1; j < marker[i].rating; j++) {
 
@@ -267,9 +372,9 @@ app.directive('googleMap', function () {
             marker[i].address + '<br>';
             if (typeof marker[i].phone !== 'undefined') contentString += 'Phone: ' + marker[i].phone + '<br>'
             if (typeof marker[i].website !== 'undefined') contentString += 'Website: <a target="_blank" href="' + marker[i].website + '">' + marker[i].name + '</a><br>';
-            if (typeof marker[i].rating !== 'undefined') contentString += 'Rating: ' + marker[i].rating + '<br>';
-            if (typeof marker[i].priceLevel !== 'undefined') contentString += '<div class="container"><div fusioncharts id="mychartcontainer" chartid="mychart" width="100" height="20" type="bar2d" dataSource="' + $scope.dataSource + '"></div></div><br>';
-            if (typeof marker[i].rating !== 'undefined') contentString += 'User Ratings: ' + ratingStars + '<br>';
+            if (typeof marker[i].index !== 'undefined') contentString += 'Index/ Colors: ' + marker[i].index + marker[i].color + '<br>';
+            if (typeof marker[i].priceLevel !== 'undefined') contentString += '<div class="progress-container"><div class="progress-bar" style="width: ' + marker[i].priceLevel * 10 + '%"> Price: ' + marker[i].priceLevel + '</div>' + marker[i].priceLevel + '</div><br>';
+            if (typeof marker[i].rating !== 'undefined') contentString += 'User Ratings: <span>' + marker[i].rating + '</span>' + ratingStars + '<br>';
 
           $scope.mapData.contentString = contentString;
           // var compiled = $compile(contentString)($scope);
@@ -320,7 +425,6 @@ app.directive('googleMap', function () {
           // google.maps.event.addListener(newMarker, 'click', function() {
 
 
-
           // infoWindow.setContent(content);
 
           // var infowindow = new google.maps.InfoWindow({
@@ -346,7 +450,8 @@ app.directive('googleMap', function () {
           // newMap.setCenter(latLong);
           // });
 
-          $scope.newMarkers.push($scope.marker);
+
+          // $scope.newMarkers.push($scope.marker);
 
           // To add the marker to the map, call setMap();
           // $scope.marker.setMap($scope.mapData.map);
