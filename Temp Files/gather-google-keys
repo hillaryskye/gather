@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "gather-angular-firebase",
+  "private_key_id": "3c225d9ed5c1d97463b448d5114d5ee17690be77",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCrRgd2m59GhxpS\nedn5rK0Fwsl2nq36j21ayOUlD+X+v1n3MI6kmfRzu13Gi6yRd6F5wtmIIY5U1Rx5\nFu6fSLltG0jbEqw9bnghxQIRrYpfIuY9foNb6G/SLcG7KlTuP1w/+RF9Q0UNIe+x\nea3o7Ev2n6AICTiyLxRqpTiEmf16fKluhVWBXA9Qod0S4/8sSswiGw1TnaTtxUcC\nVSzJm4I7AimpgX/J8yoScbBD6f30soxAJxiRHbKfeLMlMj38FUwSqq5qJwOH1TGV\nC5SjC1x+Hvzv9Z9Bn+4yN5P6g23uFFbPJgb46Bo6QEu2t22zJcdtnUN6Tmc00AF5\nye6NxKGdAgMBAAECggEAKn22LkvPiQzNj/ahCFs5lbtMhfw6B3Z719ENYFOAaOIK\nLNREHzv+tJOgYTiXuIMocW/QzgAdMpiodrYkvymorxPc0FTinF8CuMYKjF40fQPI\ngSsY5b1VuJwXexq2dWEMvuZI233L7MUllS8t4SJ2ehoB9txqz3H0q7yPt/4IL9HD\nBem67HtJ9S8AvXU3hIneCyZVAfYAduzm1trNgcRLIG57KGQ5zYiMvF05kLDZvfSN\np4gS62pWjvXnEVRrunbW8bbLl5H9SVpyOulmPcii093tzNmwEwhyyD/96BJ6ywXV\nYDuGbPW1dlFJmfwGq0/epQEJeRpEhmJgVPp44eItAQKBgQDsDcamr10rJKTJotPp\nabIiBrsqfNIyDd7kPygelFR0W+Ca4MgC8Pk5hK0NPNmdYI4k9j0xnLKDIZqHsrrn\noLhpoobu8GoHoGCzPBKSvY1kDAkhkom/oLA4t34T+Ly1vkC83rHvBlQXkteuE42t\nOxXXUymeVCbgPPmdQ69xqGJAXQKBgQC5vvOq9ZuYekIakCLmm3q5TPtFsrTtLxOP\n8GLJtTW4cWDD4O89DVbM2F5/0qRTz/waIuLDNKOVwGZFJ79y97P24drj84SCLFQU\ntTalrKNrJBZ979PfDOyIAyDRLAu7hFIfdPdNlWV6FI7Mia13G2zZv0rfm8ZKizah\nUAXlO77SQQKBgD7LY18QI37InrWtBSaAoYx/seaZkekS24poaqnH17ekgVlyFoMB\ny6rLaqWs3E8LUoTupFTAVJShqdQTbbkUfjpLrA2AExS4S0Ei5+X1WtmUghFWRCKg\nAoDz/ywc7UaDuAEGVNs7Gb+zpoB+XyAIKcVAMEAYLsdUMSruyIs5uflZAoGAC9sD\nRHsutjm/dGCUybFM0Pz34Mf6QlVJ41sNgyBc0Gv0KCx4OKZcTvDUf0YblPnmdmiZ\nnqoCcvF31Zwm3RiwVOaviPMnFwPrTfMPDN4LBDCmet1O4aK6iifg9VjhWtOkRju5\n+Sq68mLThnyXJM4MUY2jIsiXjHR8RSmNZsc8c8ECgYEAkyQISnpCb+BnzkHSUwPn\nzDCWPcaRJ+BFW3FI0txAintbykr43X98TQ0fsYDDnZtzGzcErkLuljcM3zyO4w2Q\n1o6S0NI5zYsCXVjM+q7Q2RPxXjP6pH3G2NIjkhukNo9XpVLfIUf2GDBQhL9nIqOr\nR44RT0g7WneXGvr/xKo+WkM=\n-----END PRIVATE KEY-----\n",
+  "client_email": "gather@gather-angular-firebase.iam.gserviceaccount.com",
+  "client_id": "118227044545646945005",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gather%40gather-angular-firebase.iam.gserviceaccount.com"
+}

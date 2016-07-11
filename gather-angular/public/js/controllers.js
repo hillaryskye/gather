@@ -1,16 +1,124 @@
 app.controller("AuthCtrl", function($scope, $rootScope, $location, $firebaseAuth, $firebaseArray) {
 
-  var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/users")
-  var authObj = $firebaseAuth(authRef)
+  // var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/users")
+  // var authObj = $firebaseAuth(authRef)
+  //
+  // $scope.users = $firebaseArray(authRef)
+  // var user = firebase.auth().currentUser;
 
-  $scope.users = $firebaseArray(authRef)
 
   $scope.register = function() {
-      authObj.$createUser($scope.user)
-        .then(function() {
+      // authObj.$createUser($scope.user)
+      //   .then(function() {
+      //     $scope.login()
+      //   })
+debugger;
+
+var photoUrl, uid, name, email, password;
+
+var user = $scope.user;
+
+email = user.email;
+password = user.password;
+
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then(function () {
+          debugger;
+          console.log('New account');
           $scope.login()
         })
+        .catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // ...
+          alert('You are are unable to create an account because of ', errorMessage);
+        });
+  }
 
+//   var credential = firebase.auth.EmailPasswordAuthProvider.credential(email, password);
+//
+//   firebase.auth().onAuthStateChanged(function(user) {
+    // var user = firebase.auth().currentUser;
+    // var name, email, photoUrl, uid;
+//
+//     if (user != null) {
+//       name = user.displayName;
+//       email = user.email;
+//       photoUrl = user.photoURL;
+//       uid = user.uid;  // The user's ID, unique to the Firebase project. Do NOT use
+//                        // this value to authenticate with your backend server, if
+//                        // you have one. Use User.getToken() instead.
+//
+//       user.providerData.forEach(function (profile) {
+//         console.log("Sign-in provider: "+profile.providerId);
+//         console.log("  Provider-specific UID: "+profile.uid);
+//         console.log("  Name: "+profile.displayName);
+//         console.log("  Email: "+profile.email);
+//         console.log("  Photo URL: "+profile.photoURL);
+//       });
+//     }
+//     if (user) {
+//       // User is signed in.
+//       console.log('User is signed in');
+//     } else {
+//       // No user is signed in.
+//       console.log('No user is signed in');
+//     }
+//
+//     // user.updateProfile({
+//     //   displayName: "Jane Q. User",
+//     //   photoURL: "https://example.com/jane-q-user/profile.jpg"
+//     // }).then(function() {
+//     //   // Update successful.
+//     // }, function(error) {
+//     //   // An error happened.
+//     // });
+// });
+
+  $scope.login = function() {
+    var photoUrl, uid, name, email, password;
+
+    var user = $scope.user;
+
+    email = user.email;
+    password = user.password;
+
+    // authObj.$authWithPassword($scope.user)
+    //   .then(function() {
+    //     $location.path('/gather')
+    //   })
+debugger;
+    firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(function() {
+      debugger;
+      console.log('signed in');
+      $location.path('/gathers')
+    })
+      .catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // ...
+        alert('You are not able to sign in because of ', errorMessage)
+      });
+  }
+
+  $scope.logout = function() {
+    // console.log('logout')
+    // authObj.$unauth()
+    // $location.path('/')
+
+    firebase.auth().signOut()
+      .then(function() {
+        // Sign-out successful.
+        console.log('you have signed out!')
+        $location.path('/')
+        }, function(error) {
+          // An error happened.
+          alert('There was an error ', error)
+        });
+  }
       //   $scope.newUser = {
       //     name: $scope.users.name,
       //     email: $scope.users.email,
@@ -25,33 +133,49 @@ app.controller("AuthCtrl", function($scope, $rootScope, $location, $firebaseAuth
       //       console.error('ERROR:', err);
       //       return null;
       //     })
-    }
+
     // console.log('user', $scope.users)
 
-  $scope.login = function() {
-    authObj.$authWithPassword($scope.user)
-      .then(function() {
-        $location.path('/gather')
-      })
-  }
+
 })
 
-app.controller('HomeCtrl', ['$scope', '$rootScope', '$routeParams', '$firebaseArray', '$firebaseAuth', '$location', 'GoogleMapService', '$timeout', '$q',
-function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $location, GoogleMapService, $timeout, $q) {
+app.controller('HomeCtrl', ['$scope', '$rootScope', '$routeParams', '$firebaseArray', '$firebaseAuth', '$location', 'GoogleMapService', '$timeout', '$q', 'GatherService',
+function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $location, GoogleMapService, $timeout, $q, GatherService) {
 
   console.log('controller')
-
+debugger;
   $scope.add = false;
   $scope.show = false;
 
-  var newYork = new google.maps.LatLng(40.7127837, -74.00594130000002)
   var infoWindow, service, placesList, marker, mapElement, latLng;
 
-  var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gather")
-  var authObj = $firebaseAuth(authRef)
+  // var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gather")
+  // var authObj = $firebaseAuth(authRef)
 
-  var gatherRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gathers")
-  $scope.gathers = $firebaseArray(gatherRef)
+  // var gatherRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gathers")
+  // $scope.gathers = $firebaseArray(gatherRef)
+
+  // $scope.gathers = firebase.database().ref('gathers')
+
+
+  var gathers = GatherService.getAll();
+
+  gathers.$loaded()
+    .then(function (data) {
+      data = gathers;
+      console.log('allGathers', data)
+      $scope.gathers = data;
+      // $scope.selectedCity = { city: $scope.gathers[1].city };
+    })
+    .catch(function (error) {
+      console.log('error', error);
+    });
+
+
+
+// Get a reference to the database service
+// var gatherRef = new Firebase("https://gather-angular-firebase.firebaseio.com/database/data/gathers")
+// this.gathers = $firebaseArray(gatherRef);
 
     $scope.changeCity = function(search) {
 
@@ -61,21 +185,7 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
       $scope.hover = function () {
         this.add('visible');
       }
-    //
-    // console.log('newMap Controller', newMap)
 
-      // $scope.newCity = {
-      //   lat: $scope.lat,
-      //   long: $scope.long,
-      //   latLng: $scope.latLng,
-      //   city: $scope.city,
-      //   mapElement: $scope.mapElement,
-      //   map: $scope.map,
-      //   mapOptions: $scope.mapOptions,
-      //   marker: $scope.marker
-      // }
-      // console.log($scope.newCity)
-      //
       // $scope.gathers.$add($scope.newCity)
       //   .then(function(data) {
       //       console.log('success')
@@ -210,10 +320,7 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
 
               console.log('res.name' + [i], res[i].name)
             }
-          // var extend = bounds.extend(results.geometry.location);
-          // console.log('extend', extend)
         $scope.mapData.results = results;
-        // return results;
       },
       function(status) { // error
           alert('There was no results for your query' + status + '.');
@@ -221,10 +328,9 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
   }
 
       $scope.markers = [];
-      // var infoWindow = new google.maps.InfoWindow();
 
     var createMarker = function(res) {
-debugger;
+        // debugger;
         var newMap = $scope.mapData.map;
         results = $scope.mapData.results;
 
@@ -236,11 +342,6 @@ debugger;
           photo = res.photos[0].getUrl(photoOptions);
         }
         else photo = '';
-
-        // $scope.markers.name = res.name;
-        // $scope.markers.lat = res.geometry.location.lat();
-        // $scope.markers.lng = res.geometry.location.lng();
-        // $scope.markers.photo = photo;
         res.photo = photo;
 
       var request = {
@@ -248,86 +349,57 @@ debugger;
         photo: res.photo
       };
 
-      service = new google.maps.places.PlacesService(newMap);
-
       // $timeout(function() {
-        service.getDetails(request, function(details, status) {
+        // service.getDetails(request, function(details, status) {
           // $scope.markers = [];
-          debugger;
-          var onePhoto;
-          var photos = [];
-          var photoOptions = { 'maxWidth': 100, 'maxHeight': 100 };
+          GoogleMapService.details (res)
+            .then(function (details) {
+              // debugger;
+              var photo = res.photo;
+              var onePhoto;
+              var photos = [];
+              var photoOptions = { 'maxWidth': 100, 'maxHeight': 100 };
 
-          if (details.photos) {
-            for (var i = 0; i < details.photos.length; i++) {
+              if (details.photos) {
+                for (var i = 0; i < details.photos.length; i++) {
 
-              onePhoto = details.photos[i].getUrl(photoOptions)
-              photos.push(onePhoto);
+                  onePhoto = details.photos[i].getUrl(photoOptions)
+                  photos.push(onePhoto);
+                }
+              }
+              var markersOptions = {
+                name: details.name,
+                latitude: details.geometry.location.lat(),
+                longitude: details.geometry.location.lng(),
+                phone: details.formatted_phone_number,
+                website: details.website,
+                photo: photo,
+                photos: photos,
+                rating: details.rating,
+                priceLevel: details.price_level,
+                address: details.formatted_address,
+                id: details.id,
+                animation: google.maps.Animation.DROP,
+                password: $scope.place.code,
+                type: details.types[0]
+              }
+                  $scope.markers.push(markersOptions)
+                  console.log('$scope.markers', $scope.markers)
+
+                // Send markersArr data to Directive to display the markers
+                if ($scope.markers.length > 19) {
+                  console.log('$scope.markers', $scope.markers)
+
+                  markersArr = $scope.markers;
+                  $scope.$broadcast('markersArr', markersArr);
+                }
+
+                // $scope.markersList = $scope.markers;
+                // $scope.$apply();
+            }),
+            function(status) { // error
+                alert('There was no details for your query' + status + '.');
             }
-          }
-          var markersOptions = {
-            name: details.name,
-            latitude: details.geometry.location.lat(),
-            longitude: details.geometry.location.lng(),
-            phone: details.formatted_phone_number,
-            website: details.website,
-            photo: request.photo,
-            photos: photos,
-            rating: details.rating,
-            priceLevel: details.price_level,
-            address: details.formatted_address,
-            id: details.id,
-            animation: google.maps.Animation.DROP,
-            password: $scope.place.code
-          }
-          debugger;
-              $scope.markers.push(markersOptions)
-              console.log('$scope.markers', $scope.markers)
-
-            // Send markersArr data to Directive to display the markers
-            if ($scope.markers.length > 19) {
-              debugger;
-              console.log('$scope.markers', $scope.markers)
-
-              markersArr = $scope.markers;
-              $scope.$broadcast('markersArr', markersArr);
-            }
-
-            $scope.markersList = $scope.markers;
-
-            // google.maps.event.addListener(marker, 'click', function() {
-            //   debugger;
-            //   // var content = details.name + '<br>' +
-            //   //               details.formatted_address + '<br>' +
-            //   //               'Phone: ' + details.formatted_phone_number + '<br>' +
-            //   //               'Website: ' + details.website + '<br>' +
-            //   //               'Rating: ' + details.rating + '<br>' +
-            //   //               'Price Level: ' + details.price_level + '<br>' +
-            //   //               'User Ratings: ' + details.user_ratings_total + '<br>';
-            //
-            //   infoWindow.setContent(details.name + '<br>' +
-            //                 details.formatted_address + '<br>' +
-            //                 'Phone: ' + details.formatted_phone_number + '<br>' +
-            //                 'Website: ' + details.website + '<br>' +
-            //                 'Rating: ' + details.rating + '<br>' +
-            //                 'Price Level: ' + details.price_level + '<br>' +
-            //                 'User Ratings: ' + details.user_ratings_total + '<br>');
-            //
-            //   infoWindow.open(newMap, marker);
-            //   console.log('clicked', place.name)
-            // });
-
-          // bounds = new google.maps.LatLngBounds();
-          //
-          // newMap.fitBounds(bounds);
-
-          // var zoom = newMap.getZoom();
-          // console.log('zoom', zoom)
-          //
-          // var markersListFn = function(markersList) {
-            $scope.$apply();
-          // }
-        });
       // }, 3000);
     }
 
@@ -337,6 +409,25 @@ debugger;
         $scope.newMarkers = newMarkers;
         console.log('$scope.map in Controller', $scope.newMarkers)
       }
+  });
+
+  $scope.markerActive = false;
+
+  $scope.$on('markerMouseover', function (event, marker) {
+    debugger;
+
+    for (var i=0; i < $scope.markers.length; i++) {
+      if (marker.id === $scope.markers[i].id) {
+        // $('.temp').attr('id', "#active")
+        console.log('marker.id', marker.name)
+        // $('.temp').addClass('tempActive');
+        $scope.markerActive = true;
+        console.log('markerActive', $scope.markerActive)
+        // $('.circle').addClass('active');
+      } else $scope.markerActive = false;
+    }
+    // $('.temp').removeClass('tempActive');
+    // $('.circle').removeClass('active');
   });
 
     $scope.logout = function() {
@@ -719,10 +810,10 @@ app.controller("GatherCtrl", ["$scope", "$routeParams", "$http", "$route", "$loc
 //   });
 // }
 
-  var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/users")
-  var authObj = $firebaseAuth(authRef)
+  // var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/users")
+  // var authObj = $firebaseAuth(authRef)
 
-  $scope.users = $firebaseArray(authRef)
+  // $scope.users = $firebaseArray(authRef)
 
   console.log('in gather')
 
@@ -757,10 +848,10 @@ app.controller("GatherCtrl", ["$scope", "$routeParams", "$http", "$route", "$loc
   }
   console.log('gather', $scope.gathers)
 
-  $scope.logout = function() {
-    console.log('logout')
-    authObj.$unauth()
-    $location.path('/')
-  }
+  // $scope.logout = function() {
+  //   console.log('logout')
+  //   authObj.$unauth()
+  //   $location.path('/')
+  // }
   // initalize();
 }]);
