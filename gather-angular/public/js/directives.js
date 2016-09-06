@@ -8,40 +8,34 @@ app.directive('googleMap', function () {
     },
     controller: ['$scope', '$element', '$attrs', '$rootScope', '$compile', 'GoogleMapService', 'mapMarkerConstructor', function ($scope, $element, $attrs, $rootScope, $compile, GoogleMapService, mapMarkerConstructor) {
 
-    $scope.overlays = [];
-    $scope.overlay = '';
+    //$scope.overlays = [];
+    // $scope.overlay = '';
     var overlay;
     $scope.counter = 0;
     // var title = '';
 
     // Enable the visual refresh
     // google.maps.visualRefresh = true;
-
-    var nyMarker = function () {
+    var getMarker;
+    var marker = null;
+    var nyMarker = function (marker) {
 debugger;
 
-    var marker = new google.maps.Marker(markerOptions);
+    if (!$scope.mapData) {
+      $scope.mapData = GoogleMapService;
+      var mapData = $scope.mapData;
+      var newMap = mapData.map;
+      bounds = mapData.bounds;
+      console.log('bounds in getMarker', bounds)
+    }
+
+    // var marker = new google.maps.Marker(markerOptions);
     $scope.mapData = GoogleMapService;
+    var marker = $scope.mapData;
     marker.index = 0;
     marker.id = '123';
 
-    var labels = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    var labelIndex = 0;
-
-    var markerOptions = {
-      map: $scope.mapData.map,
-      position: $scope.mapData.center,
-      bounds: $scope.mapData.bounds,
-      animation: google.maps.Animation.DROP,
-      title: $scope.mapData.contentString,
-      type: $scope.mapData.type,
-      zoom: 12,
-      maxWidth: 350,
-      maxZoom: 16,
-      label: labels[labelIndex++ % labels.length]
-    }
-
-    contentString = '<div class="info-box-wrap">' +
+    marker.contentString = '<div class="info-box-wrap">' +
                       '<div class="info-box-title">New York</div>' +
                       // '<div class="info-box-wrap">' +
                         // '<div class="iw-subTitle">History</div>' +
@@ -50,137 +44,124 @@ debugger;
                         '<p><a href="https://www.newyorkpass.com/En/" target="_blank">The New York Pass</a></p>' +
                       '</div>' +
                     '</div>';
-
-    // var colors = mapMarkerConstructor.colors;
-    //
-    // overlay = new mapMarkerConstructor.GoogleOverlayView(
-    //   $scope.mapData.bounds, $scope.mapData.map, {
-    //     marker_id: marker.id,
-    //     color: colors[marker.index],
-    //     bounds: $scope.mapData.bounds
-    //   }
-    // );
-    //
-    // $scope.mapData.overlay = overlay;
-    //
-    // marker.setMap($scope.mapData.map);
+    console.log('marker', marker)
+    getMarker(marker);
+    return marker;
     }
 
-    // nyMarker();
 
-      var getMarker = function () {
+    var getMarker = function (marker) {
+      $scope.newMarkers = [];
+
+      // console.log('markers from getMarker', marker)
+      console.log('marker in getMarker', marker.name + ' ' + marker.id)
+      console.log('contentString', marker.contentString);
+      // if (!$scope.mapData) {
+      //   $scope.mapData = GoogleMapService;
+      //   var mapData = $scope.mapData;
+      //   var newMap = mapData.map;
+      //   bounds = mapData.bounds;
+      //   console.log('bounds in getMarker', bounds)
+      // }
+
+      // bounds = $scope.mapData.bounds;
+
+      if (!marker.contentString) {
         debugger;
-
-      if (!$scope.mapData) {
-        $scope.mapData = GoogleMapService;
-        var mapData = $scope.mapData;
-        var newMap = mapData.map;
-        bounds = mapData.bounds;
-        console.log('bounds in getMarker', bounds)
+        marker.contentString = $scope.city;
       }
 
-      bounds = $scope.mapData.bounds;
-
-      if ($scope.mapData.contentString) {
-        var contentString = $scope.mapData.contentString;
-
-      } else if (!$scope.city) {
-
-        contentString = '<div class="info-box-wrap">' +
-                          '<div class="info-box-title">New York</div>' +
-                          // '<div class="info-box-wrap">' +
-                            // '<div class="iw-subTitle">History</div>' +
-                            '<img src="/images/newYork.jpeg" alt="New York" height="115" width="83">' +
-                            '<p class="padding">The history of New York begins around 10,000 BC, when the first Native Americans arrived. By 1100 AD, New York\'s main native cultures, the Iroquoian and Algonquian, had developed. European discovery of New York was led by the French in 1524 and the first land claim came in 1609 by the Dutch. As part of New Netherland, the colony was important in the fur trade and eventually became an agricultural resource thanks to the patroon system. In 1626 the Dutch bought the island of Manhattan from Native Americans.[1] In 1664, England renamed the colony New York, after the Duke of York (later James II & VII.) New York City gained prominence in the 18th century as a major trading port in the Thirteen Colonies.</p>' +
-                            '<p><a href="https://www.newyorkpass.com/En/" target="_blank">The New York Pass</a></p>' +
-                          '</div>' +
-                        '</div>';
-      } else {
-        contentString = $scope.city;
-
-      }
-
-        var labels = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        var labelIndex = 0;
+      var labels = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      var labelIndex = 0;
 
       var markerOptions = {
         map: $scope.mapData.map,
         position: $scope.mapData.center,
         bounds: $scope.mapData.bounds,
         animation: google.maps.Animation.DROP,
-        title: $scope.mapData.contentString,
+        title: marker.contentString,
         type: $scope.mapData.type,
         zoom: 12,
         maxWidth: 350,
-        maxZoom: 15,
+        maxZoom: 16,
         label: labels[labelIndex++ % labels.length],
       }
 
-      var marker = new google.maps.Marker(markerOptions);
-      $scope.marker = marker;
-      $scope.marker.color = '';
+      marker.color = '';
+      var index, id;
       $scope.mapData.colors = mapMarkerConstructor.colors;
 
       var colors = $scope.mapData.colors;
-      var index = $scope.mapData.index;
-      console.log('index in overlay', $scope.overlayIndex)
+      // var index = $scope.mapData.index;
 
-      if (!$scope.mapData.type) { // Coming from first time NY or selecting a city
-        marker.index = 0;
-        marker.id = '123';
-        $scope.mapData.id = marker.id;
+      if (!marker.type) { // Coming from first time NY or selecting a city
+        index = 0;
+        id = '123';
+        // $scope.mapData.id = marker.id;
       }
       else { // Coming from loop from Controller with 20 Details results
-        marker.index = $scope.mapData.index;
+        index = marker.index;
+        id = marker.id;
+        // marker.index = $scope.mapData.index;
         // marker.bounds = $scope.mapData.bounds;
       }
 
-        overlay = new mapMarkerConstructor.GoogleOverlayView(
-          $scope.mapData.bounds, $scope.mapData.map, {
-            marker_id: $scope.mapData.id,
-            color: colors[marker.index],
-            bounds: $scope.mapData.bounds
-            // hover: marker.hover,
-            // labelClass: marker.labelClass
-            // labelAnchor: 15,
-            // labelLeft: '-4px',
-            // labelTop: '32px'
-          }
-        );
-        // $scope.overlay = GoogleOverlayView;
-        console.log('bounds customMarker', $scope.mapData.bounds.H)
-        if ($scope.mapData.type) {
-          // $scope.overlays.push(overlay);
-          // $scope.mapData.markers.overlay = overlay;
-          // $scope.newMarker.overlay = $scope.overlay;
+      overlay = new mapMarkerConstructor.GoogleOverlayView(
+        marker.bounds, marker.map, {
+          marker_id: id,
+          color: colors[index],
+          bounds: marker.bounds
+          // hover: marker.hover,
+          // labelClass: marker.labelClass
+          // labelAnchor: 15,
+          // labelLeft: '-4px',
+          // labelTop: '32px'
         }
+      );
+      // $scope.overlay = GoogleOverlayView;
+      if (marker.type) {
+        // $scope.overlays.push(overlay);
+        // $scope.mapData.markers.overlay = overlay;
+        // $scope.newMarker.overlay = $scope.overlay;
+      }
 
-        // $scope.mapData.marker.overlay = overlay;
-        $scope.mapData.overlay = overlay;
-        var color = $scope.mapData.overlay.args.color;
-        $scope.marker.color = color;
-        $scope.mapData.color = color;
-        $scope.marker.id = $scope.mapData.id;
+      // $scope.mapData.marker.overlay = overlay;
+      var color = overlay.args.color;
 
-      marker.setMap($scope.mapData.map);
+      // $scope.mapData.color = color;
+      // $scope.marker.id = $scope.mapData.id;
 
-      // $scope.mapData.overlay = $scope.overlay;
-      // $scope.markers[i].color = $scope.mapData.overlay.args.color;
-      // $scope.markers[i].overlay = $scope.mapData.overlay;
+      console.log('marker', marker);
+      // console.log('$scope.mapData', $scope.mapData);
+      console.log('name', marker.name)
+      $scope.newMarkers.push(marker);
+      $scope.newMarkers[0].color = color;
+      $scope.newMarkers[0].id = id;
+      $scope.newMarkers[0].overlay = overlay;
+      $scope.newMarkers[0].index = index;
 
-      // $scope.marker.overlay = $scope.overlays[i];
+      marker = new google.maps.Marker(markerOptions); // marker gets overridden
 
-      // $scope.newMarkers.overlays.push($scope.overlays[i]);
+      marker.setMap(marker.map);
+      marker.color = $scope.newMarkers[0].color;
+      marker.id = $scope.newMarkers[0].id;
+      marker.overlay = $scope.newMarkers[0].overlay;
+      marker.index = $scope.newMarkers[0].index;
+      marker.name = $scope.newMarkers[0].name;
+
+      $scope.marker = marker; // Save marker data to $scope.marker
+      $scope.tempMarkers = [];
+      $scope.tempMarkers.push(marker); // not sure if I need this
 
       zoom_level = marker.map.getZoom();
      console.log('zoom Directive', zoom_level)
 
       // bounds.extend(marker.position);
 
-   var listener = google.maps.event.addListenerOnce($scope.marker.map, "zoom_changed", function() {
-    //  marker.map.panTo(marker.getPosition());
-      bounds = $scope.mapData.bounds;
-      zoom_level = $scope.marker.map.getZoom();
+      var listener = google.maps.event.addListenerOnce(marker.map, "zoom_changed", function() {
+      marker.map.panTo(marker.getPosition());
+      // bounds = marker.bounds;
+      zoom_level = marker.map.getZoom();
       console.log('zoom Directive 2', zoom_level)
     //  overlay.zoomDelete();
     //  overlay.draw();
@@ -190,9 +171,8 @@ debugger;
 
    var boxText = document.createElement("div");
 
-
    var myOptions = {
-      content: boxText,
+     content: boxText,
      disableAutoPan: false,
      maxWidth: 0,
      pixelOffset: new google.maps.Size(-140, 0),
@@ -200,7 +180,7 @@ debugger;
      boxStyle: {
        background: "url('tipbox.gif') no-repeat",
        opacity: 0.75,
-       width: "280px",
+       width: "345px",
      },
      closeBoxMargin: "10px 2px 2px 2px",
      closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif",
@@ -212,73 +192,48 @@ debugger;
    };
 
    google.maps.event.addListener(marker, 'click', function() {
-        // infoWindow.close();
-        console.log('click')
-        // console.log('marker', marker)
-        // if (overlay) {
-          console.log(marker.name +  ' ' + marker.color); overlay.toggle();
-        // }
+     debugger;
+      // infoWindow.close();
+      console.log('click')
+      // console.log('marker', marker)
+      // if (overlay) {
+      console.log(marker.name +  ' ' + marker.index + ' ' + marker.color); overlay.toggle(marker.overlay.div);
+      // }
 
-        var boxText = document.createElement("div");
-        boxText.className = 'infobox';
-        // boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: yellow; padding: 5px;";
-        boxText.innerHTML = contentString;
+      var boxText = document.createElement("div");
+      boxText.className = 'infobox';
+      // boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: yellow; padding: 5px;";
+      boxText.innerHTML = marker.title;
 
-
-        myOptions.content = boxText;
-        var ib = new InfoBox(myOptions);
-          // infoWindow.setContent(contentString);
-          // ib.setContent(contentString);
-          // infoWindow.open(marker.map, marker);
-          ib.open(marker.map, marker);
+      myOptions.content = boxText;
+      var ib = new InfoBox(myOptions);
+        // infoWindow.setContent(contentString);
+        // ib.setContent(contentString);
+        // infoWindow.open(marker.map, marker);
+      ib.open(marker.map, marker);
 
       });
-
 
       google.maps.event.addListener(marker, "mouseover", function () {
-          // for (var i = 0; i < $scope.markers[i].length; i++) {
-            console.log('mouseover'); overlay.isActive();
-            // document.getElementById("active").className = "active";
-            marker.className = "active";
-            $scope.$emit('markerMouseover', marker);
-            console.log('marker in $broadcast', marker)
-          // }
-      // ChangeActive();
-    });
-
-              google.maps.event.addListener(marker, 'mouseout', function() {
-          console.log('mouseout'); overlay.notActive();
-
+        // for (var i = 0; i < $scope.markers[i].length; i++) {
+          console.log('mouseover'); overlay.isActive(marker.overlay.div);
+          console.log('name', marker)
+          console.log('name in mouseover', marker.name + ' ' + marker.index + ' ' + marker.color);
       });
 
-      // function ChangeActive (active) {
-      //       var obj = document.getElementById (active);
-      //       if (obj.setActive) {
-      //           obj.setActive ();
-      //       }
-      //       else {
-      //           if (obj.focus)
-      //               obj.focus ();
-      //       }
-      //   }
-
-      //   google.maps.event.addListener(marker, "mouseover", function () {
-      //     if ($scope.markers) {
-      //       for (var i = 0; i < marker.length; i++) {
-      //         console.log('mouseover'); overlay.isActive();
-      //         document.getElementById("active").className = "active";
-      //       }
-      //     }
-      //   // ChangeActive();
-      // });
+      google.maps.event.addListener(marker, 'mouseout', function() {
+          console.log('mouseout'); overlay.notActive(marker.overlay.div);
+      });
       // marker.map.fitBounds(bounds);
     }
+    nyMarker(marker);
 
-    getMarker();
-
-    var clearMarkers = function () {
+    var clearMarkers = function (marker) {
       var marker = $scope.marker;
-      marker.setMap(null);
+      if (marker) {
+        marker.setMap(null);
+      }
+
       console.log('deleted marker')
     }
 
@@ -296,7 +251,7 @@ debugger;
 
       // console.log('$scope.map Directive', map)
 
-      var markAdressToMap = function () { // Search for city
+      var markAdressToMap = function (marker) { // Search for city
 
         if (!$scope.city) {
           return;
@@ -331,9 +286,12 @@ debugger;
               console.log('lat in city', $scope.mapData.lat)
               $scope.mapData.map.setCenter(center);
 
-              overlay.zoomDelete();
-              clearMarkers();
-              getMarker();
+              if (overlay) {
+                overlay.zoomDelete();
+              }
+
+              // clearMarkers(marker);
+              getMarker($scope.mapData);
 
             } else {
                 alert("Geocode was not successful for the following reason: " + status);
@@ -345,21 +303,22 @@ debugger;
 
     var addMarkers = function () {
       $scope.counter = 0;
-      $scope.newMarkers = [];
+      // $scope.newMarkers = [];
       // $scope.overlays = [];
       $scope.myDataSource = {};
       $scope.markers.index = 0;
       $scope.mapData.index = 0;
-      $scope.mapData.overlay = {};
-      $scope.newMarkers.overlays = [];
-      $scope.marker.overlay = {};
+      // $scope.mapData.overlay = {};
+      // $scope.newMarkers.overlays = [];
+      // $scope.marker.overlay = {};
       // $scope.marker.color = '';
-      $scope.markers.overlays = [];
-      $scope.markers.overlay = {};
+      // $scope.markers.overlays = [];
+      // $scope.markers.overlay = {};
 
         for (var i=0; i < $scope.markers.length; i++) {
+          console.log('$scope.markers.map', $scope.markers[i].map);
           var marker = $scope.markers;
-          var color = $scope.mapData.colors[i];
+          var color = $scope.mapData.colors[i]; // pull in the array of colors from service
           marker[i].color = color;
 
           var markerLat = $scope.markers[i].latitude;
@@ -396,6 +355,14 @@ debugger;
           $scope.newMarkers.push($scope.marker);
           // $scope.newMarkers.overlays.push($scope.overlays[i]);
 
+        //   if (marker.id === $scope.markers[i].id) {
+        //     // $('.temp').attr('id', "#active")
+        //     console.log('marker.id', marker.name)
+        //     // $('.temp').addClass('tempActive');
+        //     $scope.markerActive = true;
+        //     console.log('markerActive', $scope.markerActive)
+        //     // $('.circle').addClass('active');
+        //   } else $scope.markerActive = false;
 
         if (!$scope.mapData) {
             $scope.mapData = GoogleMapService;
@@ -438,21 +405,23 @@ debugger;
             }
           }
 
-          var contentString = '<div class="info-box-wrap"><div class="info-box-title">' + marker[i].name + '</div><br>';
-            contentString += 'Address: ' + marker[i].address + '<br>';
+          var contentString = '<div class="info-box-wrap"><div class="info-box-title">' + marker[i].name + '</div>';
+            contentString += '<div class="address">Address: ' + marker[i].address + '</div><br>';
             if (typeof marker[i].photo !== 'undefined') contentString += '<img src="' + marker[i].photo + '" alt="" height="115" width="83">';
             if (typeof marker[i].phone !== 'undefined') contentString += 'Phone: ' + marker[i].phone + '<br>'
             if (typeof marker[i].website !== 'undefined') contentString += 'Website: <a target="_blank" href="' + marker[i].website + '">' + marker[i].name + '</a><br>';
-            if (typeof marker[i].index !== 'undefined') contentString += 'Index/ Colors: ' + marker[i].index + '<br>';
-            if (typeof marker[i].priceLevel !== 'undefined') contentString += '<div class="progress-container"><div class="progress-bar" style="width: ' + (marker[i].priceLevel * 10) * 2 + '%"> Price: ' + marker[i].priceLevel + '<br>';
+            if (typeof marker[i].priceLevel !== 'undefined') contentString += '<div class="progress-container"><div class="progress-bar" style="width: ' + (marker[i].priceLevel * 10) * 2 + '%"> Price: ' + marker[i].priceLevel + '</div>';
             if (typeof marker[i].rating !== 'undefined') contentString += 'User Ratings (' + marker[i].rating + '): &nbsp;' + ratingStars + '<br>';
             contentString += '</div>';
 
-          $scope.mapData.contentString = contentString;
+          $scope.markers[i].contentString = contentString;
           // var compiled = $compile(contentString)($scope);
           // $scope.mapData.contentString = compiled[0];
+          console.log('marker in loop', $scope.markers[i].name + ' ' + $scope.markers[i].id)
 
-          getMarker();
+          var m = $scope.markers[i];
+
+          getMarker(m);
           // function drop() {
           //   clearMarkers();
           //   for (var i = 0; i < neighborhoods.length; i++) {
@@ -521,7 +490,6 @@ debugger;
           // newMap.setCenter(latLong);
           // });
 
-
           // $scope.newMarkers.push($scope.marker);
 
           // To add the marker to the map, call setMap();
@@ -532,41 +500,14 @@ debugger;
         // newMap.fitBounds(bounds);
       }
 
-      var settingMarkers = function () {
-        $scope.counter + 2
-        for (var i=0; i < $scope.markers.length; i++) {
-          addMarkers($scope.markers[i])
-          console.log('marker' + [i], newMarker.name)
-        }
-      }
-
-      // settingMarkers();
-
       $scope.$watch("city", function () {
         if ($scope.city) {
-         markAdressToMap();
+         clearMarkers($scope.marker);
+         markAdressToMap(marker);
        }
        });
 
-      //  $scope.$watch("newMap", function () {
-      // //  if (newMap) {
-      //    console.log('newMap from $watch')
-      //       // initializeMap();
-      //      markAdressToMap();
-      // //  }
-      //  });
-
-      //  $scope.$watch("markers", function () {
-      //    if ($scope.markers) {
-      //         addMarkers();
-      //    }
-      //   //  if (!marker) {
-      //   //     getMarker();
-      //   //  }
-      //  });
-
       $scope.$on('markersArr', function (event, markersArr) {
-        debugger;
         if (markersArr && $scope.counter < 2) {
           $scope.markers = markersArr;
           console.log('markers from Directive', $scope.markers)

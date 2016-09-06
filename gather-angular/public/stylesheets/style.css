@@ -366,9 +366,9 @@ textarea {
    margin-top: 20px;
    margin-left: 20px;
  }
- span {
+ /*span {
    float: right;
- }
+ }*/
 
  .rating {
    color: #335CFF;
@@ -586,10 +586,10 @@ h3 img {
   color: #fff;
   border-radius: 10px;
   font-weight: 500;
-  height: 16px;
+  height: 20px;
   padding-left: 5px;
   padding-top: 2px;
-  font-size: 10px;
+  /*font-size: 10px;*/
 }
 .progress-container {
   background: #e1e1e1;
@@ -597,7 +597,11 @@ h3 img {
   border-radius: 10px;
   margin-top: 5p;
   margin-top: 5px;
-  width: 100%;
+  width: 65%;
+}
+
+.address {
+  font-size: 15px;
 }
 .fadein {
   -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s;
@@ -859,14 +863,17 @@ svg {
   border: 1px solid black;
   padding-bottom: 10px;
   padding-left: 10px;
+  min-height: 205px;
+  font-size: 12px;
 }
 .info-box-title {
   height: 40px !important;
   /*width: 170px;*/
-  float: left;
+  /*float: left;*/
+  padding-top: 5px;
   overflow: hidden;
   font-size: 22px;
-  padding: 5px;
+  /*padding: 5px;*/
   /*padding-left: 10px;*/
 }
 
@@ -878,13 +885,14 @@ svg {
   margin-left: 5px;
   margin-bottom: 5px;
   margin-top: 5px;
+  margin-right: 10px;
 }
 
 .info-box-wrap p {
   padding-left: 10px;
   padding-right: 5px;
   font-size: 1em;
-  color: black;
+  color: #000;
   font-weight: 500;
   /*padding-top: 40px;*/
   padding-bottom: 5px;
@@ -892,6 +900,10 @@ svg {
 
 .info-box-wrap p a {
   color: #00f;
+}
+
+.ratings {
+  color: #000;
 }
 
 .padding {

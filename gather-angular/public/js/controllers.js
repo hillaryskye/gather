@@ -327,7 +327,7 @@ debugger;
       })
   }
 
-      $scope.markers = [];
+      $scope.cMarkers = [];
 
     var createMarker = function(res) {
         // debugger;
@@ -381,16 +381,17 @@ debugger;
                 id: details.id,
                 animation: google.maps.Animation.DROP,
                 password: $scope.place.code,
-                type: details.types[0]
+                type: details.types[0],
+                map: res.map
               }
-                  $scope.markers.push(markersOptions)
-                  console.log('$scope.markers', $scope.markers)
+                  $scope.cMarkers.push(markersOptions)
+                  console.log('$scope.markers', $scope.cMarkers)
 
                 // Send markersArr data to Directive to display the markers
-                if ($scope.markers.length > 19) {
-                  console.log('$scope.markers', $scope.markers)
+                if ($scope.cMarkers.length > 19) {
+                  console.log('$scope.markers', $scope.cMarkers)
 
-                  markersArr = $scope.markers;
+                  markersArr = $scope.cMarkers;
                   $scope.$broadcast('markersArr', markersArr);
                 }
 
@@ -413,22 +414,22 @@ debugger;
 
   $scope.markerActive = false;
 
-  $scope.$on('markerMouseover', function (event, marker) {
-    debugger;
-
-    for (var i=0; i < $scope.markers.length; i++) {
-      if (marker.id === $scope.markers[i].id) {
-        // $('.temp').attr('id', "#active")
-        console.log('marker.id', marker.name)
-        // $('.temp').addClass('tempActive');
-        $scope.markerActive = true;
-        console.log('markerActive', $scope.markerActive)
-        // $('.circle').addClass('active');
-      } else $scope.markerActive = false;
-    }
-    // $('.temp').removeClass('tempActive');
-    // $('.circle').removeClass('active');
-  });
+  // $scope.$on('markerMouseover', function (event, marker) {
+  //   debugger;
+  //
+  //   for (var i=0; i < $scope.markers.length; i++) {
+  //     if (marker.id === $scope.markers[i].id) {
+  //       // $('.temp').attr('id', "#active")
+  //       console.log('marker.id', marker.name)
+  //       // $('.temp').addClass('tempActive');
+  //       $scope.markerActive = true;
+  //       console.log('markerActive', $scope.markerActive)
+  //       // $('.circle').addClass('active');
+  //     } else $scope.markerActive = false;
+  //   }
+  //   // $('.temp').removeClass('tempActive');
+  //   // $('.circle').removeClass('active');
+  // });
 
     $scope.logout = function() {
       console.log('logout')

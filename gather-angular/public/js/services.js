@@ -119,7 +119,7 @@ app.service('GoogleMapService', function ($q) {
       if (this.marker && !this.marker.type) {
         // this.marker.setMap(null);
         this.marker.overlay.zoomDelete();
-        this.clearMarkers();
+        this.clearMarkers(this.marker);
       }
 
       this.marker = new google.maps.Marker({
@@ -336,7 +336,6 @@ const GoogleOverlayView = function(bounds, map, args) {
     // }
 
     bounds = self.bounds;
-    console.log('bounds in draw', bounds.H)
     // div = document.createElement('div');
     // bounds = new google.maps.LatLngBounds();
 
@@ -399,23 +398,22 @@ const GoogleOverlayView = function(bounds, map, args) {
   }
 };
 
-GoogleOverlayView.prototype.isActive = function () {
-  if (this.div) {
-    // this.div.className = 'active';
-    this.div.style.width = '15px';
-    this.div.style.height = '15px';
-    this.div.style.marginTop = '-4px';
-    this.div.style.marginLeft = '-4px';
+GoogleOverlayView.prototype.isActive = function (div) {
+  if (div) {
+    div.style.width = '14px';
+    div.style.height = '14px';
+    div.style.marginTop = '-3px';
+    div.style.marginLeft = '-3px';
   };
 }
 
-GoogleOverlayView.prototype.notActive = function () {
-  if (this.div) {
+GoogleOverlayView.prototype.notActive = function (div) {
+  if (div) {
     // this.div.className = 'circle';
-    this.div.style.width = '8px';
-    this.div.style.height = '8px';
-    this.div.style.marginTop = '0px';
-    this.div.style.marginLeft = '0px';
+    div.style.width = '8px';
+    div.style.height = '8px';
+    div.style.marginTop = '0px';
+    div.style.marginLeft = '0px';
   };
 }
 
@@ -439,6 +437,7 @@ GoogleOverlayView.prototype.getPosition = function() {
 };
 
 GoogleOverlayView.prototype.updateClass = function(className) {
+  debugger;
   if ( this.div ) {
     // get reg div
     var div = this.div.childNodes[1];
