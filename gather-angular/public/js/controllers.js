@@ -143,7 +143,7 @@ app.controller('HomeCtrl', ['$scope', '$rootScope', '$routeParams', '$firebaseAr
 function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $location, GoogleMapService, $timeout, $q, GatherService) {
 
   console.log('controller')
-debugger;
+// debugger;
   $scope.add = false;
   $scope.show = false;
 
@@ -385,11 +385,11 @@ debugger;
                 map: res.map
               }
                   $scope.cMarkers.push(markersOptions)
-                  console.log('$scope.markers', $scope.cMarkers)
+                  // console.log('$scope.markers', $scope.cMarkers)
 
                 // Send markersArr data to Directive to display the markers
                 if ($scope.cMarkers.length > 19) {
-                  console.log('$scope.markers', $scope.cMarkers)
+                  // console.log('$scope.markers', $scope.cMarkers)
 
                   markersArr = $scope.cMarkers;
                   $scope.$broadcast('markersArr', markersArr);

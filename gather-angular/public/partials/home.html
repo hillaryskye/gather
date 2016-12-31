@@ -84,12 +84,13 @@
   <div class="container4">
    <section class="title">
    <div google-map class="container marker opacity"
-       ng-repeat="marker in markers track by $index | orderBy : 'name'"
+       ng-repeat="marker in newMarkers track by $index | orderBy : 'name'"
        ng-mouseenter="circle.isActive=true"
        ng-mouseleave="circle.isActive=false">
       <!-- <a href="#" class="red" ng-click="openInfoWindow($event, marker)">{{marker.name}}</a> -->
       <p>
-        <a ng-class="{ tempActive: markerActive === true, disabled: markerActive === false }" href="/#/gather/places/{{marker.password}}/new" target="_self"
+        <!-- ng-class="{ tempActive: markerActive === true, disabled: markerActive === false }"  -->
+        <a href="/#/gather/places/{{marker.password}}/new" target="_self"
             ng-click="addPlace(marker)"
             ng-mouseenter="circle.isActive=true"
             ng-mouseleave="circle.isActive=false">
@@ -99,11 +100,12 @@
       </a>
     </p>
      <p>Address: {{marker.address}}</p>
-<!-- <p>Phone: {{marker.phone}}</p>
+     <p>Phone: {{marker.phone}}</p>
      <p>Website: <a href="{{marker.website}}">{{marker.website}}</a></p>
      <p>Rating: {{marker.rating}}</p>
      <p>User Ratings: {{marker.userRatings}}</p>
-     <p>Price Level: {{marker.priceLevel}}</p> -->
+     <p>Price Level: {{marker.priceLevel}}</p>
+     <p>Type: {{marker.type}}</p>
      </div>
    </section>
 

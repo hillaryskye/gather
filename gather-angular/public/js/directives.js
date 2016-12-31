@@ -10,6 +10,7 @@ app.directive('googleMap', function () {
 
     //$scope.overlays = [];
     // $scope.overlay = '';
+    $scope.newMarkers = [];
     var overlay;
     $scope.counter = 0;
     // var title = '';
@@ -19,7 +20,7 @@ app.directive('googleMap', function () {
     var getMarker;
     var marker = null;
     var nyMarker = function (marker) {
-debugger;
+// debugger;
 
     if (!$scope.mapData) {
       $scope.mapData = GoogleMapService;
@@ -51,7 +52,6 @@ debugger;
 
 
     var getMarker = function (marker) {
-      $scope.newMarkers = [];
 
       // console.log('markers from getMarker', marker)
       console.log('marker in getMarker', marker.name + ' ' + marker.id)
@@ -118,48 +118,25 @@ debugger;
           // labelTop: '32px'
         }
       );
-      // $scope.overlay = GoogleOverlayView;
-      if (marker.type) {
-        // $scope.overlays.push(overlay);
-        // $scope.mapData.markers.overlay = overlay;
-        // $scope.newMarker.overlay = $scope.overlay;
-      }
 
-      // $scope.mapData.marker.overlay = overlay;
       var color = overlay.args.color;
-
-      // $scope.mapData.color = color;
-      // $scope.marker.id = $scope.mapData.id;
 
       console.log('marker', marker);
       // console.log('$scope.mapData', $scope.mapData);
       console.log('name', marker.name)
-      $scope.newMarkers.push(marker);
-      $scope.newMarkers[0].color = color;
-      $scope.newMarkers[0].id = id;
-      $scope.newMarkers[0].overlay = overlay;
-      $scope.newMarkers[0].index = index;
 
-      marker = new google.maps.Marker(markerOptions); // marker gets overridden
+      marker.color = color;
+      marker.id = id;
+      marker.overlay = overlay;
+      marker.index = index;
 
-      marker.setMap(marker.map);
-      marker.color = $scope.newMarkers[0].color;
-      marker.id = $scope.newMarkers[0].id;
-      marker.overlay = $scope.newMarkers[0].overlay;
-      marker.index = $scope.newMarkers[0].index;
-      marker.name = $scope.newMarkers[0].name;
-
-      $scope.marker = marker; // Save marker data to $scope.marker
-      $scope.tempMarkers = [];
-      $scope.tempMarkers.push(marker); // not sure if I need this
-
+      // listener Events for zoom_change, hover and click
       zoom_level = marker.map.getZoom();
      console.log('zoom Directive', zoom_level)
-
       // bounds.extend(marker.position);
 
       var listener = google.maps.event.addListenerOnce(marker.map, "zoom_changed", function() {
-      marker.map.panTo(marker.getPosition());
+      // marker.map.panTo(marker.getPosition());
       // bounds = marker.bounds;
       zoom_level = marker.map.getZoom();
       console.log('zoom Directive 2', zoom_level)
@@ -168,6 +145,19 @@ debugger;
     // google.maps.event.removeListener(listener);
      // map.setCenter(newCenter);
    });
+
+      $scope.newMarkers.push(marker);
+
+      marker = new google.maps.Marker(markerOptions); // marker gets overridden
+
+      marker.setMap(marker.map);
+      // marker.color = $scope.newMarkers[0].color;
+      // marker.id = $scope.newMarkers[0].id;
+      // marker.overlay = $scope.newMarkers[0].overlay;
+      // marker.index = $scope.newMarkers[0].index;
+      // marker.name = $scope.newMarkers[0].name;
+
+      $scope.marker = marker; // Save marker data to $scope.marker
 
    var boxText = document.createElement("div");
 
@@ -197,7 +187,7 @@ debugger;
       console.log('click')
       // console.log('marker', marker)
       // if (overlay) {
-      console.log(marker.name +  ' ' + marker.index + ' ' + marker.color); overlay.toggle(marker.overlay.div);
+      // console.log(marker.name +  ' ' + marker.index + ' ' + marker.color); overlay.toggle(marker.overlay.div);
       // }
 
       var boxText = document.createElement("div");
@@ -352,7 +342,7 @@ debugger;
           // $scope.marker.overlay = $scope.overlays[i];
           $scope.marker.bounds = bounds;
 
-          $scope.newMarkers.push($scope.marker);
+          // $scope.newMarkers.push($scope.marker);
           // $scope.newMarkers.overlays.push($scope.overlays[i]);
 
         //   if (marker.id === $scope.markers[i].id) {
@@ -498,7 +488,7 @@ debugger;
           // bounds = new google.maps.LatLngBounds();
         }
         // newMap.fitBounds(bounds);
-      }
+      } //end of getMarker() function
 
       $scope.$watch("city", function () {
         if ($scope.city) {
