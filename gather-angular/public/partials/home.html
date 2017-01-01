@@ -1,6 +1,6 @@
 <div id="infobox"></div>
-<google-map id="addressMap" city="search.city" accesskey="
-  "ng-mouseenter="circle.isActive=true" ng-mouseleave="circle.isActive=false"></google-map>
+<google-map id="addressMap" city="search.city" accesskey=""
+            ng-mouseenter="circle.isActive=true" ng-mouseleave="circle.isActive=false"></google-map>
 <!-- <div ng-bind="newMap"></div> -->
 <!-- <div id="addressMap" class="map" city="search.city" google-map></div> -->
  <section>
@@ -85,27 +85,28 @@
    <section class="title">
    <div google-map class="container marker opacity"
        ng-repeat="marker in newMarkers track by $index | orderBy : 'name'"
-       ng-mouseenter="circle.isActive=true"
-       ng-mouseleave="circle.isActive=false">
+       ng-mouseover="markerActive=true"
+       ng-mouseleave="markerActive=false">
       <!-- <a href="#" class="red" ng-click="openInfoWindow($event, marker)">{{marker.name}}</a> -->
       <p>
+        <button ng-click="mouseover(markerActive)">MarkerActive</button>
         <!-- ng-class="{ tempActive: markerActive === true, disabled: markerActive === false }"  -->
         <a href="/#/gather/places/{{marker.password}}/new" target="_self"
-            ng-click="addPlace(marker)"
-            ng-mouseenter="circle.isActive=true"
-            ng-mouseleave="circle.isActive=false">
-            {{marker.name}}
-          <span class="circle" ng-class="{ active: markerActive === true, disabled: markerActive === false }" style="background: {{marker.color}}; position: inherit;"></span>
-          {{marker.color}}
+            ng-click="addPlace(marker)">
+            {{marker.name}} | {{marker.type}}
+          <span class="circle" ng-class="{ active: markerActive === true }"
+                ng-mouseenter="markerActive=true" ng-mouseleave="markerActive=false"
+                style="background: {{marker.color}}; float: right; position: inherit;"></span>
+          {{marker.color}} {{markerActive}} {{circle.isActive}}
       </a>
     </p>
-     <p>Address: {{marker.address}}</p>
-     <p>Phone: {{marker.phone}}</p>
-     <p>Website: <a href="{{marker.website}}">{{marker.website}}</a></p>
-     <p>Rating: {{marker.rating}}</p>
+     <p>{{marker.address}}</p>
+     <p>{{marker.phone}}</p>
+     <p><a href="{{marker.website}}">{{marker.website}}</a></p>
+     <!-- <p>Rating: {{marker.rating}}</p>
      <p>User Ratings: {{marker.userRatings}}</p>
      <p>Price Level: {{marker.priceLevel}}</p>
-     <p>Type: {{marker.type}}</p>
+     <p>Type: {{marker.type}}</p> -->
      </div>
    </section>
 

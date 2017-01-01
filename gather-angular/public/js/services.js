@@ -287,6 +287,7 @@ const GoogleOverlayView = function(bounds, map, args) {
     div.style.background = this.args.color;
     div.style.visibility = 'visible';
     div.bounds = this.args.bounds;
+    // div.className = 'active';
     // div.className="ng-class:"
     // ng-class="{'active':location.isActive}"
 
@@ -361,12 +362,32 @@ const GoogleOverlayView = function(bounds, map, args) {
     //   div.style.top = (point.y - 32) + 'px';
         div.style.left = (sw.x - 4) + 'px';
         div.style.top = (ne.y - 32) + 'px';
+        // div.ngStyle = "active";
         // div.style.left = (point.x - this.args.labelAnchor) + 'px';
         // div.style.top = (point.y - this.args.labelAnchor) + 'px';
     }
     counter++
     console.log('counter', counter)
     };
+
+    GoogleOverlayView.prototype.hover = function() {
+      let me = this;
+      var div = this.div;
+
+      if (div) {
+        div.style.width = '14px';
+        div.style.height = '14px';
+        div.style.marginTop = '-3px';
+        div.style.marginLeft = '-3px';
+      };
+
+      // Add a listener - we'll accept clicks anywhere on this div, but you may want
+      // to validate the click i.e. verify it occurred in some portion of your overlay.
+      // google.maps.event.addDomListener(div, 'mouseover', function() {
+      //     google.maps.event.trigger(me, 'mouseover');
+      // });
+
+    }
 
     // Set the visibility to 'hidden' or 'visible'.
   GoogleOverlayView.prototype.hide = function() {
