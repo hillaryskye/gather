@@ -4,8 +4,18 @@ app.directive('googleMap', function () {
     restrict: "E",
     replace: true,
     scope: {
-      city: "="
+      city: "=",
+      active: "=",
+      mapMarker: "=mapMarker"
     },
+    link: function($scope, el, attrs) {
+      let isActive = attrs.active === 'yes';
+      let notActive = attrs.active === 'no';
+      if (attrs.mapMarker) {
+        let mapMarker = attrs.mapMarker;
+      }
+    },
+    controllerAs: 'mapvm',
     controller: [
       '$scope',
       '$element',
@@ -24,17 +34,15 @@ app.directive('googleMap', function () {
         mapMarkerConstructor
       ) {
 
-    //$scope.overlays = [];
-    // $scope.overlay = '';
+        let mapvm = this;
+        mapvm.active = $scope.active;
     $scope.newMarkers = [];
     var overlay;
     $scope.counter = 0;
-    console.log('markerActive', $scope.markerActive);
-    // var title = '';
 
     // Enable the visual refresh
     // google.maps.visualRefresh = true;
-    var getMarker;
+    var getMarker, mouseover, mouseout;
     var marker = null;
     var nyMarker = function (marker) {
 // debugger;
@@ -68,7 +76,7 @@ app.directive('googleMap', function () {
     }
 
     var getMarker = function (marker) {
-console.log('markerActive', $scope.markerActive);
+console.log('markerActive in getMarker', $scope.active);
       console.log('marker in getMarker', marker.name + ' ' + marker.id)
       // console.log('contentString', marker.contentString);
 
@@ -100,12 +108,8 @@ console.log('markerActive', $scope.markerActive);
         marker.bounds, marker.map, {
           marker_id: id,
           color: colors[index],
-          bounds: marker.bounds,
-          hover: marker.hover,
-          // labelClass: marker.labelClass
-          // labelAnchor: 15,
-          // labelLeft: '-4px',
-          // labelTop: '32px'
+          bounds: marker.bounds
+          // hover: marker.hover
         }
       );
 
@@ -150,65 +154,58 @@ console.log('markerActive', $scope.markerActive);
         // label: labels[labelIndex++ % labels.length],
       }
 
-      // let me = this;
-      //
-      // google.maps.event.addDomListener(marker.overlay.div, 'mouseover', function() {
-      //     google.maps.event.trigger(me, 'mouseover');
-      // });
-      overlay.hover();
-
       $scope.newMarkers.push(marker);
 
       marker = new google.maps.Marker(markerOptions); // marker gets overridden
 
       marker.setMap(marker.map);
 
-      google.maps.event.addListener(marker, "mouseover", function () {
-        console.log('mouseover')
-        if ($scope.markerActive) {
-          overlay.isActive(marker.overlay.div);
-          console.log('markerActive inside', $scope.markerActive);
-        }
-        console.log('markerActive outside', $scope.markerActive);
-         //  console.log('name', marker)
-         //  console.log('name in mouseover', marker.name + ' ' + marker.index + ' ' + marker.color);
-      });
+      // google.maps.event.addListener(marker, "mouseover", function () {
+      //   console.log('mouseover in listener')
+      //   // if ($scope.markerActive) {
+      //     overlay.isActive(marker.overlay.div);
+      // });
+    // }
 
-      this.mouseover = function(markerActive) {
-        console.log('click')
-        if ($scope.markerActive) {
-          overlay.isActive(marker.overlay.div);
-          console.log('markerActive click inside', $scope.markerActive);
-        }
-        console.log('markerActive click outside', $scope.markerActive);
+      mouseover = function(mapMarker) {
+        console.log('click in function')
+          console.log('mouseover function' + mapMarker.name)
+          if (mapMarker) {
+            overlay.isActive(mapMarker.overlay.div);
+            // hoverIn(mapMarker);
+            // $scope.active = true;
+        };
       }
 
-      google.maps.event.addListener(marker, 'mouseout', function() {
-          console.log('mouseout');
-          if (!$scope.markerActive) {
-            overlay.notActive(marker.overlay.div);
-            console.log('markerActive inside', $scope.markerActive);
-          }
-          console.log('markerActive outside', $scope.markerActive);
-      });
+      mouseout = function(mapMarker) {
+            console.log('mouseout in function' + mapMarker.name);
+            if (mapMarker) {
+              overlay.notActive(mapMarker.overlay.div);
+            }
+      }
+
+      // google.maps.event.addListener(marker, 'mouseout', function() {
+      //     console.log('mouseout');
+      //       overlay.notActive(marker.overlay.div);
+      // });
 
       $scope.marker = marker; // Save marker data to $scope.marker
 
       // listener Events for zoom_change, hover and click
-      zoom_level = marker.map.getZoom();
-     console.log('zoom Directive', zoom_level)
+    //   zoom_level = marker.map.getZoom();
+    //  console.log('zoom Directive', zoom_level)
       // bounds.extend(marker.position);
 
-      var listener = google.maps.event.addListenerOnce(marker.map, "zoom_changed", function() {
-      // marker.map.panTo(marker.getPosition());
-      // bounds = marker.bounds;
-      zoom_level = marker.map.getZoom();
-      console.log('zoom Directive 2', zoom_level)
-    //  overlay.zoomDelete();
-    //  overlay.draw();
-    // google.maps.event.removeListener(listener);
-     // map.setCenter(newCenter);
-   });
+  //     var listener = google.maps.event.addListenerOnce(marker.map, "zoom_changed", function() {
+  //     // marker.map.panTo(marker.getPosition());
+  //     // bounds = marker.bounds;
+  //     zoom_level = marker.map.getZoom();
+  //     console.log('zoom Directive 2', zoom_level)
+  //   //  overlay.zoomDelete();
+  //   //  overlay.draw();
+  //   // google.maps.event.removeListener(listener);
+  //    // map.setCenter(newCenter);
+  //  });
 
    var boxText = document.createElement("div");
 
@@ -234,15 +231,7 @@ console.log('markerActive', $scope.markerActive);
 
    google.maps.event.addListener(marker, 'click', function() {
      debugger;
-      // infoWindow.close();
       console.log('click')
-      // console.log('marker', marker)
-      // if (overlay) {
-      // console.log(marker.name +  ' ' + marker.index + ' ' + marker.color); overlay.toggle(marker.overlay.div);
-      // }
-
-      // overlay.toggle(marker.overlay.div);
-      // overlay.hover(marker.overlay.div);
 
       var boxText = document.createElement("div");
       boxText.className = 'infobox';
@@ -251,11 +240,7 @@ console.log('markerActive', $scope.markerActive);
 
       myOptions.content = boxText;
       var ib = new InfoBox(myOptions);
-        // infoWindow.setContent(contentString);
-        // ib.setContent(contentString);
-        // infoWindow.open(marker.map, marker);
       ib.open(marker.map, marker);
-
       });
 
       // google.maps.event.addListener(marker, "mouseover", function () {
@@ -283,16 +268,18 @@ console.log('markerActive', $scope.markerActive);
 
     $scope.mapData.clearMarkers = clearMarkers;
 
-      // var bikelayerFn = function () {
-      //   var bikeLayer = new google.maps.BicyclingLayer();
-      //     bikeLayer.setMap(map);
-      // }
-      //
-      // var transitLayerFn = function () {
-      //   var transitLayer = new google.maps.TransitLayer();
-      //     transitLayer.setMap(map);
-      // }
+      var bikelayerFn = function () {
+        var bikeLayer = new google.maps.BicyclingLayer();
+          bikeLayer.setMap(map);
+      }
 
+      var transitLayerFn = function () {
+        var transitLayer = new google.maps.TransitLayer();
+          transitLayer.setMap(map);
+      }
+
+      bikelayerFn();
+      transitLayerFn();
       // console.log('$scope.map Directive', map)
 
       var markAdressToMap = function (marker) { // Search for city
@@ -341,7 +328,7 @@ console.log('markerActive', $scope.markerActive);
                 alert("Geocode was not successful for the following reason: " + status);
               }
           });
-        };
+        }; // end of markAdressToMap
 
     // var newMarker = [];
 
@@ -544,11 +531,24 @@ console.log('markerActive', $scope.markerActive);
         // newMap.fitBounds(bounds);
       } //end of getMarker() function
 
-      $scope.$watch("markerActive", function(newValue, oldValue) {
-        if (newValue) {
-          console.log('markerActive in watch', $scope.markerActive);
-        }
-      })
+      $scope.$watchGroup(["active", "mapMarker"], function() {
+        // debugger;
+        // if ($scope.mapMarker) {
+        // $scope.active = newValue;
+          console.log('active in watch', $scope.active)
+          if ($scope.active === 'yes') {
+            mouseover($scope.mapMarker);
+          } else if ($scope.active === 'no') {
+            mouseout($scope.mapMarker);
+          }
+        // }
+      });
+
+      // $scope.$watch("mapMarker", function() {
+      //   if ($scope.mapMarker) {
+      //     console.log('mapMarker in watch', $scope.mapMarker);
+      //   }
+      // })
 
       $scope.$watch("city", function () {
         if ($scope.city) {
@@ -567,6 +567,12 @@ console.log('markerActive', $scope.markerActive);
         newMarkers = $scope.newMarkers
         $scope.$emit('newMarkers', newMarkers)
       });
+
+      // $scope.$on('markerActive', function(event, markerActive) {
+      //   console.log('markerActive in $scope.on', markerActive);
+      //
+      //   mouseover(markerActive);
+      // })
     }
   ]};
 });

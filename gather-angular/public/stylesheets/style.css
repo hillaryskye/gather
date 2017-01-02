@@ -143,6 +143,7 @@ opacity: .5;
 }
 a {
   font-size: .9em;
+  font-size: 1.3em;
   color: #f3f709;
   text-decoration: none;
   transition: all 0.4s;

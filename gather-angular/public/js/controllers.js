@@ -12,7 +12,7 @@ app.controller("AuthCtrl", function($scope, $rootScope, $location, $firebaseAuth
       //   .then(function() {
       //     $scope.login()
       //   })
-debugger;
+// debugger;
 
 var photoUrl, uid, name, email, password;
 
@@ -23,7 +23,7 @@ password = user.password;
 
       firebase.auth().createUserWithEmailAndPassword(email, password)
         .then(function () {
-          debugger;
+          // debugger;
           console.log('New account');
           $scope.login()
         })
@@ -88,7 +88,7 @@ password = user.password;
     //   .then(function() {
     //     $location.path('/gather')
     //   })
-debugger;
+// debugger;
     firebase.auth().signInWithEmailAndPassword(email, password)
     .then(function() {
       debugger;
@@ -178,8 +178,8 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
 // this.gathers = $firebaseArray(gatherRef);
 
     $scope.changeCity = function(search) {
-
-      $scope.city = search.city
+      // $scope.active = active;
+      $scope.city = search.city;
       console.log('city in controller', $scope.city)
 
       $scope.hover = function () {
@@ -316,7 +316,7 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
           $scope.add = false;
 
               for (var i = 0; i < res.length; i++) {
-                createMarker(res[i])
+                createMarker(res[i]);
 
               console.log('res.name' + [i], res[i].name)
             }

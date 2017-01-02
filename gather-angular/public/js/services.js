@@ -52,7 +52,7 @@ app.service('PlaceService', function ($firebaseAuth, $firebaseArray) {
 //     };
 // });
 
-app.service('GoogleMapService', function ($q) {
+app.service('GoogleMapService', function ($q, $timeout) {
   console.log('Im first from service')
   var MapData = {}
 
@@ -148,25 +148,28 @@ app.service('GoogleMapService', function ($q) {
 
       this.map.setCenter(res.geometry.location);
     }
-
+    // $timeout(function() {
       this.details = function (res) {
         debugger;
-        var deferred = $q.defer();
+          var deferred = $q.defer();
+
 
         var request = {
           placeId: res.place_id,
           photo: res.photo
         };
 
-        this.service.getDetails(request, function(details, status) {
 
-            if (status == 'OK') {
-                deferred.resolve(details);
-            }
-            else deferred.reject(status);
-        });
+          this.service.getDetails(request, function(details, status) {
+              if (status == 'OK') {
+                  deferred.resolve(details);
+              }
+              else deferred.reject(status);
+          });
+
         return deferred.promise;
       }
+      // }, 50);
 
     // var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/users")
     //   this.authObj = $firebaseAuth(authRef)
@@ -240,6 +243,8 @@ app.service('mapMarkerConstructor', function (GoogleMapService) {
 
 var counter = 0;
 var zoom_level = 0;
+let markerActive = false;
+
 
 // this.colors = [
       // { gold: '#ffd700;' }, { moccasin: '#FFE4B5;' }, { yellow: '#ffff00;' }
@@ -273,8 +278,6 @@ const GoogleOverlayView = function(bounds, map, args) {
 
   GoogleOverlayView.prototype = new google.maps.OverlayView();
 
-  // overlay = new GoogleOverlayView(latLng, args, map);
-
   GoogleOverlayView.prototype.onAdd = function () {
 
     var self = this;
@@ -287,14 +290,6 @@ const GoogleOverlayView = function(bounds, map, args) {
     div.style.background = this.args.color;
     div.style.visibility = 'visible';
     div.bounds = this.args.bounds;
-    // div.className = 'active';
-    // div.className="ng-class:"
-    // ng-class="{'active':location.isActive}"
-
-    // div.style.width = this.args.labelLeft;
-    // div.style.height = this.args.labelTop;
-    // div.style.opacity = this.args.hover;
-    // div.style.background = 'blue'
 
     if (typeof(self.args.marker_id) !== 'undefined') {
 			div.dataset.marker_id = self.args.marker_id;
@@ -373,6 +368,7 @@ const GoogleOverlayView = function(bounds, map, args) {
     GoogleOverlayView.prototype.hover = function() {
       let me = this;
       var div = this.div;
+      markerActive = true;
 
       if (div) {
         div.style.width = '14px';
@@ -457,15 +453,16 @@ GoogleOverlayView.prototype.getPosition = function() {
   return this.latlng;
 };
 
-GoogleOverlayView.prototype.updateClass = function(className) {
-  debugger;
+GoogleOverlayView.prototype.updateClass = function() {
+  // debugger;
   if ( this.div ) {
-    // get reg div
-    var div = this.div.childNodes[1];
-    if ( div ) {
+    // let div = this.div;
+    let div = this.div.parentNode.childNodes[0];
+    // var div = this.div.childNodes[1];
+    // if ( div ) {
       // change class name
-      div.className = className;
-    }
+      div.className = "active";
+    // }
   }
 };
 
