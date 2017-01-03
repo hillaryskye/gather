@@ -401,6 +401,35 @@ google-map {
   width: 70%;
 }
 
+.controls {
+  direction: ltr;
+  overflow: hidden;
+  text-align: center;
+  position: relative;
+  color: rgb(86, 86, 86);
+  font-family: Roboto, Arial, sans-serif;
+  user-select: none;
+  font-size: 11px;
+  background-color: rgb(255, 255, 255);
+  padding: 8px;
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px;
+  border-left: 0px;
+  min-width: 40px;
+}
+
+.controls-container {
+  margin: 10px;
+  z-index: 0;
+  position: absolute;
+  cursor: pointer;
+  left: 0px;
+  top: 0px;
+}
+
 .circle {
   position: absolute;
   cursor: pointer;

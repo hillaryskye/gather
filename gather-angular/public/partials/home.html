@@ -1,8 +1,8 @@
 <div id="infobox"></div>
-<google-map id="addressMap" city="search.city" accesskey=""
-            ng-class="{ active: active === 'yes' }"
+<google-map id="addressMap" city="search.city"
             ng-mouseenter="active='yes'"
-            ng-mouseleave="active='no'">{{active}}</google-map>
+            ng-mouseleave="active='no'">
+</google-map>
 <!-- <div ng-bind="newMap"></div> -->
 <!-- <div id="addressMap" class="map" city="search.city" google-map></div> -->
  <section>
@@ -95,7 +95,6 @@
        ng-mouseleave="active='no'">
       <!-- <a href="#" class="red" ng-click="openInfoWindow($event, marker)">{{marker.name}}</a> -->
       <p>
-        <!-- ng-class="{ tempActive: markerActive === true, disabled: markerActive === false }"  -->
         <a href="/#/gather/places/{{marker.password}}/new" target="_self"
             ng-click="addPlace(marker)">
             {{mapMarker.name}} | {{mapMarker.type}}

@@ -55,6 +55,7 @@ app.service('PlaceService', function ($firebaseAuth, $firebaseArray) {
 app.service('GoogleMapService', function ($q, $timeout) {
   console.log('Im first from service')
   var MapData = {}
+  let transit, bike;
 
   var latLng = new google.maps.LatLng(40.7127837, -74.00594130000002);
 
@@ -153,12 +154,10 @@ app.service('GoogleMapService', function ($q, $timeout) {
         debugger;
           var deferred = $q.defer();
 
-
         var request = {
           placeId: res.place_id,
           photo: res.photo
         };
-
 
           this.service.getDetails(request, function(details, status) {
               if (status == 'OK') {
@@ -305,7 +304,7 @@ const GoogleOverlayView = function(bounds, map, args) {
 
     this.div = div;
     this.bounds = div.bounds;
-    this.setActive = '.circle';
+    // this.setActive = '.circle';
 
     let panes = this.getPanes();
 
@@ -465,12 +464,129 @@ GoogleOverlayView.prototype.updateClass = function() {
     // }
   }
 };
-
 //   google.maps.event.addListener(overlay, "mouseover", function (e) {
 //     debugger;
 //     console.log('mouseover'); div.style.visibility = 'visible';
 //   });
 
-
   this.GoogleOverlayView = GoogleOverlayView;
-})
+});
+
+app.service('ControlsService', function (GoogleMapService) {
+  let mapData = GoogleMapService;
+  let map = mapData.map;
+  let controlsData = {};
+  let TransitControl;
+  let self = this;
+  // const GoogleControls = function(map, args) {
+  //   this.bikelayerFn = bikelayerFn;
+  //   this.transitLayerFn = transitLayerFn;
+  //   this.setMap(map);
+  //   this.args = args;
+  // };
+
+    // GoogleControls.prototype = new google.maps.OverlayView();
+
+    this.bikelayerFn = function () {
+      var bikeLayer = new google.maps.BicyclingLayer();
+        bikeLayer.setMap(map);
+    };
+
+    this.transitLayerFn = function () {
+      var transitLayer = new google.maps.TransitLayer();
+        transitLayer.setMap(map);
+    };
+
+    this.transit = function() {
+      console.log('transit');
+
+      TransitControl = function(controlDiv, map) {
+
+        // Set CSS for the control border.
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = '#fff';
+        controlUI.style.border = '2px solid #fff';
+        controlUI.style.borderRadius = '3px';
+        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI.style.cursor = 'pointer';
+        controlUI.style.marginBottom = '22px';
+        controlUI.style.textAlign = 'right';
+        controlUI.title = 'Click to get transit details for the map';
+        controlDiv.appendChild(controlUI);
+
+        // Set CSS for the control interior.
+        var controlText = document.createElement('div');
+        controlText.style.color = 'rgb(25,25,25)';
+        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText.style.fontSize = '14px';
+        controlText.style.lineHeight = '38px';
+        controlText.style.paddingLeft = '5px';
+        controlText.style.paddingRight = '5px';
+        controlText.innerHTML = 'Transit Layer';
+        controlUI.appendChild(controlText);
+
+        // Setup the click event listeners: simply set the map to Chicago.
+       controlUI.addEventListener('click', function() {
+         console.log('transit')
+         self.transitLayerFn();
+       });
+      }
+    }
+
+    this.transitC = function() {
+      // Create the DIV to hold the control and call the TransitControl()
+      // constructor passing in this DIV.
+      var transitControlDiv = document.createElement('div');
+      var transitControl = new TransitControl(transitControlDiv, map);
+
+      transitControl.index = 1;
+      map.controls[google.maps.ControlPosition.TOP_RIGHT].push(transitControlDiv);
+    }
+
+    this.bike = function() {
+      console.log('transit');
+
+      BikeControl = function(controlDiv, map) {
+
+        // Set CSS for the control border.
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = '#fff';
+        controlUI.style.border = '2px solid #fff';
+        controlUI.style.borderRadius = '3px';
+        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI.style.cursor = 'pointer';
+        controlUI.style.marginBottom = '22px';
+        controlUI.style.textAlign = 'right';
+        controlUI.style.paddingRight = '100px'
+        controlUI.title = 'Click to get bike details for the map';
+        controlDiv.appendChild(controlUI);
+
+        // Set CSS for the control interior.
+        var controlText = document.createElement('div');
+        controlText.style.color = 'rgb(25,25,25)';
+        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText.style.fontSize = '14px';
+        controlText.style.lineHeight = '38px';
+        controlText.style.paddingLeft = '5px';
+        controlText.style.paddingRight = '5px';
+        controlText.innerHTML = 'Bike Layer';
+        controlUI.appendChild(controlText);
+
+        // Setup the click event listeners: simply set the map to Chicago.
+       controlUI.addEventListener('click', function() {
+         console.log('bike')
+         self.bikelayerFn();
+       });
+      }
+
+      this.bikeC = function() {
+        // Create the DIV to hold the control and call the TransitControl()
+        // constructor passing in this DIV.
+        var bikeControlDiv = document.createElement('div');
+        var bikeControl = new BikeControl(bikeControlDiv, map);
+
+        bikeControl.index = 1;
+        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(bikeControlDiv);
+      }
+    }
+});

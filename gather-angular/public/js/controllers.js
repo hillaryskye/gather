@@ -147,7 +147,7 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
   $scope.add = false;
   $scope.show = false;
 
-  var infoWindow, service, placesList, marker, mapElement, latLng;
+  var infoWindow, service, placesList, marker, mapElement, latLng, transit, bike;
 
   // var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gather")
   // var authObj = $firebaseAuth(authRef)
@@ -170,8 +170,6 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
     .catch(function (error) {
       console.log('error', error);
     });
-
-
 
 // Get a reference to the database service
 // var gatherRef = new Firebase("https://gather-angular-firebase.firebaseio.com/database/data/gathers")
