@@ -85,33 +85,57 @@
  -->   </section>
   <div class="container4">
    <section class="title">
-   <google-map class="container marker opacity"
+   <!-- <google-map class="container marker opacity"
        active="active"
        map-marker="mapMarker"
        ng-init="active='no'"
        ng-model="active"
        ng-repeat="mapMarker in newMarkers track by $index | orderBy : 'name'"
        ng-mouseover="active='yes'"
-       ng-mouseleave="active='no'">
+       ng-mouseleave="active='no'"> -->
       <!-- <a href="#" class="red" ng-click="openInfoWindow($event, marker)">{{marker.name}}</a> -->
-      <p>
+      <!-- <p>
         <a href="/#/gather/places/{{marker.password}}/new" target="_self"
             ng-click="addPlace(marker)">
             {{mapMarker.name}} | {{mapMarker.type}}
           <span class="circle" ng-class="{ active: active === 'yes' }"
                 ng-mouseenter="active='yes'" ng-mouseleave="active='no'"
-                style="background: {{mapMarker.color}}; float: right; position: inherit;"></span>
+                style="background: {{mapMarker.color}}; float: right; position: inherit;"></span> -->
           <!-- {{mapMarker.color}} {{markerActive}} {{circle.isActive}} {{active}} -->
-      </a>
+      <!-- </a>
     </p>
      <p>{{mapMarker.address}}</p>
      <p>{{mapMarker.phone}}</p>
-     <p><a href="{{marker.website}}">{{mapMarker.website}}</a></p>
+     <p><a href="{{marker.website}}">{{mapMarker.website}}</a></p> -->
      <!-- <p>Rating: {{marker.rating}}</p>
      <p>User Ratings: {{marker.userRatings}}</p>
      <p>Price Level: {{marker.priceLevel}}</p>
      <p>Type: {{marker.type}}</p> -->
-   </google-map>
+   <!-- </google-map> -->
+   <!-- <div ng-controller="markerCtrl"> -->
+   <div ng-repeat="mapMarker in cMarkers track by $index | orderBy: 'name'"
+        class="container marker opacity"
+        active="active",
+        ng-init="active='no'"
+        ng-model="mapMarker"
+        map-marker="mapMarker"
+        ng-mouseover="mouseOver(active='yes', mapMarker, $index)"
+        ng-mouseleave="mouseOut(active='no', mapMarker, $index)">active: {{active}}
+        <p ng-mousemove="changeActive(active, $index)">active: {{active}}
+          <a href="/#/gather/places/{{mapMarker.password}}/new" target="_self"
+              ng-click="addPlace(marker)">
+              {{mapMarker.name}} | {{mapMarker.type}}
+            <span class="circle" ng-class="{ active: active === 'yes' }"
+                  ng-mouseenter="active='yes'" ng-mouseleave="active='no'"
+                  style="background: {{mapMarker.color}}; float: right; position: inherit;"></span>
+            {{mapMarker.color}} active: {{active}}
+         </a>
+      </p>
+       <p>{{mapMarker.address}}</p>
+       <p>{{mapMarker.phone}}</p>
+       <p><a href="{{marker.website}}">{{mapMarker.website}}</a></p>
+      </div>
+    <!-- </div> -->
    </section>
 
   </div>

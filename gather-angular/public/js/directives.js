@@ -37,6 +37,7 @@ app.directive('googleMap', function () {
       ) {
 
     let mapvm = this;
+    // let mapvm = $scope;
     mapvm.active = $scope.active;
     $scope.newMarkers = [];
     var overlay;
@@ -60,11 +61,6 @@ app.directive('googleMap', function () {
 
     // var marker = new google.maps.Marker(markerOptions);
     $scope.mapData = GoogleMapService;
-
-    // Setup the click event listeners: simply set the map to Chicago.
-    // controlUI.addEventListener('click', function() {
-    //   this.transitLayerFn();
-    // });
 
     var marker = $scope.mapData;
     marker.index = 0;
@@ -113,12 +109,6 @@ app.directive('googleMap', function () {
         // marker.index = $scope.mapData.index;
         // marker.bounds = $scope.mapData.bounds;
       }
-      $scope.controlsData = ControlsService;
-      // ControlsService.transitLayerFn();
-      ControlsService.transit();
-      ControlsService.transitC();
-      ControlsService.bike()
-      ControlsService.bikeC();
 
       overlay = new mapMarkerConstructor.GoogleOverlayView(
         marker.bounds, marker.map, {
@@ -166,39 +156,46 @@ app.directive('googleMap', function () {
         website: marker.website,
         type: marker.type,
         photos: marker.photos,
-        password: marker.password
+        password: marker.password,
+        draggable: true
         // label: labels[labelIndex++ % labels.length],
       }
+      if (marker.name) {
+        $scope.newMarkers.push(marker);
+      }
 
-      $scope.newMarkers.push(marker);
+      console.log('newMarkers in directive', $scope.newMarkers);
 
       marker = new google.maps.Marker(markerOptions); // marker gets overridden
 
-      marker.setMap(marker.map);
+      // marker.setMap(marker.map);
 
       google.maps.event.addListener(marker, "mouseover", function () {
-        console.log('mouseover in listener')
+        console.log('mouseover ' + marker.name);
           overlay.isActive(marker.overlay.div);
+          $scope.$emit('marker', { marker: marker, active: $scope.active = 'yes' });
+          // $scope.apply();
       });
 
       mouseover = function(mapMarker) {
         console.log('click in function')
-          console.log('mouseover function' + mapMarker.name)
+          console.log('mouseover function ' + mapMarker.name)
           if (mapMarker) {
             overlay.isActive(mapMarker.overlay.div);
         };
       }
 
       mouseout = function(mapMarker) {
-            console.log('mouseout in function' + mapMarker.name);
+            console.log('mouseout in function ' + mapMarker.name);
             if (mapMarker) {
               overlay.notActive(mapMarker.overlay.div);
             }
       }
 
       google.maps.event.addListener(marker, 'mouseout', function() {
-          console.log('mouseout');
+          console.log('mouseout ' + marker.name);
             overlay.notActive(marker.overlay.div);
+            $scope.$emit('markerEvent', { marker: marker, active: $scope.active ="yes" });
       });
 
       $scope.marker = marker; // Save marker data to $scope.marker
@@ -243,7 +240,7 @@ app.directive('googleMap', function () {
 
    google.maps.event.addListener(marker, 'click', function() {
        console.log('click marker for boxText');
-        //  overlay.notActive(marker.overlay.div);
+         overlay.notActive(marker.overlay.div);
    });
 
    google.maps.event.addListener(marker, 'click', function() {
@@ -260,15 +257,18 @@ app.directive('googleMap', function () {
       ib.open(marker.map, marker);
       });
 
-      // google.maps.event.addListener(marker, "mouseover", function () {
-      //   // for (var i = 0; i < $scope.markers[i].length; i++) {
-      //     console.log('mouseover'); overlay.isActive(marker.overlay.div);
-      //     console.log('name', marker)
-      //     console.log('name in mouseover', marker.name + ' ' + marker.index + ' ' + marker.color);
-      // });
+    //   google.maps.event.addListener(marker, "mouseover", function () {
+    //     // for (var i = 0; i < $scope.markers[i].length; i++) {
+    //       console.log('mouseover'); overlay.isActive(marker.overlay.div);
+    //       // console.log('name', marker)
+    //       console.log('name in mouseover', marker.name + ' ' + marker.index + ' ' + marker.color);
+    //   });
     // }
 
       // marker.map.fitBounds(bounds);
+      console.log('newMarkers in directive', $scope.newMarkers);
+      console.log('mapvm.newMarkers', mapvm.newMarkers);
+      mapvm.newMarkers = $scope.newMarkers
     }
     nyMarker(marker);
 
@@ -278,7 +278,7 @@ app.directive('googleMap', function () {
         marker.setMap(null);
       }
 
-      console.log('deleted marker')
+      console.log('deleted marker' + marker.id)
     }
 
     $scope.mapData.clearMarkers = clearMarkers;
@@ -312,14 +312,16 @@ app.directive('googleMap', function () {
               $scope.mapData.center = center;
               $scope.mapData.lat = lat;
               $scope.mapData.bounds = bounds;
-              $scope.mapData.category = 'city'
+              $scope.mapData.category = 'city';
+              $scope.mapData.contentString = $scope.city;
 
-              console.log('bounds in city', bounds.H)
-              console.log('lat in city', $scope.mapData.lat)
+              // console.log('bounds in city', bounds.H)
+              // console.log('lat in city', $scope.mapData.lat)
               $scope.mapData.map.setCenter(center);
 
               if (overlay) {
                 overlay.zoomDelete();
+                console.log('zoomDelete');
               }
 
               // clearMarkers(marker);
@@ -388,30 +390,30 @@ app.directive('googleMap', function () {
 
           $scope.mapData.map.setCenter(center);
 
-          if (marker[i].priceLevel) {
-            $scope.dataSource = {
-                "chart": {
-                    "caption": "Pricing",
-                    "captionFontSize": "15",
-                    "bgColor": "#00f987",
-                    "showAxisLines": "1",
-                    "xAxisName": "Price Level",
-                    "toolTipColor": "#ffffff",
-                    "axisLineAlpha": "85",
-                    "xAxisLineColor": "#000",
-                    "showHoverEffect": "1",
-                    "animation": "1"
-                },
-                "data": [{
-                    "label": "Price Level",
-                    "value": marker[i].priceLevel,
-                    "showLabel": "1",
-                    "showValue": "1"
-                  }]
+          // if (marker[i].priceLevel) {
+          //   $scope.dataSource = {
+                // "chart": {
+                //     "caption": "Pricing",
+                //     "captionFontSize": "15",
+                //     "bgColor": "#00f987",
+                //     "showAxisLines": "1",
+                //     "xAxisName": "Price Level",
+                //     "toolTipColor": "#ffffff",
+                //     "axisLineAlpha": "85",
+                //     "xAxisLineColor": "#000",
+                //     "showHoverEffect": "1",
+                //     "animation": "1"
+                // },
+                // "data": [{
+                //     "label": "Price Level",
+                //     "value": marker[i].priceLevel,
+                //     "showLabel": "1",
+                //     "showValue": "1"
+                //   }]
 
-              }
-              marker[i].dataSource = $scope.dataSource.data;
-          }
+          //     }
+          //     marker[i].dataSource = $scope.dataSource.data;
+          // }
 
           if (marker[i].rating) {
             var ratingStars = [];
@@ -469,22 +471,22 @@ app.directive('googleMap', function () {
           // }
 
           // bounds = new google.maps.LatLngBounds();
-        }
+        } // end of for loop
         // newMap.fitBounds(bounds);
       } //end of getMarker() function
 
-      $scope.$watchGroup(["active", "mapMarker"], function() {
-        // debugger;
-        // if ($scope.mapMarker) {
-        // $scope.active = newValue;
-          console.log('active in watch', $scope.active)
-          if ($scope.active === 'yes') {
-            mouseover($scope.mapMarker);
-          } else if ($scope.active === 'no') {
-            mouseout($scope.mapMarker);
-          }
-        // }
-      });
+      // $scope.$watchGroup(["active", "mapMarker"], function() {
+      //   // debugger;
+      //   // if ($scope.mapMarker) {
+      //   // $scope.active = newValue;
+      //     console.log('active in watch', $scope.active)
+      //     if ($scope.active === 'yes') {
+      //       mouseover($scope.mapMarker);
+      //     } else if ($scope.active === 'no') {
+      //       mouseout($scope.mapMarker);
+      //     }
+      //   // }
+      // });
 
       // $scope.$watch("mapMarker", function() {
       //   if ($scope.mapMarker) {
@@ -498,18 +500,47 @@ app.directive('googleMap', function () {
          markAdressToMap(marker);
        }
        });
+       // catches $broadcase sent over from hover on mapMarker in home.html for overlay on map
+       $scope.$on('mouseOver', function(event, mouseOver) {
+         console.log('yes in dir', mouseOver);
+         if (mouseOver.active === 'yes') {
+           mouseover(mouseOver.mapMarker);
+         }
+       });
+       // catches $broadcase sent over from hover on mapMarker in home.html for overlay on map
+       $scope.$on('mouseOut', function(event, mouseOut) {
+         console.log('no in dir', mouseOut)
+         if (mouseOut.active === 'no') {
+           mouseout(mouseOut.mapMarker);
+         }
+       });
 
       $scope.$on('markersArr', function (event, markersArr) {
         if (markersArr && $scope.counter < 2) {
           $scope.markers = markersArr;
           console.log('markers from Directive', $scope.markers)
+          console.log('counter in $scope.$on', $scope.counter)
 
+          if ($scope.marker) {
+            clearMarkers($scope.marker);
+          }
+
+          if (overlay) {
+            overlay.zoomDelete();
+            console.log('zoomDelete');
+          }
           addMarkers();
-        }
-        newMarkers = $scope.newMarkers
-        $scope.$emit('newMarkers', newMarkers)
-      });
 
+        }
+        // if ($scope.counter < 2) {
+        //   $scope.counter++
+        //   console.log('counter in directive', $scope.counter);
+        //   newMarkers = $scope.newMarkers
+        //   $scope.$emit('newMarkers', newMarkers)
+        // }
+      });
+      console.log('newMarkers outisde of $on', $scope.newMarkers)
+      console.log('mapvm.newMarkers', mapvm.newMarkers);
       // $scope.$on('markerActive', function(event, markerActive) {
       //   console.log('markerActive in $scope.on', markerActive);
       //

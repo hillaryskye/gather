@@ -123,40 +123,51 @@ app.service('GoogleMapService', function ($q, $timeout) {
         this.clearMarkers(this.marker);
       }
 
-      this.marker = new google.maps.Marker({
-        map: this.map,
-        position: res.geometry.location,
-        title: res.name,
-        maxZoom: 16,
-        type: res.types[0],
-        draggable: true,
-        maxWidth: 350,
-        zoom: 12,
-        // scrollwheel: true,
-        animation: google.maps.Animation.DROP,
-      });
+      // this.marker = new google.maps.Marker({
+      //   map: this.map,
+      //   position: res.geometry.location,
+      //   title: res.name,
+      //   maxZoom: 16,
+      //   type: res.types[0],
+      //   draggable: true,
+      //   maxWidth: 350,
+      //   zoom: 12,
+      //   // scrollwheel: true,
+      //   animation: google.maps.Animation.DROP,
+      // });
 
-      res.map = this.marker.map;
-      res.position = this.marker.position;
-      res.title = res.name;
-      res.maxZoom = 16;
-      res.type = res.types[0];
-      res.draggable = true;
-      res.maxWidth = 350;
-      res.zoom = 12,
-      res.animation = 2;
-      res.marker = this.marker;
+      // res = this.marker;
+
+      // res.setMap(this.map);
+
+      // res.map = this.marker.map;
+      // res.position = this.marker.position;
+      // res.title = res.name;
+      // res.maxZoom = 16;
+      // res.type = res.types[0];
+      // res.draggable = true;
+      // res.maxWidth = 350;
+      // res.zoom = 12,
+      // res.animation = 2;
+      // res.marker = this.marker;
+
+      // res.marker.setMap(this.map);
 
       this.map.setCenter(res.geometry.location);
     }
     // $timeout(function() {
       this.details = function (res) {
         debugger;
+
+        // $timeout(function(){
+        //   console.log('timeout in services', res)
+        // }, 5000);
           var deferred = $q.defer();
 
         var request = {
           placeId: res.place_id,
-          photo: res.photo
+          photo: res.photo,
+          map: this.map
         };
 
           this.service.getDetails(request, function(details, status) {
@@ -360,8 +371,13 @@ const GoogleOverlayView = function(bounds, map, args) {
         // div.style.left = (point.x - this.args.labelAnchor) + 'px';
         // div.style.top = (point.y - this.args.labelAnchor) + 'px';
     }
+
     counter++
     console.log('counter', counter)
+    // if (counter > 22) {
+    //   console.log('counter in if in service', counter)
+    //     return;
+    // }
     };
 
     GoogleOverlayView.prototype.hover = function() {
@@ -443,9 +459,10 @@ GoogleOverlayView.prototype.zoomDelete = function () {
   // Note: setMap(null) calls OverlayView.onRemove()
     this.setMap(null);
     console.log('deleted overlay')
-  } else {
-    this.setMap(this.map);
   }
+  // else {
+  //   this.setMap(this.map);
+  // }
 }
 
 GoogleOverlayView.prototype.getPosition = function() {
@@ -488,9 +505,12 @@ app.service('ControlsService', function (GoogleMapService) {
     // GoogleControls.prototype = new google.maps.OverlayView();
 
     this.bikelayerFn = function () {
-      var bikeLayer = new google.maps.BicyclingLayer();
-        bikeLayer.setMap(map);
-    };
+        this.bikeLayer = new google.maps.BicyclingLayer();
+        // mapData.bikeLayer = bikeLayer;
+        this.bikeLayer.setMap(null);
+          this.bikeLayer.setMap(map);
+          // console.log('bikeLayer', mapData.bikeLayer);
+      };
 
     this.transitLayerFn = function () {
       var transitLayer = new google.maps.TransitLayer();
@@ -588,5 +608,13 @@ app.service('ControlsService', function (GoogleMapService) {
         bikeControl.index = 1;
         map.controls[google.maps.ControlPosition.TOP_RIGHT].push(bikeControlDiv);
       }
+
+      // $scope.controlsData = ControlsService;
+      // ControlsService.transitLayerFn();
+      this.transit();
+      this.transitC();
+      this.bike();
+      this.bikeC();
+      // let bikeLayer = $scope.controlsData.bikeLayer;
     }
 });

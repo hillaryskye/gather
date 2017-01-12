@@ -147,7 +147,7 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
   $scope.add = false;
   $scope.show = false;
 
-  var infoWindow, service, placesList, marker, mapElement, latLng, transit, bike;
+  var service, placesList, marker, mapElement, latLng, newMap;
 
   // var authRef = new Firebase("https://gather-angular-firebase.firebaseio.com/gather")
   // var authObj = $firebaseAuth(authRef)
@@ -265,8 +265,9 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
     $scope.placeSearch = function(place) {
       var placeRef = new Firebase("https://gather-angular-firebase.firebaseio.com/places")
       $scope.places = $firebaseArray(placeRef)
-      var markersArr;
+      var markersArr, changeActive;
       $scope.markersArr = [];
+      // $scope.active = 'yes';
 
       $scope.mapData = GoogleMapService;
       var mapData = $scope.mapData;
@@ -316,6 +317,10 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
               for (var i = 0; i < res.length; i++) {
                 createMarker(res[i]);
 
+                $timeout(function(){
+                  console.log('timeout in controller', res.length)
+                }, 5000);
+
               console.log('res.name' + [i], res[i].name)
             }
         $scope.mapData.results = results;
@@ -326,6 +331,8 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
   }
 
       $scope.cMarkers = [];
+
+
 
     var createMarker = function(res) {
         // debugger;
@@ -344,15 +351,14 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
 
       var request = {
         placeId: res.place_id,
-        photo: res.photo
+        photo: res.photo,
+        map: this.map
       };
 
-      // $timeout(function() {
-        // service.getDetails(request, function(details, status) {
-          // $scope.markers = [];
           GoogleMapService.details (res)
             .then(function (details) {
               // debugger;
+              var newMap = $scope.mapData.map
               var photo = res.photo;
               var onePhoto;
               var photos = [];
@@ -380,67 +386,101 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
                 animation: google.maps.Animation.DROP,
                 password: $scope.place.code,
                 type: details.types[0],
-                map: res.map
+                map: newMap
               }
-                  $scope.cMarkers.push(markersOptions)
-                  // console.log('$scope.markers', $scope.cMarkers)
+              // $timeout(function(){
+              //   console.log('timeout')
+              // }, 5000);
+                  $scope.cMarkers.push(markersOptions);
+                  console.log('$scope.cMarkers.length', $scope.cMarkers.length);
+
+                  $scope.mouseOver = function(active, mapMarker, index) {
+                    console.log('mapMarker in ctrl', mapMarker);
+                    $scope.$broadcast('mouseOver', { active: active, mapMarker: mapMarker, index: index });
+                  }
+
+                  $scope.mouseOut = function(active, mapMarker, index) {
+                    console.log('mapMarker in ctrl', mapMarker);
+                    $scope.$broadcast('mouseOut', { active: active, mapMarker: mapMarker, index: index });
+                  }
+
+                  // $scope.$watchGroup(["active"], function() {
+                  //   // debugger;
+                  //   // if ($scope.mapMarker) {
+                  //   // $scope.active = newValue;
+                  //     console.log('active in watch in ctrl', $scope.active)
+                  //     // if ($scope.active === 'yes') {
+                  //     //   mouseover($scope.mapMarker);
+                  //     // } else if ($scope.active === 'no') {
+                  //     //   mouseout($scope.mapMarker);
+                  //     // }
+                  //   // }
+                  // });
 
                 // Send markersArr data to Directive to display the markers
                 if ($scope.cMarkers.length > 19) {
-                  // console.log('$scope.markers', $scope.cMarkers)
-
                   markersArr = $scope.cMarkers;
                   $scope.$broadcast('markersArr', markersArr);
-                }
+                  // $scope.removeMarkers(markersArr);
+                  // deleteMarkers();
+                  // res.marker.setMap(null);
 
-                // $scope.markersList = $scope.markers;
-                // $scope.$apply();
+                  // $scope.cMarkers = [];
+                  console.log('$scope.cMarkers.length', $scope.cMarkers.length);
+                }
             }),
             function(status) { // error
                 alert('There was no details for your query' + status + '.');
             }
-      // }, 3000);
     }
+
+    // markervm.changeActive = function(active) {
+    //   console.log('active', active);
+    //   $scope.active = 'yes';
+    //   markervm.active = 'yes';
+    // }
+
+    $scope.changeActive = function(active, index) {
+      console.log('active', active);
+      return $scope.active = 'yes';
+      // markervm.active = 'yes';
+    }
+
+    $scope.$watch("active", function (newValue, oldValue) {
+      if ($scope.active) {
+      //  clearMarkers($scope.marker);
+       console.log('newValue', newValue);
+     }
+     });
 
     $scope.$on('newMarkers', function (event, newMarkers) {
       if (newMarkers) {
-        console.log('controllerMap', newMarkers);
+        console.log('newMarkers in controller', newMarkers);
         $scope.newMarkers = newMarkers;
-        console.log('$scope.map in Controller', $scope.newMarkers)
+        // console.log('$scope.map in Controller', newMarkers)
       }
+
+      // $scope.removeMarkers(newMarkers);
   });
 
-  $scope.markerActive = false;
-
-  // $scope.$on('markerMouseover', function (event, marker) {
-  //   debugger;
-  //
-  //   for (var i=0; i < $scope.markers.length; i++) {
-  //     if (marker.id === $scope.markers[i].id) {
-  //       // $('.temp').attr('id', "#active")
-  //       console.log('marker.id', marker.name)
-  //       // $('.temp').addClass('tempActive');
-  //       $scope.markerActive = true;
-  //       console.log('markerActive', $scope.markerActive)
-  //       // $('.circle').addClass('active');
-  //     } else $scope.markerActive = false;
-  //   }
-  //   // $('.temp').removeClass('tempActive');
-  //   // $('.circle').removeClass('active');
-  // });
+  $scope.$on('markerEvent', function(event, markerEvent) {
+    console.log('marker in $on in ctrl', marker);
+    if (markerEvent.marker) {
+      // $scope.active = "yes";
+      // $scope.$apply();
+      $scope.changeActive(markerEvent.active, markerEvent.marker.index);
+      $scope.$apply();
+      // $scope.changeActive(marker.active);
+      console.log('$scope.active', $scope.active);
+      // index = marker.index
+    }
+  });
 
     $scope.logout = function() {
       console.log('logout')
       authObj.$unauth()
       $location.path('/')
     }
-
-  //   $scope.openInfoWindow = function(e, selectedMarker){
-  //      var infoWindow = new google.maps.InfoWindow();
-  //      e.preventDefault();
-  //      console.log('openInfoWindow', openInfoWindow)
-  //      infoWindow.setContent('<h2>' + selectedMarker.name + '</h2>');
-  // }
 
   $scope.addPlace = function(marker) {
     console.log('addPlace')
@@ -506,15 +546,16 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
     }
   }
 
-  $scope.removeMarkers = function() {
-    for (var i = 0; i < $scope.markers.length; i++) {
-      if ($scope.markers[i].id == marker.id) {
+  $scope.removeMarkers = function(markers) {
+    for (var i = 0; i < markers.length; i++) {
+      // if (markers[i].id == marker.id) {
           //Remove the marker from Map
-          $scope.markers[i].setMap(null);
+          let marker = markers[i];
+          marker.setMap(null);
 
           //Remove the marker from array.
-          $scope.markers.splice(i, 1);
-      }
+          markers.splice(i, 1);
+      // }
     }
   }
 
@@ -522,7 +563,36 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
 
 }]);
 
-app.controller("NewCtrl", ["$scope", "$rootScope", "$firebaseArray", "$routeParams", "$http", "$route", "$location", "$timeout", "$window", "$firebaseAuth", function($scope, $rootScope, $firebaseArray, $routeParams, $http, $route, $location, $timeout, $window, $firebaseAuth) {
+// app.controller("markerCtrl", ["$scope", function($scope) {
+//   console.log('markerCtrl');
+//   markervm = this;
+//   // markervm.changeActive = function(active) {
+//   //   console.log('active', active);
+//   //   $scope.active = 'yes';
+//   //   markervm.active = 'yes';
+//   // }
+// }]);
+
+app.controller("NewCtrl", ["$scope",
+"$rootScope",
+"$firebaseArray",
+"$routeParams",
+"$http", "$route",
+"$location",
+
+"$timeout",
+"$window",
+"$firebaseAuth",
+function($scope,
+  $rootScope,
+  $firebaseArray,
+  $routeParams,
+  $http,
+  $route,
+  $location,
+  $timeout,
+  $window,
+  $firebaseAuth) {
 
   console.log('in new controller')
   console.log('password', $routeParams.password)
@@ -552,7 +622,7 @@ app.controller("NewCtrl", ["$scope", "$rootScope", "$firebaseArray", "$routePara
     var drawingManager = new google.maps.drawing.DrawingManager();
 
     var map = new google.maps.Map(mapElement, mapOptions);
-    drawingManager.setMap(map);
+    // drawingManager.setMap(map);
     // google.maps.event.trigger(map, 'resize');
 
 
