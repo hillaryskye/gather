@@ -1,12 +1,12 @@
-app.directive('googleMap', function () {
+app.directive('googlemap', function () {
   console.log('directive')
   return {
     restrict: "E",
-    replace: true,
     scope: {
       city: "=",
       active: "=",
-      mapMarker: "=mapMarker"
+      mapMarker: "=mapMarker",
+      saveMarkers: "&"
     },
     link: function($scope, el, attrs) {
       // let isActive = attrs.active === 'yes';
@@ -494,6 +494,12 @@ app.directive('googleMap', function () {
       //   }
       // })
 
+      // $scope.saveMarkers({
+      //       $event: {
+      //           newMarkers: $scope.newMarkers
+      //       }
+      //   });
+
       $scope.$watch("city", function () {
         if ($scope.city) {
          clearMarkers($scope.marker);
@@ -505,6 +511,7 @@ app.directive('googleMap', function () {
          console.log('yes in dir', mouseOver);
          if (mouseOver.active === 'yes') {
            mouseover(mouseOver.mapMarker);
+           console.log('mapMarker', $scope.mapMarker)
          }
        });
        // catches $broadcase sent over from hover on mapMarker in home.html for overlay on map
@@ -549,3 +556,48 @@ app.directive('googleMap', function () {
     }
   ]};
 });
+
+
+// app.directive('details', function () {
+//   console.log('details directive')
+//   return {
+//     restrict: "E",
+//     transclude: "true",
+//     scope: {
+//       city: "=",
+//       active: "=",
+//       mapMarker: "&mapMarker"
+//     },
+//     link: function($scope, el, attrs) {
+//       // let isActive = attrs.active === 'yes';
+//       // let notActive = attrs.active === 'no';
+//       // if (attrs.mapMarker) {
+//       //   let mapMarker = attrs.mapMarker;
+//       // }
+//       $scope.hello = "hello";
+//     },
+//     controller: [
+//       '$scope',
+//       '$element',
+//       '$attrs',
+//       '$rootScope',
+//       '$compile',
+//       'GoogleMapService',
+//       'mapMarkerConstructor',
+//       'ControlsService',
+//       function (
+//         $scope,
+//         $element,
+//         $attrs,
+//         $rootScope,
+//         $compile,
+//         GoogleMapService,
+//         mapMarkerConstructor,
+//         ControlsService
+//       ) {
+//
+//     let detailsvm = this;
+//     console.log('detailsvm');
+// }
+//   ]};
+// });

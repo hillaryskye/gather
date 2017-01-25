@@ -4,7 +4,7 @@ app.service('GatherService', function ($firebaseAuth, $firebaseArray) {
       gatherRef = new Firebase(url)
 
       this.getAll = function () {
-        return $firebaseArray(gatherRef);
+        return $firebaseArray(gatherRef);zsz
       }
 })
 
@@ -247,7 +247,59 @@ app.service('GoogleMapService', function ($q, $timeout) {
     //     console.log('update')
     //       //  $scope.posts.$save(post)
     //   }
-})
+});
+
+// app.service("CreateDetailMarkerService", function(GoogleMapService) {
+//   console.log('CreateDetailMarkerService');
+//
+//   let detailData = {};
+//
+//   this.placeSearch = function(place) {
+//     var deferred = $q.defer();
+//     // var placeRef = new Firebase("https://gather-angular-firebase.firebaseio.com/places")
+//     // $scope.places = $firebaseArray(placeRef)
+//     var markersArr, changeActive;
+//     $scope.markersArr = [];
+//     // $scope.active = 'yes';
+//
+//     $scope.mapData = GoogleMapService;
+//     var mapData = $scope.mapData;
+//     var newMap = mapData.map;
+//
+//     console.log('$scope.map controller', newMap)
+//
+//     // if code is empty, it prevents placesearch from taking place
+//     if (!$scope.place.code) {
+//       return;
+//     }
+//
+//     $scope.places.code = place.code
+//
+//
+//
+//     GoogleMapService.search(place)
+//     .then(
+//       function(res) { // success
+//
+//         // Closes form for entering in textSearch
+//         $scope.add = false;
+//
+//             for (var i = 0; i < res.length; i++) {
+//               createMarker(res[i]);
+//
+//               $timeout(function(){
+//                 console.log('timeout in controller', res.length)
+//               }, 5000);
+//
+//             console.log('res.name' + [i], res[i].name)
+//           }
+//       $scope.mapData.results = results;
+//     },
+//     function(status) { // error
+//         alert('There was no results for your query' + status + '.');
+//     })
+// }
+// });
 
 app.service('mapMarkerConstructor', function (GoogleMapService) {
 

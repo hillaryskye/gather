@@ -145,7 +145,8 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
   console.log('controller')
 // debugger;
   $scope.add = false;
-  $scope.show = false;
+  $scope.start = true;
+  // $scope.show = false;
 
   var service, placesList, marker, mapElement, latLng, newMap;
 
@@ -177,7 +178,8 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
 
     $scope.changeCity = function(search) {
       // $scope.active = active;
-      $scope.city = search.city;
+      $scope.cityState = search.city + ", " + search.state;
+      $scope.city = search.city + ", " + search.state;
       console.log('city in controller', $scope.city)
 
       $scope.hover = function () {
@@ -267,15 +269,13 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
       $scope.places = $firebaseArray(placeRef)
       var markersArr, changeActive;
       $scope.markersArr = [];
-      // $scope.active = 'yes';
+      $scope.active = 'yes';
 
       $scope.mapData = GoogleMapService;
       var mapData = $scope.mapData;
       var newMap = mapData.map;
 
       console.log('$scope.map controller', newMap)
-
-      // var service = new google.maps.places.PlacesService(newMap);
 
       // if code is empty, it prevents placesearch from taking place
       if (!$scope.place.code) {
@@ -284,33 +284,9 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
 
       $scope.places.code = place.code
 
-      // var request = {
-      //   location: mapData.latLng,
-      //   radius: 50,
-      //   query: place.query
-      // };
-
-    //   var deferred = $q.defer();
-    //
-    //
-    //   service.textSearch(request, function(results, status) {
-    //         if (status == 'OK') {
-    //             var res = results[0];
-    //             deferred.resolve(res);
-    //         }
-    //         else deferred.reject(status);
-    //     });
-    //     return deferred.promise;
-    //
-    //   $scope.add = false;
-    // };
-
-      // deferred.resolve(
-
       GoogleMapService.search(place)
       .then(
         function(res) { // success
-          // debugger;
           // Closes form for entering in textSearch
           $scope.add = false;
 
@@ -391,6 +367,8 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
               // $timeout(function(){
               //   console.log('timeout')
               // }, 5000);
+
+
                   $scope.cMarkers.push(markersOptions);
                   console.log('$scope.cMarkers.length', $scope.cMarkers.length);
 
@@ -438,6 +416,10 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
     //   console.log('active', active);
     //   $scope.active = 'yes';
     //   markervm.active = 'yes';
+    // }
+
+    // $scope.getNewMarkers = function(e) {
+    //   console.log('e in controller', e)
     // }
 
     $scope.changeActive = function(active, index) {
@@ -541,10 +523,16 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
   $scope.addForm = function() {
     if ($scope.add === false) {
       $scope.add = true;
+      $scope.start = true;
     } else if ($scope.add === true) {
       $scope.add = false;
     }
   }
+
+  // $scope.clearForm = function() {
+  //   this.removeMarkers();
+  //   $scope.start = false;
+  // }
 
   $scope.removeMarkers = function(markers) {
     for (var i = 0; i < markers.length; i++) {

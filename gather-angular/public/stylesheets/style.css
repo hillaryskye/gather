@@ -120,6 +120,15 @@ opacity: .5;
 .margin-t {
   margin-top: 5px;
 }
+
+.margin-t15 {
+  margin-top: 15px;
+}
+
+.margin-t20 {
+  margin-top: 20px;
+}
+
 .top:after {
   content: ".";
   visibility: hidden;
