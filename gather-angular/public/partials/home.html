@@ -75,7 +75,7 @@
             </div>
 
           <div class="title">
-              <button class="button margin-t margin-l2 margin-b" ng-click="placeSearch(place); $event.stopPropagation();" type="submit" class="btn btn-primary">submit</button>
+              <button class="button margin-t margin-l2 margin-b" map-markers="markers" ng-click="placeSearch(place); $event.stopPropagation();" type="submit" class="btn btn-primary">submit</button>
           </div>
         </div>
           <button ng-show="add===true && start===true" ng-hide="add===false && start===false" id="more" class="button margin-t margin-l3">More results</button>
@@ -87,37 +87,41 @@
 <!--      <div class="map" id="map"></div>
  -->   </section>
   <div class="container4">
-   <section class="title">{{}}
-    <!-- <googlemap class="container marker opacity"
+   <section class="title">
+     <googlemap class="container marker opacity"
        active="active"
+       id="{{$index}}"
+       isActive="isActive"
        map-marker="mapMarker"
-       new-markers="getNewMarkers($event)"
+       map-markers="markers"
+       new-markers="newMarkers"
        ng-init="active='no'"
-       ng-model="active"
-       ng-repeat="mapMarker in newMarkers track by $index | orderBy : 'name'"
-       ng-mouseover="active='yes'"
-       ng-mouseleave="active='no'">
+       ng-model="mapMarker"
+       ng-repeat="mapMarker in markers track by $index | orderBy : 'name'"
+       ng-mouseenter="active='yes'"
+       ng-mouseleave="active='no'"
+       ng-change="changeMarkers(mapMarker)">
       <a href="#" class="red" ng-click="openInfoWindow($event, marker)">{{marker.name}}</a>
        <p>
         <a href="/#/gather/places/{{marker.password}}/new" target="_self"
             ng-click="addPlace(marker)">
             {{mapMarker.name}} | {{mapMarker.type}}
-          <span class="circle" ng-class="{ active: active === 'yes' }"
+          <span class="circle" ng-class="{ active: active === 'yes', isActive: isActive === 'yes' }"
                 ng-mouseenter="active='yes'" ng-mouseleave="active='no'"
-                style="background: {{mapMarker.color}}; float: right; position: inherit;"></span> -->
-          <!-- {{mapMarker.color}} {{markerActive}} {{circle.isActive}} {{active}}
+                style="background: {{mapMarker.color}}; float: right; position: inherit;"></span>
+          {{mapMarker.color}} {{mapMarker.isActive}} active: {{active}} isActive: {{isActive}}
        </a>
     </p>
-     <p>{{mapMarker.address}}</p>
+     <!--<p>{{mapMarker.address}}</p>-->
      <p>{{mapMarker.phone}}</p>
-     <p><a href="{{marker.website}}">{{mapMarker.website}}</a></p> -->
+     <p><a href="{{marker.website}}">{{mapMarker.website}}</a></p>
      <!-- <p>Rating: {{marker.rating}}</p>
      <p>User Ratings: {{marker.userRatings}}</p>
      <p>Price Level: {{marker.priceLevel}}</p>
      <p>Type: {{marker.type}}</p> -->
-   <!-- </googlemap> -->
+    </googlemap> 
    <!-- <div ng-controller="markerCtrl"> -->
-    <div ng-repeat="mapMarker in cMarkers track by $index | orderBy: 'name'"
+    <!--<div ng-repeat="mapMarker in cMarkers track by $index | orderBy: 'name'"
         class="container marker opacity"
         active="active",
         ng-init="active='no'"
@@ -138,7 +142,7 @@
        <p>{{mapMarker.address}}</p>
        <p>{{mapMarker.phone}}</p>
        <p><a href="{{marker.website}}">{{mapMarker.website}}</a></p>
-  </div>
+  </div>-->
     <!-- </div> -->
    </section>
 

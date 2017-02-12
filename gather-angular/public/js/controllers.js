@@ -291,11 +291,12 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
           $scope.add = false;
 
               for (var i = 0; i < res.length; i++) {
+                res[i].index = i;
                 createMarker(res[i]);
 
-                $timeout(function(){
-                  console.log('timeout in controller', res.length)
-                }, 5000);
+                // $timeout(function(){
+                  // console.log('timeout in controller', res.length)
+                // }, 5000);
 
               console.log('res.name' + [i], res[i].name)
             }
@@ -306,7 +307,7 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
       })
   }
 
-      $scope.cMarkers = [];
+      $scope.markers = [];
 
 
 
@@ -348,6 +349,7 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
                 }
               }
               var markersOptions = {
+                index: res.index,
                 name: details.name,
                 latitude: details.geometry.location.lat(),
                 longitude: details.geometry.location.lng(),
@@ -369,8 +371,8 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
               // }, 5000);
 
 
-                  $scope.cMarkers.push(markersOptions);
-                  console.log('$scope.cMarkers.length', $scope.cMarkers.length);
+                  $scope.markers.push(markersOptions);
+                  console.log('$scope.markers.length', $scope.markers.length + " " + markersOptions.index );
 
                   $scope.mouseOver = function(active, mapMarker, index) {
                     console.log('mapMarker in ctrl', mapMarker);
@@ -396,20 +398,22 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
                   // });
 
                 // Send markersArr data to Directive to display the markers
-                if ($scope.cMarkers.length > 19) {
-                  markersArr = $scope.cMarkers;
-                  $scope.$broadcast('markersArr', markersArr);
-                  // $scope.removeMarkers(markersArr);
-                  // deleteMarkers();
-                  // res.marker.setMap(null);
+                // if ($scope.cMarkers.length > 11) {
+                //   markersArr = $scope.cMarkers;
+                //   $scope.$broadcast('markersArr', markersArr);
+                //   // $scope.removeMarkers(markersArr);
+                //   // deleteMarkers();
+                //   // res.marker.setMap(null);
 
-                  // $scope.cMarkers = [];
-                  console.log('$scope.cMarkers.length', $scope.cMarkers.length);
-                }
+                //   // $scope.cMarkers = [];
+                //   console.log('$scope.cMarkers.length', $scope.cMarkers.length);
+                // }
             }),
             function(status) { // error
                 alert('There was no details for your query' + status + '.');
             }
+
+            
     }
 
     // markervm.changeActive = function(active) {
@@ -421,6 +425,19 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
     // $scope.getNewMarkers = function(e) {
     //   console.log('e in controller', e)
     // }
+
+    // $scope.markerMouseenter = function(marker, index) {
+    //     if (marker.index === index) {
+    //       $scope.active = 'yes';
+    //       $scope.isActive = 'yes';
+    //     }
+    //   }
+
+    $scope.changeMarkers = function(marker) {
+      $scope.active = 'yes';
+      return marker;
+      // $scope.markers.push(changedMarker);
+    }
 
     $scope.changeActive = function(active, index) {
       console.log('active', active);
@@ -434,6 +451,10 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
        console.log('newValue', newValue);
      }
      });
+
+     $scope.$watch("markers", function(markers) {
+       console.log('mapMarkers in ctrl', $scope.markers);
+     })
 
     $scope.$on('newMarkers', function (event, newMarkers) {
       if (newMarkers) {
@@ -450,7 +471,10 @@ function($scope, $rootScope, $routeParams, $firebaseArray, $firebaseAuth, $locat
     if (markerEvent.marker) {
       // $scope.active = "yes";
       // $scope.$apply();
-      $scope.changeActive(markerEvent.active, markerEvent.marker.index);
+      // $scope.changeActive(markerEvent.active, markerEvent.marker.index);
+      $scope.changeMarkers(active='yes')
+      // $scope.newActive = markerEvent.active;
+      // $scope.index = markerEvent.marker.index;
       $scope.$apply();
       // $scope.changeActive(marker.active);
       console.log('$scope.active', $scope.active);

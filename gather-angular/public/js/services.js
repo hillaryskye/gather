@@ -4,7 +4,7 @@ app.service('GatherService', function ($firebaseAuth, $firebaseArray) {
       gatherRef = new Firebase(url)
 
       this.getAll = function () {
-        return $firebaseArray(gatherRef);zsz
+        return $firebaseArray(gatherRef);
       }
 })
 
@@ -83,6 +83,7 @@ app.service('GoogleMapService', function ($q, $timeout) {
   this.infoWindow = new google.maps.InfoWindow();
   this.mapElement = mapElement;
   this.center = latLng;
+  self = this;
 
   this.search = function (place) {
     var service = new google.maps.places.PlacesService(this.map);
@@ -98,6 +99,7 @@ app.service('GoogleMapService', function ($q, $timeout) {
     this.service.textSearch(request, function(results, status, pagination) {
           if (status == 'OK') {
               var res = results;
+
               deferred.resolve(res);
 
               if (pagination.hasNextPage) {
@@ -157,26 +159,31 @@ app.service('GoogleMapService', function ($q, $timeout) {
     }
     // $timeout(function() {
       this.details = function (res) {
-        debugger;
 
-        // $timeout(function(){
-        //   console.log('timeout in services', res)
-        // }, 5000);
-          var deferred = $q.defer();
+        var deferred = $q.defer();
+        // debugger;
+        (function(j) {
+          
+          // $timeout(function(){
+          //   console.log('timeout in services', res)
+          // }, 5000);
+            
 
-        var request = {
-          placeId: res.place_id,
-          photo: res.photo,
-          map: this.map
-        };
-
-          this.service.getDetails(request, function(details, status) {
-              if (status == 'OK') {
-                  deferred.resolve(details);
-              }
-              else deferred.reject(status);
-          });
-
+          var request = {
+            placeId: res.place_id,
+            photo: res.photo,
+            map: this.map
+          };
+          $timeout(function() {
+            
+            self.service.getDetails(request, function(details, status) {
+                if (status == 'OK') {
+                    deferred.resolve(details);
+                }
+                else deferred.reject(status);
+            });
+        }, j * 400);
+        })(res.index);
         return deferred.promise;
       }
       // }, 50);
