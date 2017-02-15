@@ -20,6 +20,7 @@ section {
   z-index: 3000;
   background: rgba(32, 12, 94, .9);
   padding: 7px 0px 7px 5px;
+  height: 58px;
 }
 .container3 {
   width: 30%;
@@ -31,14 +32,48 @@ section {
   width: 30%;
   border: 1px solid silver;
   position: absolute;
-  top: 154px;
+  top: 180px;
   right: 0;
+  height: 480px;
+  overflow: scroll;
+}
+
+.container5 {
+  width: 30%;
+  margin-top: 122px;
+  position: fixed;
+  /*top: 68px;*/
+  right: 0;
+  z-index: 3000;
+  background: rgba(32, 12, 94, .8);
+  padding: 7px 0px 7px 5px;
+  height: 58px;
+}
+
+.container6 {
+  /*width: 30%;*/
+  border: 1px solid silver;
+  position: relative;
+  background: brown;
+  background: rgba(165,42, 42, .9);
+  top: 0;
+  right: 30%;
+  float: right;
+  min-height: 30px;
 }
 .search {
   position: absolute;
   top: 5px;
   right: 10px;
   z-index: 3001;
+}
+
+.search-width-sm {
+  width: 6%;
+}
+
+.search-width-bg {
+  width: 30%;
 }
 .code {
   margin: 0;
@@ -108,6 +143,8 @@ opacity: .5;
 .form {
   margin: 0 auto;
   width: 100%;
+  font-size: 14px;
+  color: #fff;
 }
 .bold {
   font-weight: bold;
@@ -154,9 +191,15 @@ opacity: .5;
 a {
   font-size: .9em;
   font-size: 1.3em;
+  font-size: 13px;
   color: #f3f709;
   text-decoration: none;
   transition: all 0.4s;
+
+  /*color: #b9bb46;*/
+    text-decoration: none;
+    transition: all 0.4s;
+    /*font-family: source code pro;*/
 }
 /*a:active {
   color: #e86c19;
@@ -193,6 +236,7 @@ p {
    color: rgba(255, 255, 255, 1);
    margin: 0;
    font-size: .9em;
+   font-size: 13px;
    color: #f3f709;
    color: #fff;
    font-family: inherit;
@@ -277,6 +321,7 @@ h5 {
   /*border: 2px solid rgb(230,162,25);*/
   transition: all 0.4s;
   border: 1px solid blue;
+  margin: 5px;
 }
 
 h1 {
@@ -403,12 +448,13 @@ textarea {
    position: absolute;
    border: 1px solid #c0c0c0;
 }
-google-map {
-  position: absolute;
+.map-container {
+  /*position: absolute;
   top: 0;
   left: 0;
   height: 100%;
-  width: 70%;
+  width: 70%;*/
+  position: fixed;
 }
 
 .controls {
@@ -774,6 +820,7 @@ body {
   height: 100%;
   max-width: none;
   position: absolute;
+  /*position: fixed;*/
 }
 /*#addressMap img {
 	max-width: none !important;
@@ -880,7 +927,7 @@ svg {
   font-size: 1.3em;
   /*padding-left: 10px;*/
 }
-.infoBox::before { 
+.infoBox::before {
   content: " ";
   width: 0;
   height: 0;

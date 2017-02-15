@@ -4,7 +4,6 @@
             ng-mouseleave="active='no'">
 </googlemap>
 
-<details>Here in details</details>
 <!-- <div ng-bind="newMap"></div> -->
 <!-- <div id="addressMap" class="map" city="search.city" google-map></div> -->
  <section>
@@ -48,7 +47,7 @@
 </section>
 <section class="initial">
 
-<div class="container2">
+<div class="container5">
   <a class="button" ng-click="addForm()" type="submit" city="search.city" google-map>Search by city & State</a>
   <button class="button margin-l2" ng-click="logout()">Logout</button>
 
@@ -60,25 +59,44 @@
         <img class="right" src="http://upload.wikimedia.org/wikipedia/commons/9/9a/Google_maps_logo.png"/>
     </h3> -->
   </div>
-  <div class="container4 margin-t20">
+  <div class="container6 margin-t20">
     <section class="form">
-      <form class="comment-form fadein fadeout" ame="searchForm">
-        <div ng-show="add===true" ng-hide="add===false" nclass="margin-l3 margin-t15 title">
+      <form class="comment-form fadein fadeout" name="searchForm">
+        <button id="more" 
+                class="button margin-t margin-l3">More results
+        </button>
+        <div ng-show="add===true" 
+             ng-hide="add===false" 
+             class="margin-l3 margin-t15 title"
+             ng-class="add ? 'search-width-bg' : 'search-width-sm'">
 
             <div class="margin-l3">
                <label class="label" for="query">Place text (ex. Golden restaurants)</label>
-                 <input class="input3" type="text" name="query" ng-model="place.query" required>
+                 <input class="input3" 
+                        type="text" 
+                        name="query" 
+                        ng-model="place.query" 
+                        required>
             </div>
             <div class="margin-l3">
                 <label class="label" for="search">Enter Event Gather Code</label>
-                  <input class="input3" type="text" name="search" ng-model="place.code" required>
+                  <input class="input3" 
+                         type="text" 
+                         name="search" 
+                         ng-model="place.code" 
+                         required>
             </div>
 
           <div class="title">
-              <button class="button margin-t margin-l2 margin-b" map-markers="markers" ng-click="placeSearch(place); $event.stopPropagation();" type="submit" class="btn btn-primary">submit</button>
+              <button class="button margin-t margin-l2 margin-b" 
+                      map-markers="markers" 
+                      ng-click="placeSearch(place); $event.stopPropagation();" 
+                      type="submit" 
+                      class="btn btn-primary">submit
+              </button>
           </div>
         </div>
-          <button ng-show="add===true && start===true" ng-hide="add===false && start===false" id="more" class="button margin-t margin-l3">More results</button>
+          
        </form>
    </section>
  </div>
@@ -109,7 +127,7 @@
           <span class="circle" ng-class="{ active: active === 'yes', isActive: isActive === 'yes' }"
                 ng-mouseenter="active='yes'" ng-mouseleave="active='no'"
                 style="background: {{mapMarker.color}}; float: right; position: inherit;"></span>
-          {{mapMarker.color}} {{mapMarker.isActive}} active: {{active}} isActive: {{isActive}}
+          <!--{{mapMarker.color}} active: {{active}} isActive: {{isActive}}-->
        </a>
     </p>
      <!--<p>{{mapMarker.address}}</p>-->
