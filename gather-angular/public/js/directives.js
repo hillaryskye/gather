@@ -30,7 +30,7 @@ app.directive('googlemap', function () {
       el.on('mouseenter', function () {
           if ($scope.mapMarker && $scope.active === 'yes') {
             // el.css('background-color', 'yellow');
-            mapmarkervm.mouseover($scope.mapMarker);
+            $scope.mouseover($scope.mapMarker);
             // console.log($scope.mapMarker);
             // console.log('ctrl', ctrl);
             // console.log('attrs', attrs);
@@ -44,7 +44,7 @@ app.directive('googlemap', function () {
 
       el.on('mouseout', function() {
           if ($scope.mapMarker && $scope.active === 'no') {
-            mapmarkervm.mouseout($scope.mapMarker);
+            $scope.mouseout($scope.mapMarker);
           }
       })
 
@@ -68,6 +68,22 @@ app.directive('googlemap', function () {
           // }
           $scope.addMarkers();
           console.log('done in update in directive');
+      }
+
+      $scope.mouseover = function(mapMarker) {
+        console.log('click in function')
+          console.log('mouseover function ' + mapMarker.name)
+          if (mapMarker && mapMarker.overlay) {
+            mapMarker.overlay.isActive(mapMarker.overlay.div);
+            
+        };
+      }
+
+      $scope.mouseout = function(mapMarker) {
+            console.log('mouseout in function ' + mapMarker.name);
+            if (mapMarker && mapMarker.overlay) {
+              mapMarker.overlay.notActive(mapMarker.overlay.div);
+            }
       }
 
       $scope.changeMarkers = function(marker) {
@@ -188,7 +204,7 @@ app.directive('googlemap', function () {
         // marker.bounds = $scope.mapData.bounds;
       }
 
-      overlay = new mapMarkerConstructor.GoogleOverlayView(
+      let overlay = new mapMarkerConstructor.GoogleOverlayView(
         marker.bounds, marker.map, {
           marker_id: id,
           color: colors[index],
@@ -261,21 +277,21 @@ app.directive('googlemap', function () {
           // $scope.apply();
       });
 
-      $scope.mouseover = function(mapMarker) {
-        console.log('click in function')
-          console.log('mouseover function ' + mapMarker.name)
-          if (mapMarker) {
-            overlay.isActive(mapMarker.overlay.div);
+      // mouseover = function(mapMarker) {
+      //   console.log('click in function')
+      //     console.log('mouseover function ' + mapMarker.name)
+      //     if (mapMarker) {
+      //       overlay.isActive(mapMarker.overlay.div);
             
-        };
-      }
+      //   };
+      // }
 
-      $scope.mouseout = function(mapMarker) {
-            console.log('mouseout in function ' + mapMarker.name);
-            if (mapMarker) {
-              overlay.notActive(mapMarker.overlay.div);
-            }
-      }
+      // mouseout = function(mapMarker) {
+      //       console.log('mouseout in function ' + mapMarker.name);
+      //       if (mapMarker) {
+      //         overlay.notActive(mapMarker.overlay.div);
+      //       }
+      // }
 
       google.maps.event.addListener(marker, 'mouseout', function() {
           console.log('mouseout ' + marker.name);
